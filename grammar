@@ -1,0 +1,7 @@
+# Lines starting with # are comments
+
+# CAPITALIZED_ITEMS are regular expressions
+
+# Context-Free Grammar
+
+Expression => NUMBER
