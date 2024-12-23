@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -g -std=c++17
+CFLAGS = -Wall -g -std=c++2a
 LDFLAGS = -lm -lreadline
 
 run : main
