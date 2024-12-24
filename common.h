@@ -1,6 +1,7 @@
 #ifndef COMMON_H_INCLUDED
 #define COMMON_H_INCLUDED
 
+#include <iostream>
 #include <cstdint>
 
 typedef int8_t i8;
