@@ -4,4 +4,6 @@
 
 # Context-Free Grammar
 
-Expression => NUMBER
+Expression => NUMBER | BlockExpression
+
+BlockExpression => '{' Expression '}'
