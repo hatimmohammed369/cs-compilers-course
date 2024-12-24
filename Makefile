@@ -2,15 +2,17 @@ CC = g++
 CFLAGS = -Wall -g -std=c++2a
 LDFLAGS = -lm -lreadline
 
-norepl: main
-	./main --file $(file)
-
 repl: main
 	./main
 
-main: main.o
+norepl: main
+	./main --file $(file)
+
+main: main.o lexer.o
 	$(CC) $(LDFLAGS) -o $@ $^
-	./main
 
 main.o: main.cpp
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+lexer.o: lexer.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
