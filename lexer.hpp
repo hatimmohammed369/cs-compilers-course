@@ -9,8 +9,8 @@ class Lexer {
     char* current;
     size_t source_length;
 public:
-    Lexer(char* in, size_t source_len);
-    Token get_next_token();
+    void init(char* in, size_t source_len);
+    Token* get_next_token();
     bool has_next();
 };
 

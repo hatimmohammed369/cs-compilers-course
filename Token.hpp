@@ -4,11 +4,9 @@
 #include <string>
 
 enum TokenType {
-    DEAD = 0,
-    END_MARKER = 1,
-    NUMBER = 2,
-    LEFT_CURLY_BRACE = 3,
-    RIGHT_CURLY_BRACE = 4,
+    NUMBER = 0,
+    LEFT_CURLY_BRACE = 1,
+    RIGHT_CURLY_BRACE = 2,
 };
 
 class Token {
@@ -16,9 +14,5 @@ public:
     TokenType ttype;
     std::string value;
 };
-
-std::ostream& operator<<(std::ostream& os, const Token& token) {
-    return os << "Token{ value='" << token.value << "', ttype=" << token.ttype << " }";
-}
 
 #endif

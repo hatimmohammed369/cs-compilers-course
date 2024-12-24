@@ -3,30 +3,32 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-#include "common.h"
+#include "lexer.hpp"
 
 using namespace std;
 
+inline std::ostream& operator<<(std::ostream& os, const Token& token) {
+    return os << "Token{ value='" << token.value << "', ttype=" << token.ttype << " }";
+}
+
 int main(int argc, char* argv[]) {
     // Placeholder code: read it print it
-
+    Lexer lexer;
     if (argc == 1) {
         // Interactive Mode
         // Read input from user directly
 
         // Line characters store
         char* buffer;
-        // Nice object wrapper around line characters
-        string line;
         while ((buffer = readline("> ")) != nullptr) {
             if (strlen(buffer) == 0) continue; // Ignore empty lines
-            line = string(buffer);
             // add last read line to prompt history
             add_history(buffer);
+            lexer.init(buffer, strlen(buffer));
+            Token* token;
+            while ((token = lexer.get_next_token())) cout << *token << "\n" ;
             // free buffer because readline always allocates a new buffer
             free(buffer);
-            // just print it
-            cout << line << endl;
         }
     } else if (argc == 3 && (strcmp(argv[1], "--file") == 0 || strcmp(argv[1], "-f") == 0)) {
         // File Mode
@@ -44,8 +46,9 @@ int main(int argc, char* argv[]) {
         input_file.seekg(0, std::ios::beg);
         // Read all characters
         input_file.read(input, file_size);
-        printf("%s", input);
-
+        lexer.init(input, file_size);
+        Token* token;
+        while ((token = lexer.get_next_token())) cout << *token << "\n" ;
         // Free input buffer
         delete[] input;
     } else {
