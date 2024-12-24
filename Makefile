@@ -2,10 +2,13 @@ CC = g++
 CFLAGS = -Wall -g -std=c++2a
 LDFLAGS = -lm -lreadline
 
-run : main
+norepl: main
+	./main --file $(file)
+
+repl: main
 	./main
 
-main : main.o
+main: main.o
 	$(CC) $(LDFLAGS) -o $@ $^
 	./main
 
