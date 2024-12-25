@@ -7,10 +7,6 @@
 
 using namespace std;
 
-inline std::ostream& operator<<(std::ostream& os, const Token& token) {
-    return os << "Token{ value='" << token.value << "', ttype=" << token.ttype << " }";
-}
-
 int main(int argc, char* argv[]) {
     // Placeholder code: read it print it
     Lexer lexer;

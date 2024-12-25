@@ -42,4 +42,8 @@ public:
     }
 };
 
+inline std::ostream& operator<<(std::ostream& os, const Token& token) {
+    return os << "Token{ value='" << token.value << "', ttype=" << token.ttype << " }";
+}
+
 #endif
