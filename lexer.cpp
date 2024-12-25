@@ -20,11 +20,11 @@ bool Lexer::has_next() {
 }
 
 Token Lexer::get_next_token() {
-    if (!has_next()) return Token{END_OF_FILE, string()};
     TokenType ttype;
     string value;
-SKIP_SPACES:
-    while (isspace(*current)) current++;
+SKIP_WHITESPACES:
+    while (this->has_next() && isspace(*current)) current++;
+    if (!has_next()) return Token{END_OF_FILE, string()};
     switch (*current) {
         case '{':
             ttype = LEFT_CURLY_BRACE;
@@ -39,7 +39,7 @@ SKIP_SPACES:
             current++;
             break;
         default:
-            if (isspace(*current)) goto SKIP_SPACES;
+            if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
                 // Generate a NUMBER token
                 // Roughly it's: \d+([.]\d+((e|E)[+-]?\d+)?)?
@@ -112,6 +112,7 @@ SKIP_SPACES:
                     value.push_back(*current);
                     current++;
                 }
+                if (value.empty()) goto SKIP_WHITESPACES;
             }
     }
 RETURN_TOKEN:
