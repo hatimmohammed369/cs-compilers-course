@@ -42,16 +42,16 @@ SKIP_SPACES:
             if (isspace(*current)) goto SKIP_SPACES;
             else if (isdigit(*current)) {
                 // Generate a NUMBER token
-                // Roughly it's: \d+([.]\d+((e|E)[+-]\d+)?)?
+                // Roughly it's: \d+([.]\d+((e|E)[+-]?\d+)?)?
                 ttype = NUMBER;
 
-                // Read digits before decimal point
-                while (isdigit(*current)) {
+                // Read digits before decimal point before end of input
+                while (this->has_next() && isdigit(*current)) {
                     value.push_back(*current);
                     current++;
                 }
 
-                if (*current != '.') {
+                if (!this->has_next() || *current != '.') {
                     // We found an integer
                     goto RETURN_TOKEN;
                 }
@@ -61,54 +61,54 @@ SKIP_SPACES:
                 // Move over decimal point
                 current++;
 
-                if (!isdigit(*current)) {
+                if (!this->has_next() || !isdigit(*current)) {
                     // Invalid numeric literal: no digits after decimal point
                     ttype = INVALID;
                     goto RETURN_TOKEN;
                 }
 
-                // Read digits after decimal point
-                while (isdigit(*current)) {
+                // Read digits after decimal point before end of input
+                while (this->has_next() && isdigit(*current)) {
                     value.push_back(*current);
                     current++;
                 }
 
-                if (*current == 'e' || *current == 'E') {
+                if (!this->has_next()) {
+                    // No exponent
+                    goto RETURN_TOKEN;
+                } else if (*current == 'e' || *current == 'E') {
                     // Push e
                     value.push_back(*current);
                     // Move over e
                     current++;
-                } else {
-                    // No exponent
-                    goto RETURN_TOKEN;
                 }
 
-                if (*current == '+' || *current == '-') {
+                if (!this->has_next()) {
+                    // Invalid numeric literal: Missing exponent value
+                    ttype = INVALID;
+                    goto RETURN_TOKEN;
+                } else if (*current == '+' || *current == '-') {
                     // Push exponent sign
                     value.push_back(*current);
                     // Move over exponent sign
                     current++;
-                    if (!isdigit(*current)) {
-                        // Invalid numeric literal: Missing exponent value
-                        ttype = INVALID;
-                        goto RETURN_TOKEN;
-                    }
-                    // Read digits after exponent sign
-                    if (isdigit(*current)) {
-                        while (isdigit(*current)) {
-                            value.push_back(*current);
-                            current++;
-                        }
-                    }
-                } else {
+                }
+
+                if (!this->has_next() || !isdigit(*current)) {
                     // Invalid numeric literal: Missing exponent value
                     ttype = INVALID;
                     goto RETURN_TOKEN;
                 }
+
+                // Read digits after exponent sign
+                while (this->has_next() && isdigit(*current)) {
+                    value.push_back(*current);
+                    current++;
+                }
             } else {
                 // Any other non-whitespace character
                 ttype = INVALID;
-                while (!isspace(*current)) {
+                while (this->has_next() && !isspace(*current)) {
                     value.push_back(*current);
                     current++;
                 }
