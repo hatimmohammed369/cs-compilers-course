@@ -4,6 +4,7 @@
 #include <string>
 
 enum TokenType {
+    INVALID = -1,
     END_OF_FILE = 0,
     NUMBER = 1,
     LEFT_CURLY_BRACE = 2,

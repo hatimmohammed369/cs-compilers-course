@@ -1,4 +1,5 @@
 #include "lexer.hpp"
+#include "token.hpp"
 #include <cctype>
 
 using namespace std;
@@ -18,11 +19,8 @@ bool Lexer::has_next() {
     return static_cast<size_t>(diff) < source_length;
 }
 
-Token* Lexer::get_next_token() {
-    if (!has_next()) {
-        Token* end_of_file = new Token {END_OF_FILE, string()};
-        return end_of_file;
-    }
+Token Lexer::get_next_token() {
+    if (!has_next()) return Token{END_OF_FILE, string()};
     TokenType ttype;
     string value;
 SKIP_SPACES:
@@ -55,7 +53,7 @@ SKIP_SPACES:
 
                 if (*current != '.') {
                     // We found an integer
-                    break;
+                    goto RETURN_TOKEN;
                 }
 
                 // Read decimal point
@@ -65,8 +63,8 @@ SKIP_SPACES:
 
                 if (!isdigit(*current)) {
                     // Invalid numeric literal: no digits after decimal point
-                    value.clear();
-                    return nullptr;
+                    ttype = INVALID;
+                    goto RETURN_TOKEN;
                 }
 
                 // Read digits after decimal point
@@ -82,7 +80,7 @@ SKIP_SPACES:
                     current++;
                 } else {
                     // No exponent
-                    break;
+                    goto RETURN_TOKEN;
                 }
 
                 if (*current == '+' || *current == '-') {
@@ -92,8 +90,8 @@ SKIP_SPACES:
                     current++;
                     if (!isdigit(*current)) {
                         // Invalid numeric literal: Missing exponent value
-                        value.clear();
-                        return nullptr;
+                        ttype = INVALID;
+                        goto RETURN_TOKEN;
                     }
                     // Read digits after exponent sign
                     if (isdigit(*current)) {
@@ -104,18 +102,18 @@ SKIP_SPACES:
                     }
                 } else {
                     // Invalid numeric literal: Missing exponent value
-                    value.clear();
-                    return nullptr;
+                    ttype = INVALID;
+                    goto RETURN_TOKEN;
                 }
             } else {
-                // Any other character
-                // Just ignore it for now
-                current++;
-                goto SKIP_SPACES;
+                // Any other non-whitespace character
+                ttype = INVALID;
+                while (!isspace(*current)) {
+                    value.push_back(*current);
+                    current++;
+                }
             }
     }
-    Token* read = new Token;
-    read->ttype = ttype;
-    read->value = std::move(value);
-    return read;
+RETURN_TOKEN:
+    return Token{ttype, value};
 }

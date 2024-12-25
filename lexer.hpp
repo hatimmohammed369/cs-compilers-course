@@ -10,7 +10,7 @@ class Lexer {
     size_t source_length;
 public:
     void init(char* in, size_t source_len);
-    Token* get_next_token();
+    Token get_next_token();
     bool has_next();
 };
 
