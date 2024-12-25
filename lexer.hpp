@@ -2,7 +2,7 @@
 #define LEXER_H_INCLUDED
 
 #include "common.h"
-#include "Token.hpp"
+#include "token.hpp"
 
 class Lexer {
     char* source;

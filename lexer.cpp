@@ -1,9 +1,7 @@
-#include "Token.hpp"
+#include "lexer.hpp"
 #include <cctype>
 
 using namespace std;
-
-#include "lexer.hpp"
 
 void Lexer::init(char* in, size_t source_len) {
     this->current = this->source = in;
