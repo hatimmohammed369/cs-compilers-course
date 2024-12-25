@@ -14,22 +14,22 @@ enum TokenType {
 inline std::ostream& operator<<(std::ostream& os, const TokenType& ttype) {
     switch (ttype) {
         case -1:
-            os << "INVALID" ;
+            os << std::string("INVALID") ;
             break;
         case 0:
-            os << "END_OF_FILE" ;
+            os << std::string("END_OF_FILE") ;
             break;
         case 1:
-            os << "NUMBER" ;
+            os << std::string("NUMBER") ;
             break;
         case 2:
-            os << "LEFT_CURLY_BRACE" ;
+            os << std::string("LEFT_CURLY_BRACE") ;
             break;
         case 3:
-            os << "RIGHT_CURLY_BRACE" ;
+            os << std::string("RIGHT_CURLY_BRACE") ;
             break;
         default:
-            os << "MISSING_CATEGORY" ;
+            os << std::string("MISSING_CATEGORY") ;
     }
     return os;
 }
