@@ -4,15 +4,19 @@
 #include <string>
 
 enum TokenType {
-    NUMBER = 0,
-    LEFT_CURLY_BRACE = 1,
-    RIGHT_CURLY_BRACE = 2,
+    END_OF_FILE = 0,
+    NUMBER = 1,
+    LEFT_CURLY_BRACE = 2,
+    RIGHT_CURLY_BRACE = 3,
 };
 
 class Token {
 public:
     TokenType ttype;
     std::string value;
+    bool is_end_marker() const {
+        return this->ttype != END_OF_FILE;
+    }
 };
 
 #endif

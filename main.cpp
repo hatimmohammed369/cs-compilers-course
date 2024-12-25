@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
             add_history(buffer);
             lexer.init(buffer, strlen(buffer));
             Token* token;
-            while ((token = lexer.get_next_token())) cout << *token << "\n" ;
+            while ((token = lexer.get_next_token())->is_end_marker()) cout << *token << "\n" ;
             // free buffer because readline always allocates a new buffer
             free(buffer);
         }
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
         input_file.read(input, file_size);
         lexer.init(input, file_size);
         Token* token;
-        while ((token = lexer.get_next_token())) cout << *token << "\n" ;
+        while ((token = lexer.get_next_token())->is_end_marker()) cout << *token << "\n" ;
         // Free input buffer
         delete[] input;
     } else {

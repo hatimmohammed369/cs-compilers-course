@@ -17,11 +17,14 @@ bool Lexer::has_next() {
         cerr << "Current pointer before source pointer\n";
         exit(1);
     }
-    return ((size_t)diff) < source_length;
+    return static_cast<size_t>(diff) < source_length;
 }
 
 Token* Lexer::get_next_token() {
-    if (!has_next()) return nullptr;
+    if (!has_next()) {
+        Token* end_of_file = new Token {END_OF_FILE, string()};
+        return end_of_file;
+    }
     TokenType ttype;
     string value;
 SKIP_SPACES:
