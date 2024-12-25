@@ -1,7 +1,7 @@
 #ifndef SYNTAX_TREE_H_INCLUDED
 #define SYNTAX_TREE_H_INCLUDED
 
-#include "common.h"
+#include "token.hpp"
 
 class TreeBase {
 public:

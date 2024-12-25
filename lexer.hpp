@@ -1,7 +1,6 @@
 #ifndef LEXER_H_INCLUDED
 #define LEXER_H_INCLUDED
 
-#include "common.h"
 #include "token.hpp"
 
 class Lexer {
