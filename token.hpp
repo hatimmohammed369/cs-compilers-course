@@ -6,9 +6,10 @@
 enum TokenType {
     INVALID = -1,
     END_OF_FILE = 0,
-    NUMBER = 1,
-    LEFT_CURLY_BRACE = 2,
-    RIGHT_CURLY_BRACE = 3,
+    INTEGER = 1,
+    FLOAT = 2,
+    LEFT_CURLY_BRACE = 3,
+    RIGHT_CURLY_BRACE = 4,
 };
 
 inline std::ostream& operator<<(std::ostream& os, const TokenType& ttype) {
@@ -20,12 +21,15 @@ inline std::ostream& operator<<(std::ostream& os, const TokenType& ttype) {
             os << std::string("END_OF_FILE") ;
             break;
         case 1:
-            os << std::string("NUMBER") ;
+            os << std::string("INTEGER") ;
             break;
         case 2:
-            os << std::string("LEFT_CURLY_BRACE") ;
+            os << std::string("FLOAT") ;
             break;
         case 3:
+            os << std::string("LEFT_CURLY_BRACE") ;
+            break;
+        case 4:
             os << std::string("RIGHT_CURLY_BRACE") ;
             break;
         default:

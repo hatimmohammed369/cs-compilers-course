@@ -6,4 +6,6 @@
 
 Expression => NUMBER | BlockExpression
 
+NUMBER => INTEGER | FLOAT
+
 BlockExpression => '{' Expression '}'
