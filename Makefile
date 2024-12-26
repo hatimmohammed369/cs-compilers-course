@@ -11,6 +11,7 @@ norepl: main
 
 main: main.o lexer.o parser.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(HEADERS)
+	chmod +x ./main
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
