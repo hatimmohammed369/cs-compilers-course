@@ -2,10 +2,22 @@
 
 # CAPITALIZED_ITEMS are regular expressions
 
+# * means zero or more
+
 # Context-Free Grammar
 
-Expression => NUMBER | BlockExpression
+Program => Expression*
 
-NUMBER => INTEGER | FLOAT
+Expression => Literal | GroupedExpression | Statement
 
-BlockExpression => '{' Expression '}'
+Literal => Number | Boolean | Void
+
+Number => INTEGER | FLOAT
+
+Boolean => 'true' | 'false'
+
+Void => 'void'
+
+GroupedExpression => '(' Expression ')'
+
+Statement => Expression ';' | '{' Statement* '}'
