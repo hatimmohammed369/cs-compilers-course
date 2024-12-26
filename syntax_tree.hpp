@@ -14,11 +14,17 @@ inline std::ostream& operator<<(std::ostream& os, const TreeBase& tree_node) {
 }
 
 template <typename T>
-class Expression: TreeBase {
+class Expression: public TreeBase {
 public:
-    using expression_type = T;
+    using expr_ptr = void*;
+    using type_ptr = T*;
+
     ~Expression() {}
-    virtual expression_type evaluate() const noexcept = 0;
+    virtual expr_ptr evaluate() const noexcept = 0;
+    type_ptr get_value() {
+        return reinterpret_cast<type_ptr>(evaluate());
+    }
+};
 };
 
 #endif
