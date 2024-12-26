@@ -39,7 +39,6 @@ public:
 };
 
 class IntegerNumber: public Number<i64> {
-    Token number;
 public:
     using Number::Number;
     using Number::to_string;
@@ -52,7 +51,6 @@ public:
 };
 
 class FloatNumber: public Number<float64> {
-    Token number;
 public:
     using Number::Number;
     using Number::to_string;

@@ -21,11 +21,29 @@ ParseResult Parser::parse_source() {
 
 ParseResult Parser::parse_expression() {
     std::string error;
-    TreeBase* parsed_hunk;
-    if (check({INTEGER})) {
-        IntegerNumber* num = new IntegerNumber{current};
-        read_next_token();
-        parsed_hunk = reinterpret_cast<TreeBase*>(num);
+    TreeBase* parsed_hunk = nullptr;
+    if (current.is_end_marker()) {
+        return ParseResult{error, parsed_hunk};
     }
+
+    switch (current.ttype) {
+        case INTEGER: {
+            IntegerNumber* num = new IntegerNumber{current};
+            read_next_token();
+            parsed_hunk = reinterpret_cast<TreeBase*>(num);
+            break;
+        }
+        case FLOAT: {
+            FloatNumber* num = new FloatNumber{current};
+            read_next_token();
+            parsed_hunk = reinterpret_cast<TreeBase*>(num);
+            break;
+        }
+        default: {
+            std::cerr << "Not implemented yet" ;
+            exit(1);
+        }
+    }
+
     return ParseResult{error, parsed_hunk};
 }
