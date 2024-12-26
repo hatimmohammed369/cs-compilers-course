@@ -38,4 +38,30 @@ public:
     }
 };
 
+class IntegerNumber: public Number<i64> {
+    Token number;
+public:
+    using Number::Number;
+    using Number::to_string;
+
+    Expression::expr_ptr evaluate() const noexcept override {
+        i64* value = new i64;
+        *value = std::stol(number.value);
+        return value;
+    }
+};
+
+class FloatNumber: public Number<float64> {
+    Token number;
+public:
+    using Number::Number;
+    using Number::to_string;
+
+    Expression::expr_ptr evaluate() const noexcept override {
+        float64* value = new float64;
+        *value = std::stold(number.value, nullptr);
+        return value;
+    }
+};
+
 #endif
