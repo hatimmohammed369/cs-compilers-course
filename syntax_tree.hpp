@@ -26,16 +26,12 @@ public:
     }
 };
 
-class IntegerNumber: public Expression<i64> {
+template <typename T>
+class Number: public Expression<T> {
+protected:
     Token number;
 public:
-    IntegerNumber(Token t): number{t} {}
-
-    Expression::expr_ptr evaluate() const noexcept override {
-        i64* value = new i64;
-        *value = std::stol(number.value);
-        return value;
-    }
+    Number(Token t): number{t} {}
 
     std::string to_string() const noexcept override {
         return number.value;
