@@ -9,8 +9,8 @@ public:
     virtual std::string to_string() const noexcept = 0;
 };
 
-inline std::ostream& operator<<(std::ostream& os, const TreeBase& tree_node) {
-    return os << tree_node.to_string() ;
+inline std::ostream& operator<<(std::ostream& os, const TreeBase* tree_node) {
+    return os << tree_node->to_string() ;
 }
 
 template <typename T>

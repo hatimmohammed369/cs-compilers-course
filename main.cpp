@@ -3,13 +3,13 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-#include "lexer.hpp"
+#include "parser.hpp"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
     // Placeholder code: read it print it
-    Lexer lexer;
+    Parser parser;
     if (argc == 1) {
         // Interactive Mode
         // Read input from user directly
@@ -20,9 +20,12 @@ int main(int argc, char* argv[]) {
             if (strlen(buffer) == 0) continue; // Ignore empty lines
             // add last read line to prompt history
             add_history(buffer);
-            lexer.init(buffer, strlen(buffer));
-            Token token;
-            while ((token = lexer.get_next_token()).is_end_marker()) cout << token << "\n" ;
+            parser.init(buffer, strlen(buffer));
+            ParseResult result = parser.parse_source();
+            if (result.error.empty())
+                cout << result.parsed_hunk << '\n' ;
+            else
+                cerr << result.error ;
             // free buffer because readline always allocates a new buffer
             free(buffer);
         }
@@ -42,9 +45,12 @@ int main(int argc, char* argv[]) {
         input_file.seekg(0, std::ios::beg);
         // Read all characters
         input_file.read(input, file_size);
-        lexer.init(input, file_size);
-        Token token;
-        while ((token = lexer.get_next_token()).is_end_marker()) cout << token << "\n" ;
+        parser.init(input, file_size);
+        ParseResult result = parser.parse_source();
+        if (result.error.empty())
+            cout << result.parsed_hunk << '\n' ;
+        else
+            cerr << result.error ;
         // Free input buffer
         delete[] input;
     } else {

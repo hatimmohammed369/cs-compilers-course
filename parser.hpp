@@ -14,8 +14,11 @@ class Parser {
     Lexer lexer;
     Token current;
 public:
-    Parser();
+    void init(char* in, size_t source_len);
     void read_next_token();
+    bool check(const std::initializer_list<TokenType>& types) const noexcept;
+    ParseResult parse_source();
+    ParseResult parse_expression();
 };
 
 #endif
