@@ -3,10 +3,10 @@ CFLAGS = -Wall -g -std=c++2a
 LDFLAGS = -lm -lreadline
 HEADERS = common.h *.hpp
 
-repl: main
+repl: clean main
 	./main
 
-norepl: main
+norepl: clean main
 	./main --file $(file)
 
 main: main.o lexer.o parser.o
@@ -23,4 +23,4 @@ parser.o: parser.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-	rm main *.o
+	-rm -f main *.o
