@@ -25,6 +25,17 @@ public:
         return reinterpret_cast<type_ptr>(evaluate());
     }
 };
+
+class IntegerNumber: public Expression<i64> {
+    Token number;
+public:
+    IntegerNumber(Token t): number{t} {}
+
+    Expression::expr_ptr evaluate() const noexcept override {
+        i64* value = new i64;
+        *value = std::stol(number.value);
+        return value;
+    }
 };
 
 #endif
