@@ -1,7 +1,10 @@
+.PHONY: clean main
+
 CC = g++
 CFLAGS = -Wall -g -std=c++2a
 LDFLAGS = -lm -lreadline
 HEADERS = common.h *.hpp
+EXECUTABLE = main
 
 repl: clean main
 	./main
@@ -10,7 +13,7 @@ norepl: clean main
 	./main --file $(file)
 
 main: main.o lexer.o parser.o
-	$(CC) $(LDFLAGS) -o $@ $^ $(HEADERS)
+	$(CC) $(LDFLAGS) -o $(EXECUTABLE) $^ $(HEADERS)
 	chmod +x ./main
 
 main.o: main.cpp
