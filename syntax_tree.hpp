@@ -37,7 +37,7 @@ public:
         return value;
     }
 
-    std::string to_string() const noexcept {
+    std::string to_string() const noexcept override {
         return number.value;
     }
 };

@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
             if (result.error.empty())
                 cout << result.parsed_hunk << '\n' ;
             else
-                cerr << result.error ;
+                cerr << result.error << '\n' ;
             // free buffer because readline always allocates a new buffer
             free(buffer);
         }
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
         if (result.error.empty())
             cout << result.parsed_hunk << '\n' ;
         else
-            cerr << result.error ;
+            cerr << result.error << '\n' ;
         // Free input buffer
         delete[] input;
     } else {

@@ -43,7 +43,7 @@ public:
     TokenType ttype;
     std::string value;
     bool is_end_marker() const {
-        return this->ttype != END_OF_FILE;
+        return this->ttype == END_OF_FILE;
     }
 };
 
