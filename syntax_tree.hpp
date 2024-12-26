@@ -26,6 +26,31 @@ public:
     }
 };
 
+class Void: public Expression<Void> {
+private:
+    Void() {} // Only a single object availaible
+    Void(const Void&) = delete; // No copy constructor
+    Void& operator=(const Void&) = delete; // No copy assignment
+public:
+    static Void* get_instance() {
+        static Void void_object;
+        return &void_object;
+    }
+
+    static std::string get_string_value() {
+        static std::string value = std::string("void");
+        return value;
+    }
+
+    std::string to_string() const noexcept override {
+        return Void::get_string_value();
+    }
+
+    Expression<Void>::expr_ptr evaluate() const noexcept override {
+        return reinterpret_cast<type_ptr>(Void::get_instance());
+    }
+};
+
 template <typename T>
 class Number: public Expression<T> {
 protected:
