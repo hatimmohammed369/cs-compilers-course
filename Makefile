@@ -20,3 +20,6 @@ lexer.o: lexer.cpp
 
 parser.o: parser.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+clean:
+	rm main *.o
