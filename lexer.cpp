@@ -101,6 +101,35 @@ SKIP_WHITESPACES:
                     current++;
                 }
             } else {
+                if (*current == 'v') {
+                    // checking for 'void'
+                    char* old = current;
+                    current++;
+
+                    if (*current == 'o') current++;
+                    else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+
+                    if (*current == 'i') current++;
+                    else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+
+                    if (*current == 'd') {
+                        current++;
+                        ttype = VOID;
+                        value.clear();
+                        value.append("void");
+                        goto RETURN_TOKEN;
+                    } else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+                }
+            INVALID_TOKEN:
                 // Any other non-whitespace character
                 ttype = INVALID;
                 while (this->has_next() && !isspace(*current)) {

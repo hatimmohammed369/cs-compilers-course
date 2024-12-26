@@ -39,8 +39,14 @@ ParseResult Parser::parse_expression() {
             parsed_hunk = reinterpret_cast<TreeBase*>(num);
             break;
         }
+        case VOID: {
+            Void* void_object = Void::get_instance();
+            read_next_token();
+            parsed_hunk = reinterpret_cast<TreeBase*>(void_object);
+            break;
+        }
         default: {
-            std::cerr << "Not implemented yet" ;
+            std::cerr << "Parsing " << current.ttype << " is not implemented yet\n" ;
             exit(1);
         }
     }
