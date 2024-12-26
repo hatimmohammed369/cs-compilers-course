@@ -36,6 +36,10 @@ public:
         *value = std::stol(number.value);
         return value;
     }
+
+    std::string to_string() const noexcept {
+        return number.value;
+    }
 };
 
 #endif
