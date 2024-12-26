@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -g -std=c++2a
 LDFLAGS = -lm -lreadline
-HEADERS = token.hpp common.h
+HEADERS = common.h *.hpp
 
 repl: main
 	./main
