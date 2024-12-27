@@ -171,20 +171,13 @@ SKIP_WHITESPACES:
                     }
                 } else if (*current == 'v') {
                     // checking for 'void'
-                    char* old = current;
                     current++;
 
                     if (*current == 'o') current++;
-                    else {
-                        current = old;
-                        goto INVALID_TOKEN;
-                    }
+                    else goto INVALID_TOKEN;
 
                     if (*current == 'i') current++;
-                    else {
-                        current = old;
-                        goto INVALID_TOKEN;
-                    }
+                    else goto INVALID_TOKEN;
 
                     if (*current == 'd') {
                         current++;
@@ -193,25 +186,17 @@ SKIP_WHITESPACES:
                         value.append("void");
                         goto RETURN_TOKEN;
                     } else {
-                        current = old;
                         goto INVALID_TOKEN;
                     }
                 } else if (*current == 't') {
                     // checking for 'true'
-                    char* old = current;
                     current++;
 
                     if (*current == 'r') current++;
-                    else {
-                        current = old;
-                        goto INVALID_TOKEN;
-                    }
+                    else goto INVALID_TOKEN;
 
                     if (*current == 'u') current++;
-                    else {
-                        current = old;
-                        goto INVALID_TOKEN;
-                    }
+                    else goto INVALID_TOKEN;
 
                     if (*current == 'e') {
                         current++;
@@ -220,31 +205,20 @@ SKIP_WHITESPACES:
                         value.append("true");
                         goto RETURN_TOKEN;
                     } else {
-                        current = old;
                         goto INVALID_TOKEN;
                     }
                 } else if (*current == 'f') {
                     // checking for 'false'
-                    char* old = current;
                     current++;
 
                     if (*current == 'a') current++;
-                    else {
-                        current = old;
-                        goto INVALID_TOKEN;
-                    }
+                    else goto INVALID_TOKEN;
 
                     if (*current == 'l') current++;
-                    else {
-                        current = old;
-                        goto INVALID_TOKEN;
-                    }
+                    else goto INVALID_TOKEN;
 
                     if (*current == 's') current++;
-                    else {
-                        current = old;
-                        goto INVALID_TOKEN;
-                    }
+                    else goto INVALID_TOKEN;
 
                     if (*current == 'e') {
                         current++;
@@ -253,7 +227,6 @@ SKIP_WHITESPACES:
                         value.append("false");
                         goto RETURN_TOKEN;
                     } else {
-                        current = old;
                         goto INVALID_TOKEN;
                     }
                 }
