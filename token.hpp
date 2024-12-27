@@ -18,50 +18,6 @@ enum TokenType {
     RIGHT_ROUND_BRACE = 10,
 };
 
-inline std::ostream& operator<<(std::ostream& os, const TokenType& ttype) {
-    switch (ttype) {
-        case -1:
-            os << std::string("INVALID") ;
-            break;
-        case 0:
-            os << std::string("END_OF_FILE") ;
-            break;
-        case 1:
-            os << std::string("INTEGER") ;
-            break;
-        case 2:
-            os << std::string("FLOAT") ;
-            break;
-        case 3:
-            os << std::string("LEFT_CURLY_BRACE") ;
-            break;
-        case 4:
-            os << std::string("RIGHT_CURLY_BRACE") ;
-            break;
-        case 5:
-            os << std::string("VOID") ;
-            break;
-        case 6:
-            os << std::string("TRUE") ;
-            break;
-        case 7:
-            os << std::string("FALSE") ;
-            break;
-        case 8:
-            os << std::string("STRING") ;
-            break;
-        case 9:
-            os << std::string("LEFT_ROUND_BRACE") ;
-            break;
-        case 10:
-            os << std::string("RIGHT_ROUND_BRACE") ;
-            break;
-        default:
-            os << std::string("MISSING_CATEGORY") ;
-    }
-    return os;
-}
-
 class Token {
 public:
     TokenType ttype;
@@ -70,9 +26,5 @@ public:
         return this->ttype == END_OF_FILE;
     }
 };
-
-inline std::ostream& operator<<(std::ostream& os, const Token& token) {
-    return os << "Token{ value='" << token.value << "', ttype=" << token.ttype << " }";
-}
 
 #endif
