@@ -13,52 +13,17 @@ inline std::ostream& operator<<(std::ostream& os, const TreeBase* tree_node) {
     return os << tree_node->to_string() ;
 }
 
+using expr_ptr = void*;
+
 template <typename T>
 class Expression: public TreeBase {
 public:
-    using expr_ptr = void*;
     using type_ptr = T*;
 
     ~Expression() {}
     virtual expr_ptr evaluate() const noexcept = 0;
     type_ptr get_value() {
         return reinterpret_cast<type_ptr>(evaluate());
-    }
-};
-
-class String: public Expression<std::string> {
-    std::string value;
-public:
-    String(std::string val): value{val} {}
-
-    std::string to_string() const noexcept override {
-        std::string repr;
-        repr.push_back('"');
-        repr += value;
-        repr.push_back('"');
-        return repr;
-    }
-
-    Expression::expr_ptr evaluate() const noexcept override {
-        std::string* ptr = new std::string;
-        *ptr = value;
-        return reinterpret_cast<type_ptr>(ptr);
-    }
-};
-
-class Boolean: public Expression<bool> {
-    bool value;
-public:
-    Boolean(bool val): value{val} {}
-
-    std::string to_string() const noexcept override {
-        return std::string(value ? "true" : "false");
-    }
-
-    Expression::expr_ptr evaluate() const noexcept override {
-        bool* ptr = new bool;
-        *ptr = value;
-        return reinterpret_cast<type_ptr>(ptr);
     }
 };
 
@@ -82,20 +47,54 @@ public:
         return Void::get_string_value();
     }
 
-    Expression::expr_ptr evaluate() const noexcept override {
+    expr_ptr evaluate() const noexcept override {
         return reinterpret_cast<type_ptr>(Void::get_instance());
     }
 };
 
+
 template <typename T>
-class Number: public Expression<T> {
+class Literal: public Expression<T> {
 protected:
-    Token number;
+    T* value_object = new T;
 public:
-    Number(Token t): number{t} {}
+    Literal(const T& val) {*value_object = val;}
+    ~Literal() {}
+
+    expr_ptr evaluate() const noexcept override {
+        return value_object;
+    }
+};
+
+class String: public Literal<std::string> {
+public:
+    using Literal::Literal;
 
     std::string to_string() const noexcept override {
-        return number.value;
+        std::string repr;
+        repr.push_back('"');
+        repr += *value_object;
+        repr.push_back('"');
+        return repr;
+    }
+};
+
+class Boolean: public Literal<bool> {
+public:
+    using Literal::Literal;
+
+    std::string to_string() const noexcept override {
+        return std::string(*value_object ? "true" : "false");
+    }
+};
+
+template <typename T>
+class Number: public Literal<Token> {
+public:
+    using Literal::Literal;
+
+    std::string to_string() const noexcept override {
+        return value_object->value;
     }
 };
 
@@ -104,9 +103,9 @@ public:
     using Number::Number;
     using Number::to_string;
 
-    Expression::expr_ptr evaluate() const noexcept override {
+    expr_ptr evaluate() const noexcept override {
         i64* value = new i64;
-        *value = std::stol(number.value);
+        *value = std::stol(this->value_object->value);
         return value;
     }
 };
@@ -116,9 +115,9 @@ public:
     using Number::Number;
     using Number::to_string;
 
-    Expression::expr_ptr evaluate() const noexcept override {
+    expr_ptr evaluate() const noexcept override {
         float64* value = new float64;
-        *value = std::stold(number.value, nullptr);
+        *value = std::stold(this->value_object->value, nullptr);
         return value;
     }
 };
