@@ -101,143 +101,153 @@ SKIP_WHITESPACES:
                     current++;
                 }
             } else {
-                if (*current == '"') {
-                    current++;
-                    ttype = STRING;
-                    while (this->has_next()) {
-                        if (*current == '\\') {
-                            current++;
-                            if (!this->has_next()) {
-                                ttype = INVALID;
-                                goto RETURN_TOKEN;
-                            }
-                            switch (*current) {
-                                case '\\': {
-                                    // Quoted slash
-                                    value.push_back('\\');
-                                    break;
-                                }
-                                case '"': {
-                                    // Quoted "
-                                    value.push_back('"');
-                                    break;
-                                }
-                                case '0': {
-                                    // Null character
-                                    value.push_back('\0');
-                                    break;
-                                }
-                                case 'a': {
-                                    value.push_back('\a');
-                                    break;
-                                }
-                                case 'b': {
-                                    value.push_back('\b');
-                                    break;
-                                }
-                                case 'f': {
-                                    value.push_back('\f');
-                                    break;
-                                }
-                                case 'n': {
-                                    value.push_back('\n');
-                                    break;
-                                }
-                                case 'r': {
-                                    value.push_back('\r');
-                                    break;
-                                }
-                                case 't': {
-                                    value.push_back('\t');
-                                    break;
-                                }
-                                case 'v': {
-                                    value.push_back('\v');
-                                    break;
-                                }
-                                default: {
+                switch (*current) {
+                    case '"':  {
+                        current++;
+                        ttype = STRING;
+                        while (this->has_next()) {
+                            if (*current == '\\') {
+                                current++;
+                                if (!this->has_next()) {
                                     ttype = INVALID;
                                     goto RETURN_TOKEN;
                                 }
-                            }
-                        } else {
-                            if (*current == '"') {
+                                switch (*current) {
+                                    case '\\': {
+                                        // Quoted slash
+                                        value.push_back('\\');
+                                        break;
+                                    }
+                                    case '"': {
+                                        // Quoted "
+                                        value.push_back('"');
+                                        break;
+                                    }
+                                    case '0': {
+                                        // Null character
+                                        value.push_back('\0');
+                                        break;
+                                    }
+                                    case 'a': {
+                                        value.push_back('\a');
+                                        break;
+                                    }
+                                    case 'b': {
+                                        value.push_back('\b');
+                                        break;
+                                    }
+                                    case 'f': {
+                                        value.push_back('\f');
+                                        break;
+                                    }
+                                    case 'n': {
+                                        value.push_back('\n');
+                                        break;
+                                    }
+                                    case 'r': {
+                                        value.push_back('\r');
+                                        break;
+                                    }
+                                    case 't': {
+                                        value.push_back('\t');
+                                        break;
+                                    }
+                                    case 'v': {
+                                        value.push_back('\v');
+                                        break;
+                                    }
+                                    default: {
+                                        ttype = INVALID;
+                                        goto RETURN_TOKEN;
+                                    }
+                                }
+                            } else {
+                                if (*current == '"') {
+                                    current++;
+                                    goto RETURN_TOKEN;
+                                }
+                                value.push_back(*current);
                                 current++;
-                                goto RETURN_TOKEN;
                             }
+                        }
+                        break;
+                    }
+                    case 'v': {
+                        // checking for 'void'
+                        current++;
+
+                        if (*current == 'o') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'i') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'd') {
+                            current++;
+                            ttype = VOID;
+                            value.clear();
+                            value.append("void");
+                            goto RETURN_TOKEN;
+                        } else {
+                            goto INVALID_TOKEN;
+                        }
+                        break;
+                    }
+                    case 't': {
+                        // checking for 'true'
+                        current++;
+
+                        if (*current == 'r') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'u') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'e') {
+                            current++;
+                            ttype = TRUE;
+                            value.clear();
+                            value.append("true");
+                            goto RETURN_TOKEN;
+                        } else {
+                            goto INVALID_TOKEN;
+                        }
+                        break;
+                    }
+                    case 'f': {
+                        // checking for 'false'
+                        current++;
+
+                        if (*current == 'a') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'l') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 's') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'e') {
+                            current++;
+                            ttype = FALSE;
+                            value.clear();
+                            value.append("false");
+                            goto RETURN_TOKEN;
+                        } else {
+                            goto INVALID_TOKEN;
+                        }
+                    }
+                    default: {
+                    INVALID_TOKEN:
+                        // Any other non-whitespace character
+                        ttype = INVALID;
+                        while (this->has_next() && !isspace(*current)) {
                             value.push_back(*current);
                             current++;
                         }
-                    }
-                } else if (*current == 'v') {
-                    // checking for 'void'
-                    current++;
-
-                    if (*current == 'o') current++;
-                    else goto INVALID_TOKEN;
-
-                    if (*current == 'i') current++;
-                    else goto INVALID_TOKEN;
-
-                    if (*current == 'd') {
-                        current++;
-                        ttype = VOID;
-                        value.clear();
-                        value.append("void");
-                        goto RETURN_TOKEN;
-                    } else {
-                        goto INVALID_TOKEN;
-                    }
-                } else if (*current == 't') {
-                    // checking for 'true'
-                    current++;
-
-                    if (*current == 'r') current++;
-                    else goto INVALID_TOKEN;
-
-                    if (*current == 'u') current++;
-                    else goto INVALID_TOKEN;
-
-                    if (*current == 'e') {
-                        current++;
-                        ttype = TRUE;
-                        value.clear();
-                        value.append("true");
-                        goto RETURN_TOKEN;
-                    } else {
-                        goto INVALID_TOKEN;
-                    }
-                } else if (*current == 'f') {
-                    // checking for 'false'
-                    current++;
-
-                    if (*current == 'a') current++;
-                    else goto INVALID_TOKEN;
-
-                    if (*current == 'l') current++;
-                    else goto INVALID_TOKEN;
-
-                    if (*current == 's') current++;
-                    else goto INVALID_TOKEN;
-
-                    if (*current == 'e') {
-                        current++;
-                        ttype = FALSE;
-                        value.clear();
-                        value.append("false");
-                        goto RETURN_TOKEN;
-                    } else {
-                        goto INVALID_TOKEN;
+                        if (value.empty()) goto SKIP_WHITESPACES;
                     }
                 }
-            INVALID_TOKEN:
-                // Any other non-whitespace character
-                ttype = INVALID;
-                while (this->has_next() && !isspace(*current)) {
-                    value.push_back(*current);
-                    current++;
-                }
-                if (value.empty()) goto SKIP_WHITESPACES;
             }
     }
 RETURN_TOKEN:
