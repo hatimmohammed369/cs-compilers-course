@@ -1,4 +1,5 @@
 #include "parser.hpp"
+#include "syntax_tree.hpp"
 
 void Parser::init(char* in, size_t source_len) {
     lexer.init(in, source_len);
@@ -43,6 +44,18 @@ ParseResult Parser::parse_expression() {
             Void* void_object = Void::get_instance();
             read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(void_object);
+            break;
+        }
+        case TRUE: {
+            Boolean* bool_object = new Boolean{true};
+            read_next_token();
+            parsed_hunk = reinterpret_cast<TreeBase*>(bool_object);
+            break;
+        }
+        case FALSE: {
+            Boolean* bool_object = new Boolean{false};
+            read_next_token();
+            parsed_hunk = reinterpret_cast<TreeBase*>(bool_object);
             break;
         }
         default: {

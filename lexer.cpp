@@ -128,6 +128,66 @@ SKIP_WHITESPACES:
                         current = old;
                         goto INVALID_TOKEN;
                     }
+                } else if (*current == 't') {
+                    // checking for 'true'
+                    char* old = current;
+                    current++;
+
+                    if (*current == 'r') current++;
+                    else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+
+                    if (*current == 'u') current++;
+                    else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+
+                    if (*current == 'e') {
+                        current++;
+                        ttype = TRUE;
+                        value.clear();
+                        value.append("true");
+                        goto RETURN_TOKEN;
+                    } else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+                } else if (*current == 'f') {
+                    // checking for 'false'
+                    char* old = current;
+                    current++;
+
+                    if (*current == 'a') current++;
+                    else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+
+                    if (*current == 'l') current++;
+                    else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+
+                    if (*current == 's') current++;
+                    else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
+
+                    if (*current == 'e') {
+                        current++;
+                        ttype = FALSE;
+                        value.clear();
+                        value.append("false");
+                        goto RETURN_TOKEN;
+                    } else {
+                        current = old;
+                        goto INVALID_TOKEN;
+                    }
                 }
             INVALID_TOKEN:
                 // Any other non-whitespace character

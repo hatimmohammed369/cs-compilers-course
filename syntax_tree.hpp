@@ -26,6 +26,22 @@ public:
     }
 };
 
+class Boolean: public Expression<bool> {
+    bool value;
+public:
+    Boolean(bool val): value{val} {}
+
+    std::string to_string() const noexcept override {
+        return std::string(value ? "true" : "false");
+    }
+
+    Expression::expr_ptr evaluate() const noexcept override {
+        bool* ptr = new bool;
+        *ptr = value;
+        return reinterpret_cast<type_ptr>(ptr);
+    }
+};
+
 class Void: public Expression<Void> {
 private:
     Void() {} // Only a single object availaible
@@ -46,7 +62,7 @@ public:
         return Void::get_string_value();
     }
 
-    Expression<Void>::expr_ptr evaluate() const noexcept override {
+    Expression::expr_ptr evaluate() const noexcept override {
         return reinterpret_cast<type_ptr>(Void::get_instance());
     }
 };
