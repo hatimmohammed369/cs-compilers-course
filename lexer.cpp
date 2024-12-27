@@ -38,6 +38,18 @@ SKIP_WHITESPACES:
             // Next
             current++;
             break;
+        case '(':
+            ttype = LEFT_ROUND_BRACE;
+            value = "(";
+            // Next
+            current++;
+            break;
+        case ')':
+            ttype = RIGHT_ROUND_BRACE;
+            value = ")";
+            // Next
+            current++;
+            break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
