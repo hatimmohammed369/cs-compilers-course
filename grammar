@@ -2,10 +2,12 @@
 
 # CAPITALIZED_ITEMS are regular expressions
 
-Expression => Number | Boolean | Void | STRING
+Expression => Void | Literal 
 
-Number => INTEGER | FLOAT
+Void => 'void'
+
+Literal => Boolean | Number | STRING
 
 Boolean => 'true' | 'false'
 
-Void => 'void'
+Number => INTEGER | FLOAT
