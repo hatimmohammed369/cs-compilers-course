@@ -13,6 +13,7 @@ enum TokenType {
     VOID = 5,
     TRUE = 6,
     FALSE = 7,
+    STRING = 8,
 };
 
 inline std::ostream& operator<<(std::ostream& os, const TokenType& ttype) {
@@ -43,6 +44,9 @@ inline std::ostream& operator<<(std::ostream& os, const TokenType& ttype) {
             break;
         case 7:
             os << std::string("FALSE") ;
+            break;
+        case 8:
+            os << std::string("STRING") ;
             break;
         default:
             os << std::string("MISSING_CATEGORY") ;

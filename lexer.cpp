@@ -101,7 +101,75 @@ SKIP_WHITESPACES:
                     current++;
                 }
             } else {
-                if (*current == 'v') {
+                if (*current == '"') {
+                    current++;
+                    ttype = STRING;
+                    while (this->has_next()) {
+                        if (*current == '\\') {
+                            current++;
+                            if (!this->has_next()) {
+                                ttype = INVALID;
+                                goto RETURN_TOKEN;
+                            }
+                            switch (*current) {
+                                case '\\': {
+                                    // Quoted slash
+                                    value.push_back('\\');
+                                    break;
+                                }
+                                case '"': {
+                                    // Quoted "
+                                    value.push_back('"');
+                                    break;
+                                }
+                                case '0': {
+                                    // Null character
+                                    value.push_back('\0');
+                                    break;
+                                }
+                                case 'a': {
+                                    value.push_back('\a');
+                                    break;
+                                }
+                                case 'b': {
+                                    value.push_back('\b');
+                                    break;
+                                }
+                                case 'f': {
+                                    value.push_back('\f');
+                                    break;
+                                }
+                                case 'n': {
+                                    value.push_back('\n');
+                                    break;
+                                }
+                                case 'r': {
+                                    value.push_back('\r');
+                                    break;
+                                }
+                                case 't': {
+                                    value.push_back('\t');
+                                    break;
+                                }
+                                case 'v': {
+                                    value.push_back('\v');
+                                    break;
+                                }
+                                default: {
+                                    ttype = INVALID;
+                                    goto RETURN_TOKEN;
+                                }
+                            }
+                        } else {
+                            if (*current == '"') {
+                                current++;
+                                goto RETURN_TOKEN;
+                            }
+                            value.push_back(*current);
+                            current++;
+                        }
+                    }
+                } else if (*current == 'v') {
                     // checking for 'void'
                     char* old = current;
                     current++;

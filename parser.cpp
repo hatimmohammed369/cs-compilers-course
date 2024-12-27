@@ -58,6 +58,12 @@ ParseResult Parser::parse_expression() {
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_object);
             break;
         }
+        case STRING: {
+            String* string_object = new String{current.value};
+            read_next_token();
+            parsed_hunk = reinterpret_cast<TreeBase*>(string_object);
+            break;
+        }
         default: {
             std::cerr << "Parsing " << current.ttype << " is not implemented yet\n" ;
             exit(1);

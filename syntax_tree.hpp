@@ -26,6 +26,26 @@ public:
     }
 };
 
+class String: public Expression<std::string> {
+    std::string value;
+public:
+    String(std::string val): value{val} {}
+
+    std::string to_string() const noexcept override {
+        std::string repr;
+        repr.push_back('"');
+        repr += value;
+        repr.push_back('"');
+        return repr;
+    }
+
+    Expression::expr_ptr evaluate() const noexcept override {
+        std::string* ptr = new std::string;
+        *ptr = value;
+        return reinterpret_cast<type_ptr>(ptr);
+    }
+};
+
 class Boolean: public Expression<bool> {
     bool value;
 public:

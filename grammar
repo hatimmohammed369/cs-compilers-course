@@ -2,7 +2,7 @@
 
 # CAPITALIZED_ITEMS are regular expressions
 
-Expression => Number | Boolean | Void
+Expression => Number | Boolean | Void | STRING
 
 Number => INTEGER | FLOAT
 
