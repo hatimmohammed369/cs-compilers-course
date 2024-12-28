@@ -1,7 +1,7 @@
 #ifndef TOKEN_H_INCLUDED
 #define TOKEN_H_INCLUDED
 
-#include "common.h"
+#include "common.hpp"
 
 enum TokenType {
     INVALID = -1,

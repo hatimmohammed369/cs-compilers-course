@@ -3,7 +3,7 @@
 CC = g++
 CFLAGS = -Wall -g -std=c++2a
 LDFLAGS = -lm -lreadline
-HEADERS = common.h *.hpp
+HEADERS = *.hpp
 EXECUTABLE = main
 
 repl: clean main
