@@ -14,3 +14,7 @@ std::string ObjectFloat::to_string() const noexcept {
     oss << value ;
     return oss.str();
 }
+
+std::string ObjectVoid::to_string() const noexcept {
+    return ObjectVoid::get_string_value();
+}

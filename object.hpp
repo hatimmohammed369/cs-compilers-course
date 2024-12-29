@@ -25,4 +25,24 @@ public:
     // More float specific code here later
 };
 
+class ObjectVoid: public Object {
+private:
+    ObjectVoid() {} // Only a single object availaible
+    ObjectVoid(const ObjectVoid&) = delete; // No copy constructor
+    ObjectVoid& operator=(const ObjectVoid&) = delete; // No copy assignment
+public:
+    static ObjectVoid* get_instance() {
+        static ObjectVoid void_object;
+        return &void_object;
+    }
+
+    static std::string get_string_value() {
+        static std::string value = std::string("void");
+        return value;
+    }
+
+    std::string to_string() const noexcept override;
+};
+
+
 #endif
