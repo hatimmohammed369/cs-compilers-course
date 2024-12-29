@@ -10,6 +10,10 @@ public:
     virtual std::string to_string() const noexcept = 0;
 };
 
+inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
+    return os << obj->to_string() ;
+}
+
 class ObjectInteger: public Object {
     i64 value;
 public:

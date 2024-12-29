@@ -3,6 +3,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+#include "interpreter.hpp"
 #include "parser.hpp"
 
 using namespace std;
@@ -10,6 +11,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
     // Placeholder code: read it print it
     Parser parser;
+    Interpreter interpreter;
     if (argc == 1) {
         // Interactive Mode
         // Read input from user directly
@@ -23,7 +25,7 @@ int main(int argc, char* argv[]) {
             parser.init(buffer, strlen(buffer));
             ParseResult result = parser.parse_source();
             if (result.error.empty())
-                cout << result.parsed_hunk << '\n' ;
+                cout << interpreter.interpret(result.parsed_hunk) << '\n' ;
             else
                 cerr << result.error << '\n' ;
             // free buffer because readline always allocates a new buffer
@@ -48,7 +50,7 @@ int main(int argc, char* argv[]) {
         parser.init(input, file_size);
         ParseResult result = parser.parse_source();
         if (result.error.empty())
-            cout << result.parsed_hunk << '\n' ;
+            cout << interpreter.interpret(result.parsed_hunk) << '\n' ;
         else
             cerr << result.error << '\n' ;
         // Free input buffer

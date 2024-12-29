@@ -2,11 +2,13 @@
 #define SYNTAX_TREE_H_INCLUDED
 
 #include "object.hpp"
+#include "visitor.hpp"
 
 class TreeBase {
 public:
     ~TreeBase() {}
     virtual std::string to_string() const noexcept = 0;
+    virtual Object* accept(Visitor* visitor) = 0;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const TreeBase* tree_node) {
@@ -19,10 +21,11 @@ public:
 };
 
 class Literal: public Expression {
-    Object* value_object;
 public:
+    Object* value_object;
     Literal(Object* val);
     virtual std::string to_string() const noexcept override;
+    virtual Object* accept(Visitor* visitor) override;
 };
 
 #endif
