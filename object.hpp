@@ -1,6 +1,7 @@
 #ifndef OBJECT_H_INCLUDED
 #define OBJECT_H_INCLUDED
 
+#include <cstring>
 #include "common.hpp"
 
 class Object {
@@ -44,5 +45,16 @@ public:
     std::string to_string() const noexcept override;
 };
 
+class ObjectString: public Object {
+    char* chars;
+    size_t length;
+public:
+    ObjectString();
+    ObjectString(const char* s, size_t len);
+    ObjectString(const char* s);
+    ObjectString(const std::string& s);
+    ~ObjectString();
+    // More string specific code here later
+};
 
 #endif
