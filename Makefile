@@ -12,7 +12,7 @@ repl: clean main
 norepl: clean main
 	./main --file $(file)
 
-main: main.o lexer.o parser.o
+main: main.o lexer.o syntax_tree.o parser.o
 	$(CC) $(LDFLAGS) -o $(EXECUTABLE) $^ $(HEADERS)
 	chmod +x ./main
 
@@ -20,6 +20,9 @@ main.o: main.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 lexer.o: lexer.cpp
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+syntax_tree.o: syntax_tree.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 parser.o: parser.cpp

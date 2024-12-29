@@ -1,5 +1,4 @@
 #include "parser.hpp"
-#include "syntax_tree.hpp"
 
 void Parser::init(char* in, size_t source_len) {
     lexer.init(in, source_len);
@@ -29,13 +28,13 @@ ParseResult Parser::parse_expression() {
 
     switch (current.ttype) {
         case INTEGER: {
-            IntegerNumber* num = new IntegerNumber{current};
+            Literal<i64>* num = new Literal<i64>{std::stoll(current.value)};
             read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(num);
             break;
         }
         case FLOAT: {
-            FloatNumber* num = new FloatNumber{current};
+            Literal<float64>* num = new Literal<float64>{std::stold(current.value, nullptr)};
             read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(num);
             break;
@@ -47,19 +46,19 @@ ParseResult Parser::parse_expression() {
             break;
         }
         case TRUE: {
-            Boolean* bool_object = new Boolean{true};
+            Literal<bool>* bool_object = new Literal<bool>{true};
             read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_object);
             break;
         }
         case FALSE: {
-            Boolean* bool_object = new Boolean{false};
+            Literal<bool>* bool_object = new Literal<bool>{false};
             read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_object);
             break;
         }
         case STRING: {
-            String* string_object = new String{current.value};
+            Literal<std::string>* string_object = new Literal<std::string>{current.value};
             read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(string_object);
             break;
