@@ -31,15 +31,15 @@ private:
     ObjectVoid() {} // Only a single object availaible
     ObjectVoid(const ObjectVoid&) = delete; // No copy constructor
     ObjectVoid& operator=(const ObjectVoid&) = delete; // No copy assignment
-public:
-    static ObjectVoid* get_void_object() {
-        static ObjectVoid void_object;
-        return &void_object;
-    }
 
-    static std::string get_string_value() {
+    static const std::string& get_string_value() {
         static std::string value = std::string("void");
         return value;
+    }
+public:
+    static ObjectVoid* get_void_object() {
+        static ObjectVoid* void_object = new ObjectVoid{};
+        return void_object;
     }
 
     std::string to_string() const noexcept override;
