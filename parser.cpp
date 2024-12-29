@@ -1,4 +1,5 @@
 #include "parser.hpp"
+#include "object.hpp"
 
 void Parser::init(char* in, size_t source_len) {
     lexer.init(in, source_len);
@@ -28,39 +29,51 @@ ParseResult Parser::parse_expression() {
 
     switch (current.ttype) {
         case INTEGER: {
-            Literal<i64>* num = new Literal<i64>{std::stoll(current.value)};
+            ObjectInteger* obj = new ObjectInteger{std::stoll(current.value)};
+            Literal* int_literal =
+                new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(num);
+            parsed_hunk = reinterpret_cast<TreeBase*>(int_literal);
             break;
         }
         case FLOAT: {
-            Literal<float64>* num = new Literal<float64>{std::stold(current.value, nullptr)};
+            ObjectFloat* obj = new ObjectFloat{std::stold(current.value, nullptr)};
+            Literal* float_literal =
+                new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(num);
+            parsed_hunk = reinterpret_cast<TreeBase*>(float_literal);
             break;
         }
         case VOID: {
-            Void* void_object = Void::get_instance();
+            ObjectVoid* obj = ObjectVoid::get_void_object();
+            Literal* void_literal =
+                new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(void_object);
+            parsed_hunk = reinterpret_cast<TreeBase*>(void_literal);
             break;
         }
         case TRUE: {
-            Literal<bool>* bool_object = new Literal<bool>{true};
+            ObjectBoolean* obj = ObjectBoolean::get_true_object();
+            Literal* bool_literal =
+                new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(bool_object);
+            parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
         case FALSE: {
-            Literal<bool>* bool_object = new Literal<bool>{false};
+            ObjectBoolean* obj = ObjectBoolean::get_false_object();
+            Literal* bool_literal =
+                new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(bool_object);
+            parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
         case STRING: {
-            Literal<std::string>* string_object = new Literal<std::string>{current.value};
+            ObjectString* obj = new ObjectString{current.value};
+            Literal* string_literal =
+                new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(string_object);
+            parsed_hunk = reinterpret_cast<TreeBase*>(string_literal);
             break;
         }
         default: {
