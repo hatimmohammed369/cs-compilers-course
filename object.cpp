@@ -45,3 +45,7 @@ std::string ObjectString::to_string() const noexcept {
     oss << '"' ;
     return oss.str();
 }
+
+std::string ObjectBoolean::to_string() const noexcept {
+    return str;
+}

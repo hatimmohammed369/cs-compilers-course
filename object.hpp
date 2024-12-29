@@ -58,4 +58,27 @@ public:
     // More string specific code here later
 };
 
+class ObjectBoolean: public Object {
+    bool value;
+    std::string str;
+    ObjectBoolean(bool val) {
+        value = val;
+        str = std::string(val ? "true" : "false");
+    }
+public:
+    static ObjectBoolean* get_true_object() {
+        static ObjectBoolean* true_obj =
+            new ObjectBoolean{true};
+        return true_obj;
+    }
+
+    static ObjectBoolean* get_false_object() {
+        static ObjectBoolean* false_obj =
+            new ObjectBoolean{false};
+        return false_obj;
+    }
+
+    std::string to_string() const noexcept override;
+};
+
 #endif
