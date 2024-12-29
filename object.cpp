@@ -37,3 +37,11 @@ ObjectString::ObjectString(const std::string& s):
     ObjectString(s.c_str(), s.length()) {}
 
 ObjectString::~ObjectString() {delete chars;}
+
+std::string ObjectString::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << '"' ;
+    oss << std::string(chars, length) ;
+    oss << '"' ;
+    return oss.str();
+}

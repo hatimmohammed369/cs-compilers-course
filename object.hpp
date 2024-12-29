@@ -32,7 +32,7 @@ private:
     ObjectVoid(const ObjectVoid&) = delete; // No copy constructor
     ObjectVoid& operator=(const ObjectVoid&) = delete; // No copy assignment
 public:
-    static ObjectVoid* get_instance() {
+    static ObjectVoid* get_void_object() {
         static ObjectVoid void_object;
         return &void_object;
     }
@@ -54,6 +54,7 @@ public:
     ObjectString(const char* s);
     ObjectString(const std::string& s);
     ~ObjectString();
+    std::string to_string() const noexcept override;
     // More string specific code here later
 };
 
