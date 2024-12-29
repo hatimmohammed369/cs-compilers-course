@@ -17,4 +17,12 @@ public:
     // More integer specific code here later
 };
 
+class ObjectFloat: public Object {
+    float64 value;
+public:
+    ObjectFloat(float64 val);
+    std::string to_string() const noexcept override;
+    // More float specific code here later
+};
+
 #endif
