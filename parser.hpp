@@ -20,8 +20,6 @@ public:
     ParseResult parse_source();
     ParseResult parse_expression();
     ParseResult parse_literal();
-    ParseResult parse_logical();
-    ParseResult parse_boolean();
 };
 
 #endif
