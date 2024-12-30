@@ -12,8 +12,14 @@ Lexer Parser::get_lexer() {
     return lexer;
 }
 
-void Parser::read_next_token() {
+inline void Parser::read_next_token() {
     current = lexer.get_next_token();
+}
+
+Token Parser::consume() {
+    Token copy = current;
+    read_next_token();
+    return copy;
 }
 
 bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcept {
@@ -35,8 +41,7 @@ ParseResult Parser::parse_expression() {
 ParseResult Parser::parse_unary() {
     ParseResult result;
     if (check({TOKEN_BANG, TOKEN_MINUS})) {
-        Token op = current;
-        read_next_token();
+        Token op = consume();
         result = parse_unary();
         if (!result.error.empty()) {
             return result;
@@ -92,26 +97,23 @@ ParseResult Parser::parse_literal() {
             break;
         }
         case TOKEN_INTEGER: {
-            ObjectInteger* obj = new ObjectInteger{std::stoll(current.value)};
+            ObjectInteger* obj = new ObjectInteger{std::stoll(consume().value)};
             Literal* int_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(int_literal);
             break;
         }
         case TOKEN_FLOAT: {
-            ObjectFloat* obj = new ObjectFloat{std::stold(current.value, nullptr)};
+            ObjectFloat* obj = new ObjectFloat{std::stold(consume().value, nullptr)};
             Literal* float_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(float_literal);
             break;
         }
         case TOKEN_STRING: {
-            ObjectString* obj = new ObjectString{current.value};
+            ObjectString* obj = new ObjectString{consume().value};
             Literal* string_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            read_next_token();
             parsed_hunk = reinterpret_cast<TreeBase*>(string_literal);
             break;
         }
