@@ -14,6 +14,9 @@ inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
     return os << obj->to_string() ;
 }
 
+class ObjectInteger;
+class ObjectFloat;
+
 template <typename T>
 class Number: public Object {
 protected:
@@ -21,8 +24,11 @@ protected:
 public:
     friend class Interpreter;
     Number(const T& val): value{val} {}
+    T get() const noexcept {return value;}
     virtual std::string to_string() const noexcept = 0;
     virtual Number* operator-() const noexcept = 0;
+    virtual Number* operator*(const ObjectInteger* other) const noexcept = 0;
+    virtual Number* operator*(const ObjectFloat* other) const noexcept = 0;
 };
 
 template class Number<i64>;
@@ -31,6 +37,8 @@ public:
     using Number::Number;
     std::string to_string() const noexcept override;
     ObjectInteger* operator-() const noexcept override;
+    ObjectInteger* operator*(const ObjectInteger* other) const noexcept override;
+    ObjectInteger* operator*(const ObjectFloat* other) const noexcept override;
     // More integer specific code here later
 };
 
@@ -40,6 +48,8 @@ public:
     using Number::Number;
     std::string to_string() const noexcept override;
     ObjectFloat* operator-() const noexcept override;
+    ObjectFloat* operator*(const ObjectInteger* other) const noexcept override;
+    ObjectFloat* operator*(const ObjectFloat* other) const noexcept override;
     // More float specific code here later
 };
 

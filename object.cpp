@@ -10,6 +10,16 @@ ObjectInteger* ObjectInteger::operator-() const noexcept {
     return new ObjectInteger{-value};
 }
 
+ObjectInteger* ObjectInteger::operator*(const ObjectInteger* other) const noexcept {
+    return new ObjectInteger{value * other->get()};
+}
+
+ObjectInteger* ObjectInteger::operator*(const ObjectFloat* other) const noexcept {
+    return new ObjectInteger{
+        static_cast<i64>(value * other->get())
+    };
+}
+
 std::string ObjectFloat::to_string() const noexcept {
     std::ostringstream oss;
     oss << std::setprecision(16) ;
@@ -19,6 +29,18 @@ std::string ObjectFloat::to_string() const noexcept {
 
 ObjectFloat* ObjectFloat::operator-() const noexcept {
     return new ObjectFloat{-value};
+}
+
+ObjectFloat* ObjectFloat::operator*(const ObjectInteger* other) const noexcept {
+    return new ObjectFloat{
+        static_cast<float64>(value * other->get())
+    };
+}
+
+ObjectFloat* ObjectFloat::operator*(const ObjectFloat* other) const noexcept {
+    return new ObjectFloat{
+        static_cast<float64>(value * other->get())
+    };
 }
 
 std::string ObjectVoid::to_string() const noexcept {
