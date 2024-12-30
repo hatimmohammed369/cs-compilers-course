@@ -51,11 +51,19 @@ SKIP_WHITESPACES:
             current++;
             break;
         case '!':
-            ttype = TOKEN_BANG;
-            value = "!";
-            // Next
             current++;
-            break;
+            if (*current != '=') {
+                ttype = TOKEN_BANG;
+                value = "!";
+                break;
+            } else if (this->has_next() && *(current+1) == '=') {
+                current += 2;
+                ttype = TOKEN_LOGICAL_NOT_EQUAL;
+                value = "!==";
+                break;
+            } else {
+                goto INVALID_TOKEN;
+            }
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
