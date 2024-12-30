@@ -114,7 +114,7 @@ SKIP_WHITESPACES:
             if (has_next() && *current == '*') {
                 current++;
                 ttype = TOKEN_EXPONENT;
-                value = "==";
+                value = "**";
                 break;
             } else {
                 goto INVALID_TOKEN;

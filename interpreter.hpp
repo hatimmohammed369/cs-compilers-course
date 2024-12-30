@@ -9,6 +9,7 @@ public:
     Object* visit_literal(Literal* literal);
     Object* visit_grouped_expression(GroupedExpression* group);
     Object* visit_unary(Unary* unary);
+    Object* visit_exponential(Exponential* exponential);
 };
 
 #endif
