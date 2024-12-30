@@ -111,6 +111,10 @@ ParseResult Parser::parse_grouped_expression() {
     } else {
         // Skip )
         read_next_token();
+        GroupedExpression* grouped_expr =
+            new GroupedExpression{result.parsed_hunk};
+        result.parsed_hunk =
+            reinterpret_cast<TreeBase*>(grouped_expr);
     }
     return result;
 }
