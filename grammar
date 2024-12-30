@@ -2,13 +2,27 @@
 
 # CAPITALIZED_ITEMS are regular expressions
 
-Expression => Logical | Literal 
+Expression => LogicalXor
 
-Logical => UnaryLogical ( LogicalOp UnaryLogical )*
+LogicalXor => LogicalOr ( 'xor' LogicalOr )*
 
-UnaryLogical => '!' Logical | Boolean
+LogicalOr => LogicalAnd ( 'or' LogicalAnd )*
 
-LogicalOp => '^^' | '&&' | '||'
+LogicalAnd => Equality ( 'and' Equality )*
+
+Equality => Comparison ( ( '!=' | '==' ) Comparison )*
+
+Comparison => Term ( ( '>' | '>=' | '<' | '<=' ) Term )*
+
+Term => Factor ( ( '-' | '+' ) Factor )*
+
+Factor => Exponential ( ( '*' | '/' | '//' | '%' ) Exponential )*
+
+Exponential => Unary ( '**' Unary )*
+
+Unary => ( ( '!' | '-' ) Unary ) | Primary
+
+Primary => Literal | '(' Expression ')'
 
 Literal => Void | Boolean | Number | STRING
 
