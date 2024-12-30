@@ -21,16 +21,18 @@ public:
 };
 
 class Literal: public Expression {
-public:
     Object* value_object;
+public:
+    friend class Interpreter;
     Literal(Object* val);
     virtual std::string to_string() const noexcept override;
     virtual Object* accept(Visitor* visitor) override;
 };
 
 class GroupedExpression: public Expression {
-public:
     TreeBase* grouped_expr;
+public:
+    friend class Interpreter;
     GroupedExpression(TreeBase* expr):
         grouped_expr{expr} {}
     virtual std::string to_string() const noexcept override;
