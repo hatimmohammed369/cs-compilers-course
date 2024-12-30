@@ -50,6 +50,12 @@ SKIP_WHITESPACES:
             // Next
             current++;
             break;
+        case '!':
+            ttype = TOKEN_BANG;
+            value = ")";
+            // Next
+            current++;
+            break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {

@@ -26,6 +26,8 @@ const char* token_type_name(const TokenType& ttype) {
             return "LEFT_ROUND_BRACE" ;
         case 10:
             return "RIGHT_ROUND_BRACE" ;
+        case 11:
+            return "BANG" ;
     }
     return "MISSING_CATEGORY" ;
 }

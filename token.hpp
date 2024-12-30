@@ -16,6 +16,7 @@ enum TokenType {
     TOKEN_STRING = 8,
     TOKEN_LEFT_ROUND_BRACE = 9,
     TOKEN_RIGHT_ROUND_BRACE = 10,
+    TOKEN_BANG = 11,
 };
 
 class Token {
