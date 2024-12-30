@@ -77,7 +77,16 @@ SKIP_WHITESPACES:
             current++;
             if (this->has_next() && *current == '&') {
                 ttype = TOKEN_LOGICAL_AND;
-                value = "==";
+                value = "&&";
+                break;
+            } else {
+                goto INVALID_TOKEN;
+            }
+        case '|':
+            current++;
+            if (this->has_next() && *current == '|') {
+                ttype = TOKEN_LOGICAL_OR;
+                value = "||";
                 break;
             } else {
                 goto INVALID_TOKEN;
