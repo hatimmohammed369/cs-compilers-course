@@ -8,6 +8,10 @@ struct ParseResult {
     std::string error;
     TreeBase* parsed_hunk;
     ParseResult(std::string err, TreeBase* base): error{err}, parsed_hunk{base} {}
+    static ParseResult empty_parse_result() {
+        return ParseResult{std::string(), nullptr};
+    }
+
 };
 
 class Parser {
@@ -21,6 +25,7 @@ public:
     ParseResult parse_source();
     ParseResult parse_expression();
     ParseResult parse_literal();
+    ParseResult parse_grouped_expression();
 };
 
 #endif
