@@ -2,11 +2,13 @@
 
 # CAPITALIZED_ITEMS are regular expressions
 
-Expression => Void | Literal 
+Expression => Logical | Literal 
+
+Logical => '!' Boolean
+
+Literal => Void | Boolean | Number | STRING
 
 Void => 'void'
-
-Literal => Boolean | Number | STRING
 
 Boolean => 'true' | 'false'
 
