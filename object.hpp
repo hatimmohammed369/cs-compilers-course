@@ -14,19 +14,31 @@ inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
     return os << obj->to_string() ;
 }
 
-class ObjectInteger: public Object {
-    i64 value;
+template <typename T>
+class Number: public Object {
+protected:
+    T value;
 public:
-    ObjectInteger(i64 val);
+    Number(const T& val): value{val} {}
+    virtual std::string to_string() const noexcept = 0;
+    virtual Number* operator-() const noexcept = 0;
+};
+
+template class Number<i64>;
+class ObjectInteger: public Number<i64> {
+public:
+    using Number::Number;
     std::string to_string() const noexcept override;
+    ObjectInteger* operator-() const noexcept override;
     // More integer specific code here later
 };
 
-class ObjectFloat: public Object {
-    float64 value;
+template class Number<float64>;
+class ObjectFloat: public Number<float64> {
 public:
-    ObjectFloat(float64 val);
+    using Number::Number;
     std::string to_string() const noexcept override;
+    ObjectFloat* operator-() const noexcept override;
     // More float specific code here later
 };
 

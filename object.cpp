@@ -1,18 +1,22 @@
 #include <sstream>
 #include "object.hpp"
 
-ObjectInteger::ObjectInteger(i64 val): value{val} {}
-
 std::string ObjectInteger::to_string() const noexcept {
     return std::to_string(value);
 }
 
-ObjectFloat::ObjectFloat(float64 val): value{val} {}
+ObjectInteger* ObjectInteger::operator-() const noexcept {
+    return new ObjectInteger{-value};
+}
 
 std::string ObjectFloat::to_string() const noexcept {
     std::ostringstream oss;
     oss << value ;
     return oss.str();
+}
+
+ObjectFloat* ObjectFloat::operator-() const noexcept {
+    return new ObjectFloat{-value};
 }
 
 std::string ObjectVoid::to_string() const noexcept {
