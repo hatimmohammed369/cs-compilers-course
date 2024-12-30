@@ -64,6 +64,15 @@ SKIP_WHITESPACES:
             } else {
                 goto INVALID_TOKEN;
             }
+        case '=':
+            current++;
+            if (this->has_next() && *current == '=') {
+                ttype = TOKEN_LOGICAL_EQUAL;
+                value = "==";
+                break;
+            } else {
+                goto INVALID_TOKEN;
+            }
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
