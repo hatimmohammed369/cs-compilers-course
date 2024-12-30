@@ -47,15 +47,17 @@ ParseResult Parser::parse_exponential() {
     while (check({TOKEN_EXPONENT})) {
         Token op = consume();
         ParseResult exponent = parse_unary();
-        if (exponent.parsed_hunk)
+        if (exponent.parsed_hunk) {
             items.push_back(exponent.parsed_hunk);
-        else if (!exponent.error.empty()) {
+            continue;
+        } else if (!exponent.error.empty()) {
             result.parsed_hunk = nullptr;
             result.error = exponent.error;
+            break;
         } else {
             result.error = "Expected expression after **";
+            break;
         }
-        if (!result.error.empty()) break;
     }
     if (result.error.empty() && items.size() >= 2) {
         while (items.size() >= 2) {
@@ -65,7 +67,7 @@ ParseResult Parser::parse_exponential() {
             items.pop_back();
             items.push_back(
                 reinterpret_cast<TreeBase*>(
-                    new Exponential{exponent, base}
+                    new Exponential{base, exponent}
                 )
             );
         }

@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <sstream>
 #include "object.hpp"
 
@@ -11,6 +12,7 @@ ObjectInteger* ObjectInteger::operator-() const noexcept {
 
 std::string ObjectFloat::to_string() const noexcept {
     std::ostringstream oss;
+    oss << std::setprecision(16) ;
     oss << value ;
     return oss.str();
 }
