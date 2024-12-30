@@ -115,10 +115,11 @@ SKIP_WHITESPACES:
                 current++;
                 ttype = TOKEN_EXPONENT;
                 value = "**";
-                break;
             } else {
-                goto INVALID_TOKEN;
+                ttype = TOKEN_STAR;
+                value = "*";
             }
+            break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
