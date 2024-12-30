@@ -19,6 +19,7 @@ class Number: public Object {
 protected:
     T value;
 public:
+    friend class Interpreter;
     Number(const T& val): value{val} {}
     virtual std::string to_string() const noexcept = 0;
     virtual Number* operator-() const noexcept = 0;

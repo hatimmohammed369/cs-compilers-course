@@ -1,4 +1,7 @@
 #include "interpreter.hpp"
+#include "common.hpp"
+#include "object.hpp"
+#include <cmath>
 
 Object* Interpreter::interpret(TreeBase* tree) {
     return tree->accept(this);
@@ -46,3 +49,45 @@ Object* Interpreter::visit_unary(Unary* unary) {
     }
     return nullptr;
 }
+
+Object* Interpreter::visit_exponential(Exponential* exponential) {
+    ObjectInteger *int_base, *int_exponent;
+    ObjectFloat *float_base, *float_exponent;
+    int_base =
+        dynamic_cast<ObjectInteger*>(exponential->base->accept(this));
+    if (int_base) goto FIND_EXPONENT;
+    float_base =
+        dynamic_cast<ObjectFloat*>(exponential->base->accept(this));
+    if (!float_base) {
+        std::cerr << "Numeric operator ** used with non-numeric base\n" ;
+        exit(1);
+    }
+FIND_EXPONENT:
+    int_exponent =
+        dynamic_cast<ObjectInteger*>(exponential->base->accept(this));
+    if (int_exponent) goto EVALUATE;
+    float_exponent =
+        dynamic_cast<ObjectFloat*>(exponential->base->accept(this));
+    if (!float_exponent) {
+        std::cerr << "Numeric operator ** used with non-numeric exponent\n" ;
+        exit(1);
+    }
+EVALUATE:
+    if (int_base && int_exponent) {
+        return new ObjectInteger{
+            static_cast<i64>(std::powl(int_base->value, int_exponent->value))
+        };
+    } else if (int_base && float_exponent) {
+        return new ObjectFloat{
+            static_cast<float64>(std::pow(int_base->value, float_exponent->value))
+        };
+    } else if (float_base && int_base) {
+        return new ObjectFloat{
+            static_cast<float64>(std::pow(float_base->value, int_exponent->value))
+        };
+    }
+    return new ObjectFloat{
+        static_cast<float64>(std::pow(float_base->value, float_exponent->value))
+    };
+}
+
