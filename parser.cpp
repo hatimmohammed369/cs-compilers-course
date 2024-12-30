@@ -30,10 +30,11 @@ ParseResult Parser::parse_expression() {
     if (current.is_end_marker())
         return ParseResult{};
     ParseResult result;
-    if (check({TOKEN_LEFT_ROUND_BRACE}))
+    if (check({TOKEN_LEFT_ROUND_BRACE})) {
         result = parse_grouped_expression();
-    if (!result.error.empty() || result.parsed_hunk)
-        return result;
+        if (!result.error.empty() || result.parsed_hunk)
+            return result;
+    }
     return parse_literal();
 }
 
