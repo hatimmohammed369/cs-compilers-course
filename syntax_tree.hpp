@@ -28,4 +28,13 @@ public:
     virtual Object* accept(Visitor* visitor) override;
 };
 
+class GroupedExpression: public Expression {
+public:
+    TreeBase* grouped_expr;
+    GroupedExpression(TreeBase* expr):
+        grouped_expr{expr} {}
+    virtual std::string to_string() const noexcept override;
+    virtual Object* accept(Visitor* visitor) override;
+};
+
 #endif
