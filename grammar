@@ -4,7 +4,11 @@
 
 Expression => Logical | Literal 
 
-Logical => '!' Logical | Boolean
+Logical => UnaryLogical ( LogicalOp UnaryLogical )*
+
+UnaryLogical => '!' Logical | Boolean
+
+LogicalOp => '==' | '!=' | '&&' | '||'
 
 Literal => Void | Boolean | Number | STRING
 
