@@ -1,3 +1,4 @@
+#include <vector>
 #include "parser.hpp"
 #include "object.hpp"
 #include "syntax_tree.hpp"
@@ -35,7 +36,43 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_expression() {
-    return parse_unary();
+    ParseResult result = parse_unary();
+    if (!result.parsed_hunk) return result;
+    std::vector<TreeBase*> items;
+    items.push_back(result.parsed_hunk);
+    while (check({TOKEN_EXPONENT})) {
+        Token op = consume();
+        ParseResult exponent = parse_unary();
+        if (exponent.parsed_hunk)
+            items.push_back(exponent.parsed_hunk);
+        else if (!exponent.error.empty()) {
+            result.parsed_hunk = nullptr;
+            result.error = exponent.error;
+        } else {
+            result.error = "Expected expression after **";
+        }
+        if (!result.error.empty()) break;
+    }
+    if (result.error.empty() && items.size() >= 2) {
+        while (items.size() >= 2) {
+            TreeBase* exponent = items.back();
+            items.pop_back();
+            TreeBase* base = items.back();
+            items.pop_back();
+            items.push_back(
+                reinterpret_cast<TreeBase*>(
+                    new Exponential{exponent, base}
+                )
+            );
+        }
+        result.parsed_hunk = items.back();
+        items.pop_back();
+    }
+    return result;
+}
+
+ParseResult Parser::parse_exponential() {
+    return parse_exponential();
 }
 
 ParseResult Parser::parse_unary() {

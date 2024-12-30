@@ -32,6 +32,7 @@ public:
     bool check(const std::initializer_list<TokenType>& types) const noexcept;
     ParseResult parse_source();
     ParseResult parse_expression();
+    ParseResult parse_exponential();
     ParseResult parse_unary();
     ParseResult parse_primary();
     ParseResult parse_literal();
