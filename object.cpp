@@ -20,6 +20,14 @@ ObjectInteger* ObjectInteger::operator*(const ObjectFloat* other) const noexcept
     };
 }
 
+template <typename T>
+template <typename U>
+ObjectFloat* Number<T>::operator/(const Number<U>* other) const noexcept {
+    return new ObjectFloat{
+        static_cast<float64>(this->get()) / static_cast<float64>(other->get())
+    };
+}
+
 std::string ObjectFloat::to_string() const noexcept {
     std::ostringstream oss;
     oss << std::setprecision(16) ;

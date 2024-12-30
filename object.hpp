@@ -29,6 +29,8 @@ public:
     virtual Number* operator-() const noexcept = 0;
     virtual Number* operator*(const ObjectInteger* other) const noexcept = 0;
     virtual Number* operator*(const ObjectFloat* other) const noexcept = 0;
+    template <typename U>
+    ObjectFloat* operator/(const Number<U>* other) const noexcept;
 };
 
 template class Number<i64>;
