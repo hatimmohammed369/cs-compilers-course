@@ -22,7 +22,7 @@ Exponential => Unary ( '**' Unary )*
 
 Unary => ( ( '!' | '-' ) Unary ) | Primary
 
-Primary => Literal | '(' Expression ')'
+Primary => '(' Expression ')' | Literal
 
 Literal => Void | Boolean | Number | STRING
 

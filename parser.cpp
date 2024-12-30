@@ -28,13 +28,13 @@ ParseResult Parser::parse_source() {
 
 ParseResult Parser::parse_expression() {
     if (current.is_end_marker())
-        return ParseResult::empty_parse_result();
-    ParseResult result = parse_literal();
+        return ParseResult{};
+    ParseResult result;
+    if (check({TOKEN_LEFT_ROUND_BRACE}))
+        result = parse_grouped_expression();
     if (!result.error.empty() || result.parsed_hunk)
         return result;
-    else if (check({TOKEN_LEFT_ROUND_BRACE}))
-        return parse_grouped_expression();
-    return ParseResult::empty_parse_result();
+    return parse_literal();
 }
 
 ParseResult Parser::parse_literal() {
@@ -101,8 +101,7 @@ ParseResult Parser::parse_grouped_expression() {
     if (!result.error.empty()) {
         // Syntax error occurred
         return result;
-    }
-    else if (!result.parsed_hunk) {
+    } else if (!result.parsed_hunk) {
         result.parsed_hunk = nullptr;
         result.error = "Expected expression after (";
     } else if (!check({TOKEN_RIGHT_ROUND_BRACE})) {

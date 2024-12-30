@@ -4,14 +4,16 @@
 #include "lexer.hpp"
 #include "syntax_tree.hpp"
 
-struct ParseResult {
+class ParseResult {
+public:
     std::string error;
     TreeBase* parsed_hunk;
-    ParseResult(std::string err, TreeBase* base): error{err}, parsed_hunk{base} {}
-    static ParseResult empty_parse_result() {
-        return ParseResult{std::string(), nullptr};
-    }
 
+    ParseResult():
+        error{std::string()}, parsed_hunk{nullptr} {}
+
+    ParseResult(std::string err, TreeBase* base):
+        error{err}, parsed_hunk{base} {}
 };
 
 class Parser {
