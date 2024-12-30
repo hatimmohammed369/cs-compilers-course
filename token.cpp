@@ -28,6 +28,14 @@ const char* token_type_name(const TokenType& ttype) {
             return "RIGHT_ROUND_BRACE" ;
         case 11:
             return "BANG" ;
+        case 12:
+            return "LOGICAL_EQUAL"; 
+        case 13:
+            return "LOGICAL_NOT_EQUAL"; 
+        case 14:
+            return "LOGICAL_AND"; 
+        case 15:
+            return "LOGICAL_OR"; 
     }
     return "MISSING_CATEGORY" ;
 }
