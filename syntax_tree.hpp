@@ -1,6 +1,7 @@
 #ifndef SYNTAX_TREE_H_INCLUDED
 #define SYNTAX_TREE_H_INCLUDED
 
+#include "token.hpp"
 #include "object.hpp"
 #include "visitor.hpp"
 
@@ -20,11 +21,22 @@ public:
     ~Expression() {}
 };
 
+class Unary: public Expression {
+    Token* unary_op;
+    TreeBase* expr;
+public:
+    friend class Interpreter;
+    Unary(Token* op, TreeBase* node):
+        unary_op{op}, expr{node} {}
+    virtual std::string to_string() const noexcept override;
+    virtual Object* accept(Visitor* visitor) override;
+};
+
 class Literal: public Expression {
     Object* value_object;
 public:
     friend class Interpreter;
-    Literal(Object* val);
+    Literal(Object* val): value_object{val} {}
     virtual std::string to_string() const noexcept override;
     virtual Object* accept(Visitor* visitor) override;
 };
