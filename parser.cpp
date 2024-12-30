@@ -36,7 +36,31 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_expression() {
-    return parse_exponential();
+    return parse_factor();
+}
+
+ParseResult Parser::parse_factor() {
+    ParseResult result = parse_exponential();
+    if (!result.parsed_hunk) return result;
+    while (check({TOKEN_STAR})) {
+        Token op = consume();
+        ParseResult right = parse_exponential();
+        if (!right.error.empty()) {
+            result.parsed_hunk = nullptr;
+            result.error = right.error;
+            break;
+        } else if (right.parsed_hunk) {
+            result.parsed_hunk = reinterpret_cast<TreeBase*>(
+                new Factor{result.parsed_hunk, op, right.parsed_hunk}
+            );
+        } else {
+            result.parsed_hunk = nullptr;
+            result.error = "Expected expression after ";
+            result.error.append(op.value);
+            break;
+        }
+    }
+    return result;
 }
 
 ParseResult Parser::parse_exponential() {
