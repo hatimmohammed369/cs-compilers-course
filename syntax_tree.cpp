@@ -1,6 +1,18 @@
 #include "syntax_tree.hpp"
 #include <sstream>
 
+std::string Exponential::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << base->to_string() ;
+    oss << "**" ;
+    oss << exponent->to_string() ;
+    return oss.str();
+}
+
+Object* Exponential::accept(Visitor* visitor) {
+    return visitor->visit_exponential(this);
+}
+
 std::string Unary::to_string() const noexcept {
     std::ostringstream oss;
     oss << unary_op.value ;
