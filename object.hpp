@@ -51,7 +51,7 @@ public:
 
 class ObjectString: public Object {
     char* chars;
-    size_t length;
+    size_t _length;
 public:
     ObjectString();
     ObjectString(const char* s, size_t len);

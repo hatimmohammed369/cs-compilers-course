@@ -21,14 +21,14 @@ std::string ObjectVoid::to_string() const noexcept {
 
 ObjectString::ObjectString() {
     chars = nullptr;
-    length = 0;
+    _length = 0;
 }
 
 ObjectString::ObjectString(const char* s, size_t len) {
     chars = new char[len + 1];
     chars[len] = '\0';
     strncpy(chars, s, len);
-    length = len;
+    _length = len;
 }
 
 ObjectString::ObjectString(const char* s): ObjectString(s, strlen(s)) {}
@@ -41,7 +41,7 @@ ObjectString::~ObjectString() {delete chars;}
 std::string ObjectString::to_string() const noexcept {
     std::ostringstream oss;
     oss << '"' ;
-    oss << std::string(chars, length) ;
+    oss << std::string(chars, _length) ;
     oss << '"' ;
     return oss.str();
 }
@@ -51,7 +51,7 @@ const char* ObjectString::get() const noexcept {
 }
 
 size_t ObjectString::length() const noexcept {
-    return length();
+    return _length;
 }
 
 std::string ObjectBoolean::to_string() const noexcept {
