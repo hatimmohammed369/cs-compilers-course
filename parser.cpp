@@ -36,6 +36,10 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_expression() {
+    return parse_exponential();
+}
+
+ParseResult Parser::parse_exponential() {
     ParseResult result = parse_unary();
     if (!result.parsed_hunk) return result;
     std::vector<TreeBase*> items;
@@ -69,10 +73,6 @@ ParseResult Parser::parse_expression() {
         items.pop_back();
     }
     return result;
-}
-
-ParseResult Parser::parse_exponential() {
-    return parse_exponential();
 }
 
 ParseResult Parser::parse_unary() {
