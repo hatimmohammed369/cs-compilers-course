@@ -27,6 +27,18 @@ Object* Interpreter::visit_unary(Unary* unary) {
                 ObjectBoolean::get_false_object()
             );
         }
+        case TOKEN_MINUS: {
+            Object* expr_value = unary->expr->accept(this);
+            ObjectInteger* int_obj =
+                dynamic_cast<ObjectInteger*>(expr_value);
+            if (int_obj) return -(*int_obj);
+            ObjectFloat* float_obj =
+                dynamic_cast<ObjectFloat*>(expr_value);
+            if (float_obj) return -(*float_obj);
+            std::cerr << "Unary logical operator - applied to non-numeric" ;
+            exit(1);
+            break;
+        }
         default: {
             std::cerr << "Invalid unary operator " << unary->unary_op.value << '\n';
             exit(1);
