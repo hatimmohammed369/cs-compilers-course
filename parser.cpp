@@ -62,11 +62,16 @@ ParseResult Parser::parse_logical() {
             read_next_token(); // Skip !
             Logical* logical_hunk = new Logical(
                 bang,
-                reinterpret_cast<TreeBase*>(parse_boolean().parsed_hunk),
+                reinterpret_cast<TreeBase*>(parse_logical().parsed_hunk),
                 current,
                 nullptr
             );
             parsed_hunk = reinterpret_cast<TreeBase*>(logical_hunk);
+            break;
+        }
+        case TOKEN_TRUE:
+        case TOKEN_FALSE: {
+            return parse_boolean();
         }
         default: {}
     }

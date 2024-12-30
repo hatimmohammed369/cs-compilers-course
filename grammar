@@ -4,7 +4,7 @@
 
 Expression => Logical | Literal 
 
-Logical => '!' Boolean
+Logical => '!' Logical | Boolean
 
 Literal => Void | Boolean | Number | STRING
 

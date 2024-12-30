@@ -52,7 +52,7 @@ SKIP_WHITESPACES:
             break;
         case '!':
             ttype = TOKEN_BANG;
-            value = ")";
+            value = "!";
             // Next
             current++;
             break;
