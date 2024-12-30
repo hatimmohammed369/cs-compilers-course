@@ -46,6 +46,18 @@ std::string ObjectString::to_string() const noexcept {
     return oss.str();
 }
 
+const char* ObjectString::get() const noexcept {
+    return chars;
+}
+
+size_t ObjectString::length() const noexcept {
+    return length();
+}
+
 std::string ObjectBoolean::to_string() const noexcept {
     return str;
+}
+
+bool ObjectBoolean::get() const noexcept {
+    return value;
 }

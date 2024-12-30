@@ -59,6 +59,8 @@ public:
     ObjectString(const std::string& s);
     ~ObjectString();
     std::string to_string() const noexcept override;
+    const char* get() const noexcept;
+    size_t length() const noexcept;
     // More string specific code here later
 };
 
@@ -83,6 +85,7 @@ public:
     }
 
     std::string to_string() const noexcept override;
+    bool get() const noexcept;
 };
 
 #endif
