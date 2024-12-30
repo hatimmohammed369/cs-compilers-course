@@ -109,6 +109,16 @@ SKIP_WHITESPACES:
             ttype = TOKEN_MINUS;
             value = "-";
             break;
+        case '*':
+            current++;
+            if (has_next() && *current == '*') {
+                current++;
+                ttype = TOKEN_EXPONENT;
+                value = "==";
+                break;
+            } else {
+                goto INVALID_TOKEN;
+            }
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
