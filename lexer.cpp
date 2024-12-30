@@ -120,6 +120,11 @@ SKIP_WHITESPACES:
                 value = "*";
             }
             break;
+        case '/':
+            current++;
+            ttype = TOKEN_SLASH;
+            value = "/";
+            break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
