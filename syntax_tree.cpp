@@ -1,6 +1,18 @@
 #include "syntax_tree.hpp"
 #include <sstream>
 
+std::string Factor::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << left_exponential->to_string() ;
+    oss << op.value ;
+    oss << right_exponential->to_string() ;
+    return oss.str();
+}
+
+Object* Factor::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 std::string Exponential::to_string() const noexcept {
     std::ostringstream oss;
     oss << base->to_string() ;

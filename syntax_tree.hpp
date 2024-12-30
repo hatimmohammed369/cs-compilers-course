@@ -21,6 +21,18 @@ public:
     ~Expression() {}
 };
 
+class Factor: public Expression {
+    TreeBase* left_exponential;
+    Token op;
+    TreeBase* right_exponential;
+public:
+    friend class Interpreter;
+    Factor(TreeBase* lhs, Token _op, TreeBase* rhs):
+        left_exponential{lhs}, op{_op}, right_exponential{rhs} {}
+    virtual std::string to_string() const noexcept override;
+    virtual Object* accept(Visitor* visitor) override;
+};
+
 class Exponential: public Expression {
     TreeBase* base;
     TreeBase* exponent;
