@@ -10,6 +10,7 @@ public:
     Object* visit_grouped_expression(GroupedExpression* group);
     Object* visit_unary(Unary* unary);
     Object* visit_exponential(Exponential* exponential);
+    Object* visit_factor(Factor* factor);
 };
 
 #endif
