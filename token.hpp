@@ -4,18 +4,18 @@
 #include "common.hpp"
 
 enum TokenType {
-    INVALID = -1,
-    END_OF_FILE = 0,
-    INTEGER = 1,
-    FLOAT = 2,
-    LEFT_CURLY_BRACE = 3,
-    RIGHT_CURLY_BRACE = 4,
-    VOID = 5,
-    TRUE = 6,
-    FALSE = 7,
-    STRING = 8,
-    LEFT_ROUND_BRACE = 9,
-    RIGHT_ROUND_BRACE = 10,
+    TOKEN_INVALID = -1,
+    TOKEN_END_OF_FILE = 0,
+    TOKEN_INTEGER = 1,
+    TOKEN_FLOAT = 2,
+    TOKEN_LEFT_CURLY_BRACE = 3,
+    TOKEN_RIGHT_CURLY_BRACE = 4,
+    TOKEN_VOID = 5,
+    TOKEN_TRUE = 6,
+    TOKEN_FALSE = 7,
+    TOKEN_STRING = 8,
+    TOKEN_LEFT_ROUND_BRACE = 9,
+    TOKEN_RIGHT_ROUND_BRACE = 10,
 };
 
 class Token {
@@ -23,7 +23,7 @@ public:
     TokenType ttype;
     std::string value;
     bool is_end_marker() const {
-        return this->ttype == END_OF_FILE;
+        return this->ttype == TOKEN_END_OF_FILE;
     }
 };
 

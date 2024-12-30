@@ -28,7 +28,7 @@ ParseResult Parser::parse_expression() {
     }
 
     switch (current.ttype) {
-        case INTEGER: {
+        case TOKEN_INTEGER: {
             ObjectInteger* obj = new ObjectInteger{std::stoll(current.value)};
             Literal* int_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -36,7 +36,7 @@ ParseResult Parser::parse_expression() {
             parsed_hunk = reinterpret_cast<TreeBase*>(int_literal);
             break;
         }
-        case FLOAT: {
+        case TOKEN_FLOAT: {
             ObjectFloat* obj = new ObjectFloat{std::stold(current.value, nullptr)};
             Literal* float_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -44,7 +44,7 @@ ParseResult Parser::parse_expression() {
             parsed_hunk = reinterpret_cast<TreeBase*>(float_literal);
             break;
         }
-        case VOID: {
+        case TOKEN_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
             Literal* void_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -52,7 +52,7 @@ ParseResult Parser::parse_expression() {
             parsed_hunk = reinterpret_cast<TreeBase*>(void_literal);
             break;
         }
-        case TRUE: {
+        case TOKEN_TRUE: {
             ObjectBoolean* obj = ObjectBoolean::get_true_object();
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -60,7 +60,7 @@ ParseResult Parser::parse_expression() {
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
-        case FALSE: {
+        case TOKEN_FALSE: {
             ObjectBoolean* obj = ObjectBoolean::get_false_object();
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -68,7 +68,7 @@ ParseResult Parser::parse_expression() {
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
-        case STRING: {
+        case TOKEN_STRING: {
             ObjectString* obj = new ObjectString{current.value};
             Literal* string_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};

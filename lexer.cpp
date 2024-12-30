@@ -24,28 +24,28 @@ Token Lexer::get_next_token() {
     string value;
 SKIP_WHITESPACES:
     while (this->has_next() && isspace(*current)) current++;
-    if (!has_next()) return Token{END_OF_FILE, string()};
+    if (!has_next()) return Token{TOKEN_END_OF_FILE, string()};
     switch (*current) {
         case '{':
-            ttype = LEFT_CURLY_BRACE;
+            ttype = TOKEN_LEFT_CURLY_BRACE;
             value = "{";
             // Next
             current++;
             break;
         case '}':
-            ttype = RIGHT_CURLY_BRACE;
+            ttype = TOKEN_RIGHT_CURLY_BRACE;
             value = "}";
             // Next
             current++;
             break;
         case '(':
-            ttype = LEFT_ROUND_BRACE;
+            ttype = TOKEN_LEFT_ROUND_BRACE;
             value = "(";
             // Next
             current++;
             break;
         case ')':
-            ttype = RIGHT_ROUND_BRACE;
+            ttype = TOKEN_RIGHT_ROUND_BRACE;
             value = ")";
             // Next
             current++;
@@ -55,7 +55,7 @@ SKIP_WHITESPACES:
             else if (isdigit(*current)) {
                 // Generate a INTEGER/FLOAT token
                 // Roughly it's: \d+([.]\d+((e|E)[+-]?\d+)?)?
-                ttype = INTEGER;
+                ttype = TOKEN_INTEGER;
 
                 // Read digits before decimal point before end of input
                 while (this->has_next() && isdigit(*current)) {
@@ -75,11 +75,11 @@ SKIP_WHITESPACES:
 
                 if (!this->has_next() || !isdigit(*current)) {
                     // Invalid numeric literal: no digits after decimal point
-                    ttype = INVALID;
+                    ttype = TOKEN_INVALID;
                     goto RETURN_TOKEN;
                 }
 
-                ttype = FLOAT;
+                ttype = TOKEN_FLOAT;
                 // Read digits after decimal point before end of input
                 while (this->has_next() && isdigit(*current)) {
                     value.push_back(*current);
@@ -98,7 +98,7 @@ SKIP_WHITESPACES:
 
                 if (!this->has_next() || !(isdigit(*current) || *current == '+' || *current == '-')) {
                     // Invalid numeric literal: Missing exponent value
-                    ttype = INVALID;
+                    ttype = TOKEN_INVALID;
                     goto RETURN_TOKEN;
                 }
 
@@ -116,12 +116,12 @@ SKIP_WHITESPACES:
                 switch (*current) {
                     case '"':  {
                         current++;
-                        ttype = STRING;
+                        ttype = TOKEN_STRING;
                         while (this->has_next()) {
                             if (*current == '\\') {
                                 current++;
                                 if (!this->has_next()) {
-                                    ttype = INVALID;
+                                    ttype = TOKEN_INVALID;
                                     goto RETURN_TOKEN;
                                 }
                                 switch (*current) {
@@ -169,7 +169,7 @@ SKIP_WHITESPACES:
                                         break;
                                     }
                                     default: {
-                                        ttype = INVALID;
+                                        ttype = TOKEN_INVALID;
                                         goto RETURN_TOKEN;
                                     }
                                 }
@@ -196,7 +196,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'd') {
                             current++;
-                            ttype = VOID;
+                            ttype = TOKEN_VOID;
                             value.clear();
                             value.append("void");
                             goto RETURN_TOKEN;
@@ -217,7 +217,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'e') {
                             current++;
-                            ttype = TRUE;
+                            ttype = TOKEN_TRUE;
                             value.clear();
                             value.append("true");
                             goto RETURN_TOKEN;
@@ -241,7 +241,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'e') {
                             current++;
-                            ttype = FALSE;
+                            ttype = TOKEN_FALSE;
                             value.clear();
                             value.append("false");
                             goto RETURN_TOKEN;
@@ -252,7 +252,7 @@ SKIP_WHITESPACES:
                     default: {
                     INVALID_TOKEN:
                         // Any other non-whitespace character
-                        ttype = INVALID;
+                        ttype = TOKEN_INVALID;
                         while (this->has_next() && !isspace(*current)) {
                             value.push_back(*current);
                             current++;
