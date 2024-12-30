@@ -8,6 +8,10 @@ void Parser::init(char* in, size_t source_len) {
     read_next_token();
 }
 
+Lexer Parser::get_lexer() {
+    return lexer;
+}
+
 void Parser::read_next_token() {
     current = lexer.get_next_token();
 }

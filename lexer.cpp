@@ -9,6 +9,10 @@ void Lexer::init(char* in, size_t source_len) {
     this->source_length = source_len;
 }
 
+void Lexer::reset() {
+    current = source;
+}
+
 bool Lexer::has_next() {
     ptrdiff_t diff = current - source;
     if (diff < 0) {
