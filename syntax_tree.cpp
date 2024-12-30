@@ -10,7 +10,7 @@ std::string Factor::to_string() const noexcept {
 }
 
 Object* Factor::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_factor(this);
 }
 
 std::string Exponential::to_string() const noexcept {
