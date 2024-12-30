@@ -14,6 +14,11 @@ public:
 
     ParseResult(std::string err, TreeBase* base):
         error{err}, parsed_hunk{base} {}
+
+    static ParseResult empty_parse_result() {
+        return ParseResult{std::string(), nullptr};
+    }
+
 };
 
 class Parser {
@@ -26,6 +31,8 @@ public:
     bool check(const std::initializer_list<TokenType>& types) const noexcept;
     ParseResult parse_source();
     ParseResult parse_expression();
+    ParseResult parse_unary();
+    ParseResult parse_primary();
     ParseResult parse_literal();
     ParseResult parse_grouped_expression();
 };

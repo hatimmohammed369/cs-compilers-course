@@ -3,7 +3,7 @@
 
 std::string Unary::to_string() const noexcept {
     std::ostringstream oss;
-    if (unary_op) oss << unary_op->value ;
+    oss << unary_op.value ;
     oss << expr->to_string() ;
     return oss.str();
 }

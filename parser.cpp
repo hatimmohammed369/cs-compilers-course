@@ -23,12 +23,37 @@ bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcep
 }
 
 ParseResult Parser::parse_source() {
+    if (current.is_end_marker())
+        return ParseResult{};
     return parse_expression();
 }
 
 ParseResult Parser::parse_expression() {
-    if (current.is_end_marker())
-        return ParseResult{};
+    return parse_unary();
+}
+
+ParseResult Parser::parse_unary() {
+    ParseResult result;
+    if (check({TOKEN_BANG, TOKEN_MINUS})) {
+        Token op = current;
+        read_next_token();
+        result = parse_unary();
+        if (!result.error.empty()) {
+            return result;
+        } else if (!result.parsed_hunk) {
+            result.error.append("Expected expression after ");
+            result.error.append(op.value);
+        } else {
+            Unary* unary = new Unary{op, result.parsed_hunk};
+            result.parsed_hunk =
+                reinterpret_cast<TreeBase*>(unary);
+        }
+        return result;
+    }
+    return parse_primary();
+}
+
+ParseResult Parser::parse_primary() {
     ParseResult result;
     if (check({TOKEN_LEFT_ROUND_BRACE})) {
         result = parse_grouped_expression();

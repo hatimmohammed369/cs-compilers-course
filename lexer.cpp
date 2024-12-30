@@ -104,6 +104,11 @@ SKIP_WHITESPACES:
             } else {
                 goto INVALID_TOKEN;
             }
+        case '-':
+            current++;
+            ttype = TOKEN_MINUS;
+            value = "-";
+            break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {

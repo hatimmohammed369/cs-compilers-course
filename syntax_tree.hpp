@@ -22,11 +22,11 @@ public:
 };
 
 class Unary: public Expression {
-    Token* unary_op;
+    Token unary_op;
     TreeBase* expr;
 public:
     friend class Interpreter;
-    Unary(Token* op, TreeBase* node):
+    Unary(Token op, TreeBase* node):
         unary_op{op}, expr{node} {}
     virtual std::string to_string() const noexcept override;
     virtual Object* accept(Visitor* visitor) override;
