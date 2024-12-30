@@ -23,12 +23,11 @@ public:
 
 class Exponential: public Expression {
     TreeBase* base;
-    Token op;
     TreeBase* exponent;
 public:
     friend class Interpreter;
-    Exponential(TreeBase* _base, Token _op, TreeBase* _exponent):
-        base{_base}, op{_op}, exponent{_exponent} {}
+    Exponential(TreeBase* _base, TreeBase* _exponent):
+        base{_base}, exponent{_exponent} {}
     virtual std::string to_string() const noexcept override;
     virtual Object* accept(Visitor* visitor) override;
 };
