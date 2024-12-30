@@ -8,7 +8,7 @@ Logical => UnaryLogical ( LogicalOp UnaryLogical )*
 
 UnaryLogical => '!' Logical | Boolean
 
-LogicalOp => '==' | '!==' | '&&' | '||'
+LogicalOp => '^^' | '&&' | '||'
 
 Literal => Void | Boolean | Number | STRING
 

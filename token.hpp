@@ -21,6 +21,7 @@ enum TokenType {
     TOKEN_LOGICAL_NOT_EQUAL = 13, // !==
     TOKEN_LOGICAL_AND = 14, // &&
     TOKEN_LOGICAL_OR = 15, // ||
+    TOKEN_LOGICAL_XOR = 16,
 };
 
 class Token {

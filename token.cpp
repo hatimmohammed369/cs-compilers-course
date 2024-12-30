@@ -29,13 +29,15 @@ const char* token_type_name(const TokenType& ttype) {
         case 11:
             return "BANG" ;
         case 12:
-            return "LOGICAL_EQUAL"; 
+            return "LOGICAL_EQUAL";
         case 13:
-            return "LOGICAL_NOT_EQUAL"; 
+            return "LOGICAL_NOT_EQUAL";
         case 14:
-            return "LOGICAL_AND"; 
+            return "LOGICAL_AND";
         case 15:
-            return "LOGICAL_OR"; 
+            return "LOGICAL_OR";
+        case 16:
+            return "LOGICAL_XOR";
     }
     return "MISSING_CATEGORY" ;
 }
