@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include "object.hpp"
@@ -76,6 +77,8 @@ std::string ObjectFloat::to_string() const noexcept {
     std::ostringstream oss;
     oss << std::setprecision(16) ;
     oss << value ;
+    if (std::floorl(value) == std::ceill(value))
+        oss << ".0" ;
     return oss.str();
 }
 
