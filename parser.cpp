@@ -42,7 +42,7 @@ ParseResult Parser::parse_expression() {
 ParseResult Parser::parse_factor() {
     ParseResult result = parse_exponential();
     if (!result.parsed_hunk) return result;
-    while (check({TOKEN_STAR})) {
+    while (check({TOKEN_STAR, TOKEN_SLASH})) {
         Token op = consume();
         ParseResult right = parse_exponential();
         if (!right.error.empty()) {
