@@ -29,8 +29,8 @@ public:
     virtual Number* operator-() const noexcept = 0;
     virtual Number* operator*(const ObjectInteger* other) const noexcept = 0;
     virtual Number* operator*(const ObjectFloat* other) const noexcept = 0;
-    template <typename U>
-    ObjectFloat* operator/(const Number<U>* other) const noexcept;
+    ObjectFloat* operator/(const Number<i64>* other) const noexcept;
+    ObjectFloat* operator/(const Number<float64>* other) const noexcept;
 };
 
 template class Number<i64>;
@@ -41,6 +41,7 @@ public:
     ObjectInteger* operator-() const noexcept override;
     ObjectInteger* operator*(const ObjectInteger* other) const noexcept override;
     ObjectInteger* operator*(const ObjectFloat* other) const noexcept override;
+    using Number<i64>::operator/;
     // More integer specific code here later
 };
 
@@ -52,6 +53,7 @@ public:
     ObjectFloat* operator-() const noexcept override;
     ObjectFloat* operator*(const ObjectInteger* other) const noexcept override;
     ObjectFloat* operator*(const ObjectFloat* other) const noexcept override;
+    using Number<float64>::operator/;
     // More float specific code here later
 };
 

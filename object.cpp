@@ -2,6 +2,20 @@
 #include <sstream>
 #include "object.hpp"
 
+template <typename T>
+ObjectFloat* Number<T>::operator/(const Number<i64>* other) const noexcept {
+    return new ObjectFloat {
+        static_cast<float64>(get()) / static_cast<float64>(other->get())
+    };
+}
+
+template <typename T>
+ObjectFloat* Number<T>::operator/(const Number<float64>* other) const noexcept {
+    return new ObjectFloat {
+        static_cast<float64>(get()) / static_cast<float64>(other->get())
+    };
+}
+
 std::string ObjectInteger::to_string() const noexcept {
     return std::to_string(value);
 }
@@ -17,14 +31,6 @@ ObjectInteger* ObjectInteger::operator*(const ObjectInteger* other) const noexce
 ObjectInteger* ObjectInteger::operator*(const ObjectFloat* other) const noexcept {
     return new ObjectInteger{
         static_cast<i64>(value * other->get())
-    };
-}
-
-template <typename T>
-template <typename U>
-ObjectFloat* Number<T>::operator/(const Number<U>* other) const noexcept {
-    return new ObjectFloat{
-        static_cast<float64>(this->get()) / static_cast<float64>(other->get())
     };
 }
 
