@@ -111,6 +111,14 @@ ObjectBoolean* ObjectInteger::operator>(const ObjectFloat* other) const noexcept
     return ObjectBoolean::as_object(value > other->get());
 }
 
+ObjectBoolean* ObjectInteger::operator<(const ObjectInteger* other) const noexcept {
+    return ObjectBoolean::as_object(value < other->get());
+}
+
+ObjectBoolean* ObjectInteger::operator<(const ObjectFloat* other) const noexcept {
+    return ObjectBoolean::as_object(value < other->get());
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
@@ -172,6 +180,13 @@ ObjectBoolean* ObjectFloat::operator>=(const ObjectFloat* other) const noexcept 
     return ObjectBoolean::as_object(value >= other->get());
 }
 
+ObjectBoolean* ObjectFloat::operator<(const ObjectInteger* other) const noexcept {
+    return ObjectBoolean::as_object(value < other->get());
+}
+
+ObjectBoolean* ObjectFloat::operator<(const ObjectFloat* other) const noexcept {
+    return ObjectBoolean::as_object(value < other->get());
+}
 
 // ------------------------- ObjectFloat -------------------------
 
