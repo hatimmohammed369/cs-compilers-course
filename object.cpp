@@ -87,6 +87,14 @@ ObjectFloat* ObjectInteger::operator+(const ObjectFloat* other) const noexcept {
     return new ObjectFloat {static_cast<float64>(value) + other->get()};
 }
 
+ObjectInteger* ObjectInteger::operator-(const ObjectInteger* other) const noexcept {
+    return new ObjectInteger {value - other->get()};
+}
+
+ObjectFloat* ObjectInteger::operator-(const ObjectFloat* other) const noexcept {
+    return new ObjectFloat {static_cast<float64>(value) - other->get()};
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
@@ -122,6 +130,14 @@ ObjectFloat* ObjectFloat::operator+(const ObjectInteger* other) const noexcept {
 
 ObjectFloat* ObjectFloat::operator+(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{value + other->get()};
+}
+
+ObjectFloat* ObjectFloat::operator-(const ObjectInteger* other) const noexcept {
+    return new ObjectFloat{value - static_cast<float64>(other->get())};
+}
+
+ObjectFloat* ObjectFloat::operator-(const ObjectFloat* other) const noexcept {
+    return new ObjectFloat{value - other->get()};
 }
 
 // ------------------------- ObjectFloat -------------------------

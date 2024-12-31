@@ -43,7 +43,10 @@ ParseResult Parser::parse_term() {
     ParseResult result = parse_factor();
     if (!result.error.empty() || !result.parsed_hunk)
         return result;
-    while (result.error.empty() && check({TOKEN_PLUS})) {
+    while (
+        result.error.empty() &&
+        check({TOKEN_PLUS, TOKEN_MINUS})
+    ) {
         Token op = consume();
         ParseResult right = parse_factor();
         if (right.parsed_hunk) {

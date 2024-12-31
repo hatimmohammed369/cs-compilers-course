@@ -44,6 +44,8 @@ public:
     ObjectInteger* operator%(const ObjectInteger* other) const noexcept;
     ObjectInteger* operator+(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
+    ObjectInteger* operator-(const ObjectInteger* other) const noexcept;
+    ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
     // More integer specific code here later
 };
 
@@ -58,6 +60,8 @@ public:
     ObjectFloat* operator*(const ObjectFloat* other) const noexcept;
     ObjectFloat* operator+(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
+    ObjectFloat* operator-(const ObjectInteger* other) const noexcept;
+    ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
     // More float specific code here later
 };
 
