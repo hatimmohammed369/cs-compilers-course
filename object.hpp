@@ -32,6 +32,8 @@ public:
     Number<float64>* operator/(const Number<float64>* other) const noexcept;
     template <typename U>
     ObjectBoolean* operator>(const Number<U>* other) const noexcept;
+    template <typename U>
+    ObjectBoolean* operator>=(const Number<U>* other) const noexcept;
 };
 
 template class Number<i64>;
@@ -52,8 +54,6 @@ public:
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectInteger* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
-    ObjectBoolean* operator>=(const ObjectInteger* other) const noexcept;
-    ObjectBoolean* operator>=(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator<(const ObjectInteger* other) const noexcept;
     ObjectBoolean* operator<(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator<=(const ObjectInteger* other) const noexcept;
@@ -72,8 +72,6 @@ public:
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectFloat* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
-    ObjectBoolean* operator>=(const ObjectInteger* other) const noexcept;
-    ObjectBoolean* operator>=(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator<(const ObjectInteger* other) const noexcept;
     ObjectBoolean* operator<(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator<=(const ObjectInteger* other) const noexcept;
@@ -149,5 +147,10 @@ ObjectBoolean* Number<T>::operator>(const Number<U>* other) const noexcept {
     return ObjectBoolean::as_object(value > other->get());
 }
 
+template <typename T>
+template <typename U>
+ObjectBoolean* Number<T>::operator>=(const Number<U>* other) const noexcept {
+    return ObjectBoolean::as_object(value >= other->get());
+}
 
 #endif
