@@ -157,6 +157,13 @@ EVALUATE:
                 return left_float->integer_div(right_int);
             return left_float->integer_div(right_float);
         }
+        case TOKEN_PERCENT: {
+            if (!(left_int && right_int)) {
+                std::cerr << "Applying mod operator % with a non-integer operand\n";
+                exit(1);
+            }
+            return (*left_int) % right_int;
+        }
         default: {
             std::cerr << "Invalid binary operator " << factor->op.value << " for numeric operands\n";
             exit(1);
