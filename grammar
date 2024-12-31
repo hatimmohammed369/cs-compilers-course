@@ -20,7 +20,7 @@ Factor => Exponential ( ( '*' | '/' | '//' | '%' ) Exponential )*
 
 Exponential => Unary ( '**' Unary )*
 
-Unary => ( ( '!' | '-' ) Unary ) | Primary
+Unary => ( ( '!' | '-' | '+' ) Unary ) | Primary
 
 Primary => '(' Expression ')' | Literal
 
