@@ -41,23 +41,25 @@ ParseResult Parser::parse_expression() {
 
 ParseResult Parser::parse_factor() {
     ParseResult result = parse_exponential();
-    if (!result.parsed_hunk) return result;
-    while (check({TOKEN_STAR, TOKEN_SLASH, TOKEN_DOUBLE_SLASH, TOKEN_PERCENT})) {
+    if (!result.error.empty() || !result.parsed_hunk)
+        return result;
+    while (
+        result.error.empty() &&
+        check({TOKEN_STAR, TOKEN_SLASH, TOKEN_DOUBLE_SLASH, TOKEN_PERCENT})
+    ) {
         Token op = consume();
         ParseResult right = parse_exponential();
-        if (!right.error.empty()) {
-            result.parsed_hunk = nullptr;
-            result.error = right.error;
-            break;
-        } else if (right.parsed_hunk) {
+        if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
                 new Factor{result.parsed_hunk, op, right.parsed_hunk}
             );
+        } else if (!right.error.empty()) {
+            result.parsed_hunk = nullptr;
+            result.error = right.error;
         } else {
             result.parsed_hunk = nullptr;
             result.error = "Expected expression after ";
             result.error.append(op.value);
-            break;
         }
     }
     return result;
@@ -65,25 +67,24 @@ ParseResult Parser::parse_factor() {
 
 ParseResult Parser::parse_exponential() {
     ParseResult result = parse_unary();
-    if (!result.parsed_hunk) return result;
+    if (!result.parsed_hunk)
+        return result;
     std::vector<TreeBase*> items;
     items.push_back(result.parsed_hunk);
-    while (check({TOKEN_EXPONENT})) {
+    while (result.error.empty() && check({TOKEN_EXPONENT})) {
         Token op = consume();
         ParseResult exponent = parse_unary();
         if (exponent.parsed_hunk) {
             items.push_back(exponent.parsed_hunk);
-            continue;
         } else if (!exponent.error.empty()) {
             result.parsed_hunk = nullptr;
             result.error = exponent.error;
-            break;
         } else {
+            result.parsed_hunk = nullptr;
             result.error = "Expected expression after **";
-            break;
         }
     }
-    if (result.error.empty() && items.size() >= 2) {
+    if (result.error.empty()) {
         while (items.size() >= 2) {
             TreeBase* exponent = items.back();
             items.pop_back();
@@ -102,33 +103,31 @@ ParseResult Parser::parse_exponential() {
 }
 
 ParseResult Parser::parse_unary() {
+    if (!check({TOKEN_BANG, TOKEN_MINUS}))
+        return parse_primary();
     ParseResult result;
-    if (check({TOKEN_BANG, TOKEN_MINUS})) {
-        Token op = consume();
-        result = parse_unary();
-        if (!result.error.empty()) {
-            return result;
-        } else if (!result.parsed_hunk) {
-            result.error.append("Expected expression after ");
-            result.error.append(op.value);
-        } else {
-            Unary* unary = new Unary{op, result.parsed_hunk};
-            result.parsed_hunk =
-                reinterpret_cast<TreeBase*>(unary);
-        }
+    Token op = consume();
+    result = parse_unary();
+    if (!result.error.empty()) {
         return result;
+    } else if (!result.parsed_hunk) {
+        result.parsed_hunk = nullptr;
+        result.error.append("Expected expression after ");
+        result.error.append(op.value);
+    } else {
+        Unary* unary = new Unary{op, result.parsed_hunk};
+        result.parsed_hunk =
+            reinterpret_cast<TreeBase*>(unary);
     }
-    return parse_primary();
+    return result;
 }
 
 ParseResult Parser::parse_primary() {
-    ParseResult result;
-    if (check({TOKEN_LEFT_ROUND_BRACE})) {
-        result = parse_grouped_expression();
-        if (!result.error.empty() || result.parsed_hunk)
-            return result;
-    }
-    return parse_literal();
+    return (
+        check({TOKEN_LEFT_ROUND_BRACE}) ?
+        parse_grouped_expression() :
+        parse_literal()
+    );
 }
 
 ParseResult Parser::parse_literal() {
@@ -182,7 +181,6 @@ ParseResult Parser::parse_literal() {
         }
         default: {}
     }
-
     return ParseResult{error, parsed_hunk};
 }
 
