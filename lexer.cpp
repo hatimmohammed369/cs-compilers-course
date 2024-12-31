@@ -154,8 +154,14 @@ SKIP_WHITESPACES:
             break;
         case '<':
             current++;
-            ttype = TOKEN_LESS;
-            value = "<";
+            if (has_next() && *current == '=') {
+                current++;
+                ttype = TOKEN_LESS_EQUAL;
+                value = "<=";
+            } else {
+                ttype = TOKEN_LESS;
+                value = "<";
+            }
             break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
