@@ -12,6 +12,7 @@ public:
     Object* visit_exponential(Exponential* exponential);
     Object* visit_factor(Factor* factor);
     Object* visit_term(Term* term);
+    Object* visit_comparison(Comparison* comparison);
 };
 
 #endif

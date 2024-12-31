@@ -254,3 +254,7 @@ EVALUATE:
     }
     return nullptr;
 }
+
+Object* Interpreter::visit_comparison(Comparison* comparison) {
+    return nullptr;
+}

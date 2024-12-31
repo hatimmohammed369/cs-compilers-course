@@ -10,7 +10,7 @@ std::string Comparison::to_string() const noexcept {
 }
 
 Object* Comparison::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_comparison(this);
 }
 
 std::string Term::to_string() const noexcept {

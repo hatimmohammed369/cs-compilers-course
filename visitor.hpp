@@ -8,6 +8,7 @@ class Unary;
 class Exponential;
 class Factor;
 class Term;
+class Comparison;
 
 class Visitor {
 public:
@@ -18,6 +19,7 @@ public:
     virtual Object* visit_exponential(Exponential* exponential) = 0;
     virtual Object* visit_factor(Factor* factor) = 0;
     virtual Object* visit_term(Term* term) = 0;
+    virtual Object* visit_comparison(Comparison* comparison) = 0;
 };
 
 #endif
