@@ -49,22 +49,6 @@ Number<float64>* Number<T>::operator/(const Number<float64>* other) const noexce
     };
 }
 
-ObjectBoolean* ObjectInteger::operator>(const ObjectInteger* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
-}
-
-ObjectBoolean* ObjectInteger::operator>(const ObjectFloat* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
-}
-
-ObjectBoolean* ObjectFloat::operator>(const ObjectInteger* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
-}
-
-ObjectBoolean* ObjectFloat::operator>(const ObjectFloat* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
-}
-
 // ------------------------- Number -------------------------
 
 // ------------------------- ObjectInteger -------------------------
@@ -111,6 +95,22 @@ ObjectFloat* ObjectInteger::operator-(const ObjectFloat* other) const noexcept {
     return new ObjectFloat {static_cast<float64>(value) - other->get()};
 }
 
+ObjectBoolean* ObjectInteger::operator>=(const ObjectInteger* other) const noexcept {
+    return ObjectBoolean::as_object(value >= other->get());
+}
+
+ObjectBoolean* ObjectInteger::operator>=(const ObjectFloat* other) const noexcept {
+    return ObjectBoolean::as_object(value >= other->get());
+}
+
+ObjectBoolean* ObjectInteger::operator>(const ObjectInteger* other) const noexcept {
+    return ObjectBoolean::as_object(value > other->get());
+}
+
+ObjectBoolean* ObjectInteger::operator>(const ObjectFloat* other) const noexcept {
+    return ObjectBoolean::as_object(value > other->get());
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
@@ -155,6 +155,23 @@ ObjectFloat* ObjectFloat::operator-(const ObjectInteger* other) const noexcept {
 ObjectFloat* ObjectFloat::operator-(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{value - other->get()};
 }
+
+ObjectBoolean* ObjectFloat::operator>(const ObjectInteger* other) const noexcept {
+    return ObjectBoolean::as_object(value > other->get());
+}
+
+ObjectBoolean* ObjectFloat::operator>(const ObjectFloat* other) const noexcept {
+    return ObjectBoolean::as_object(value > other->get());
+}
+
+ObjectBoolean* ObjectFloat::operator>=(const ObjectInteger* other) const noexcept {
+    return ObjectBoolean::as_object(value >= other->get());
+}
+
+ObjectBoolean* ObjectFloat::operator>=(const ObjectFloat* other) const noexcept {
+    return ObjectBoolean::as_object(value >= other->get());
+}
+
 
 // ------------------------- ObjectFloat -------------------------
 
