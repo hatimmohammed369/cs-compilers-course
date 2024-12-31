@@ -29,6 +29,8 @@ public:
     virtual Number* operator-() const noexcept = 0;
     virtual Number* operator*(const ObjectInteger* other) const noexcept = 0;
     virtual Number* operator*(const ObjectFloat* other) const noexcept = 0;
+    ObjectInteger* integer_div(const Number<i64>* other) const noexcept;
+    ObjectInteger* integer_div(const Number<float64>* other) const noexcept;
     ObjectFloat* operator/(const Number<i64>* other) const noexcept;
     ObjectFloat* operator/(const Number<float64>* other) const noexcept;
 };
