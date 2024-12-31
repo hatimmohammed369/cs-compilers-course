@@ -4,6 +4,10 @@
 
 template <typename T>
 ObjectFloat* Number<T>::operator/(const Number<i64>* other) const noexcept {
+    if (!other->get()) {
+        std::cerr << "Division by zero\n";
+        exit(1);
+    }
     return new ObjectFloat {
         static_cast<float64>(get()) / static_cast<float64>(other->get())
     };
@@ -11,6 +15,10 @@ ObjectFloat* Number<T>::operator/(const Number<i64>* other) const noexcept {
 
 template <typename T>
 ObjectFloat* Number<T>::operator/(const Number<float64>* other) const noexcept {
+    if (!other->get()) {
+        std::cerr << "Division by zero\n";
+        exit(1);
+    }
     return new ObjectFloat {
         static_cast<float64>(get()) / static_cast<float64>(other->get())
     };
