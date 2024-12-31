@@ -28,7 +28,8 @@ enum TokenType {
     TOKEN_SLASH = 20,
     TOKEN_DOUBLE_SLASH = 21,
     TOKEN_PERCENT = 22,
-    TOKEN_PLUS = 23
+    TOKEN_PLUS = 23,
+    TOKEN_GREATER = 24
 };
 
 class Token {
@@ -92,6 +93,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "PERCENT";
         case 23:
             return "PLUS";
+        case 24:
+            return "GREATER";
     }
     return "MISSING_CATEGORY" ;
 }

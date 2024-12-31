@@ -141,6 +141,11 @@ SKIP_WHITESPACES:
             ttype = TOKEN_PLUS;
             value = "+";
             break;
+        case '>':
+            current++;
+            ttype = TOKEN_GREATER;
+            value = ">";
+            break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
             else if (isdigit(*current)) {
