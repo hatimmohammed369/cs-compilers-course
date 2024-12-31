@@ -24,6 +24,14 @@ ObjectInteger* Number<T>::integer_div(const Number<float64>* other) const noexce
     };
 }
 
+ObjectInteger* ObjectInteger::operator%(const ObjectInteger* other) const noexcept {
+    if (!other->get()) {
+        std::cerr << "Zero modulus\n";
+        exit(1);
+    }
+    return new ObjectInteger {get() % other->get()};
+}
+
 template <typename T>
 ObjectFloat* Number<T>::operator/(const Number<i64>* other) const noexcept {
     if (!other->get()) {

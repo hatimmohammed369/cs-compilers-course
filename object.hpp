@@ -39,11 +39,12 @@ template class Number<i64>;
 class ObjectInteger: public Number<i64> {
 public:
     using Number::Number;
+    using Number<i64>::operator/;
     std::string to_string() const noexcept override;
     ObjectInteger* operator-() const noexcept override;
     ObjectInteger* operator*(const ObjectInteger* other) const noexcept override;
     ObjectInteger* operator*(const ObjectFloat* other) const noexcept override;
-    using Number<i64>::operator/;
+    ObjectInteger* operator%(const ObjectInteger* other) const noexcept;
     // More integer specific code here later
 };
 
@@ -51,11 +52,11 @@ template class Number<float64>;
 class ObjectFloat: public Number<float64> {
 public:
     using Number::Number;
+    using Number<float64>::operator/;
     std::string to_string() const noexcept override;
     ObjectFloat* operator-() const noexcept override;
     ObjectFloat* operator*(const ObjectInteger* other) const noexcept override;
     ObjectFloat* operator*(const ObjectFloat* other) const noexcept override;
-    using Number<float64>::operator/;
     // More float specific code here later
 };
 
