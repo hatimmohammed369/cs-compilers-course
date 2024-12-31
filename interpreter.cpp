@@ -82,11 +82,12 @@ EVALUATE:
         return new ObjectFloat{
             static_cast<float64>(std::pow(int_base->value, float_exponent->value))
         };
-    } else if (float_base && int_base) {
+    } else if (float_base && int_exponent) {
         return new ObjectFloat{
             static_cast<float64>(std::pow(float_base->value, int_exponent->value))
         };
     }
+    // float_base && float_exponent
     return new ObjectFloat{
         static_cast<float64>(std::pow(float_base->value, float_exponent->value))
     };
