@@ -148,6 +148,15 @@ EVALUATE:
                 return (*left_float) / right_int;
             return (*left_float) / right_float;
         }
+        case TOKEN_DOUBLE_SLASH: {
+            if (left_int && right_int)
+                return left_int->integer_div(right_int);
+            else if (left_int && right_float)
+                return left_int->integer_div(right_float);
+            else if (left_float && right_int)
+                return left_float->integer_div(right_int);
+            return left_float->integer_div(right_float);
+        }
         default: {
             std::cerr << "Invalid binary operator " << factor->op.value << " for numeric operands\n";
             exit(1);
