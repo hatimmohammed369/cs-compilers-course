@@ -143,8 +143,14 @@ SKIP_WHITESPACES:
             break;
         case '>':
             current++;
-            ttype = TOKEN_GREATER;
-            value = ">";
+            if (has_next() && *current == '=') {
+                current++;
+                ttype = TOKEN_GREATER_EQUAL;
+                value = ">=";
+            } else {
+                ttype = TOKEN_GREATER;
+                value = ">";
+            }
             break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
