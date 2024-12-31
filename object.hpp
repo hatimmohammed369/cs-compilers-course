@@ -30,6 +30,7 @@ public:
     Number<float64>* operator/(const Number<float64>* other) const noexcept;
 };
 
+class ObjectBoolean;
 class ObjectFloat;
 
 template class Number<i64>;
@@ -46,6 +47,8 @@ public:
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectInteger* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
+    ObjectBoolean* operator>(const ObjectInteger* other) const noexcept;
+    ObjectBoolean* operator>(const ObjectFloat* other) const noexcept;
     // More integer specific code here later
 };
 
@@ -62,6 +65,8 @@ public:
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectFloat* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
+    ObjectBoolean* operator>(const ObjectInteger* other) const noexcept;
+    ObjectBoolean* operator>(const ObjectFloat* other) const noexcept;
     // More float specific code here later
 };
 
@@ -117,6 +122,10 @@ public:
         static ObjectBoolean* false_obj =
             new ObjectBoolean{false};
         return false_obj;
+    }
+
+    static ObjectBoolean* as_object(bool value) {
+        return (value ? get_true_object() : get_false_object());
     }
 
     std::string to_string() const noexcept override;

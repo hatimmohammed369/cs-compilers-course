@@ -256,5 +256,57 @@ EVALUATE:
 }
 
 Object* Interpreter::visit_comparison(Comparison* comparison) {
+    ObjectInteger *left_int, *right_int;
+    ObjectFloat *left_float, *right_float;
+    left_int =
+        dynamic_cast<ObjectInteger*>(
+            comparison->left_term->accept(this)
+        );
+    if (left_int) goto FIND_RIGHT;
+    left_float =
+        dynamic_cast<ObjectFloat*>(
+            comparison->left_term->accept(this)
+        );
+    if (!left_float) {
+        std::cerr <<
+            "Left operand of operator " <<
+            comparison->op.value <<
+            " is not numeric \n";
+        exit(1);
+    }
+FIND_RIGHT:
+    right_int =
+        dynamic_cast<ObjectInteger*>(
+            comparison->right_term->accept(this)
+        );
+    if (right_int) goto EVALUATE;
+    right_float =
+        dynamic_cast<ObjectFloat*>(
+            comparison->right_term->accept(this)
+        );
+    if (!right_float) {
+        std::cerr <<
+            "right operand of operator " <<
+            comparison->op.value <<
+            " is not numeric \n";
+        exit(1);
+    }
+EVALUATE:
+    switch (comparison->op.ttype) {
+        case TOKEN_GREATER: {
+            if (left_int && right_int)
+                return (*left_int) > right_int;
+            else if (left_int && right_float)
+                return (*left_int) > right_float;
+            else if (left_float && right_int)
+                return (*left_float) > right_int;
+            return (*left_float) > right_float;
+        }
+        default: {
+            std::cerr << "Invalid binary operator " << comparison->op.value << " for numeric operands\n";
+            exit(1);
+        }
+    }
     return nullptr;
 }
+
