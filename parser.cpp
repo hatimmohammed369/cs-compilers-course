@@ -36,7 +36,30 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_expression() {
-    return parse_factor();
+    return parse_term();
+}
+
+ParseResult Parser::parse_term() {
+    ParseResult result = parse_factor();
+    if (!result.error.empty() || !result.parsed_hunk)
+        return result;
+    while (result.error.empty() && check({TOKEN_PLUS})) {
+        Token op = consume();
+        ParseResult right = parse_factor();
+        if (right.parsed_hunk) {
+            result.parsed_hunk = reinterpret_cast<TreeBase*>(
+                new Term{result.parsed_hunk, op, right.parsed_hunk}
+            );
+        } else if (!right.error.empty()) {
+            result.parsed_hunk = nullptr;
+            result.error = right.error;
+        } else {
+            result.parsed_hunk = nullptr;
+            result.error = "Expected expression after ";
+            result.error.append(op.value);
+        }
+    }
+    return result;
 }
 
 ParseResult Parser::parse_factor() {
