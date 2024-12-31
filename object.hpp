@@ -14,6 +14,8 @@ inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
     return os << obj->to_string() ;
 }
 
+class ObjectBoolean;
+
 template <typename T>
 class Number: public Object {
 protected:
@@ -28,16 +30,19 @@ public:
     Number<i64>* integer_div(const Number<float64>* other) const noexcept;
     Number<float64>* operator/(const Number<i64>* other) const noexcept;
     Number<float64>* operator/(const Number<float64>* other) const noexcept;
+    template <typename U>
+    ObjectBoolean* operator>(const Number<U>* other) const noexcept;
 };
+
+template class Number<i64>;
+template class Number<float64>;
 
 class ObjectBoolean;
 class ObjectFloat;
 
-template class Number<i64>;
 class ObjectInteger: public Number<i64> {
 public:
     using Number::Number;
-    using Number<i64>::operator/;
     std::string to_string() const noexcept override;
     ObjectInteger* operator-() const noexcept override;
     ObjectInteger* operator*(const ObjectInteger* other) const noexcept;
@@ -47,8 +52,6 @@ public:
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectInteger* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
-    ObjectBoolean* operator>(const ObjectInteger* other) const noexcept;
-    ObjectBoolean* operator>(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator>=(const ObjectInteger* other) const noexcept;
     ObjectBoolean* operator>=(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator<(const ObjectInteger* other) const noexcept;
@@ -58,11 +61,9 @@ public:
     // More integer specific code here later
 };
 
-template class Number<float64>;
 class ObjectFloat: public Number<float64> {
 public:
     using Number::Number;
-    using Number<float64>::operator/;
     std::string to_string() const noexcept override;
     ObjectFloat* operator-() const noexcept override;
     ObjectFloat* operator*(const ObjectInteger* other) const noexcept;
@@ -71,8 +72,6 @@ public:
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectFloat* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
-    ObjectBoolean* operator>(const ObjectInteger* other) const noexcept;
-    ObjectBoolean* operator>(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator>=(const ObjectInteger* other) const noexcept;
     ObjectBoolean* operator>=(const ObjectFloat* other) const noexcept;
     ObjectBoolean* operator<(const ObjectInteger* other) const noexcept;
@@ -143,5 +142,12 @@ public:
     std::string to_string() const noexcept override;
     bool get() const noexcept;
 };
+
+template <typename T>
+template <typename U>
+ObjectBoolean* Number<T>::operator>(const Number<U>* other) const noexcept {
+    return ObjectBoolean::as_object(value > other->get());
+}
+
 
 #endif

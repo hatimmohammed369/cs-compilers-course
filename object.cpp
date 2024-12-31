@@ -4,7 +4,6 @@
 #include "object.hpp"
 
 // ------------------------- Number -------------------------
-
 template <typename T>
 Number<i64>* Number<T>::integer_div(const Number<i64>* other) const noexcept {
     if (!other->get()) {
@@ -103,14 +102,6 @@ ObjectBoolean* ObjectInteger::operator>=(const ObjectFloat* other) const noexcep
     return ObjectBoolean::as_object(value >= other->get());
 }
 
-ObjectBoolean* ObjectInteger::operator>(const ObjectInteger* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
-}
-
-ObjectBoolean* ObjectInteger::operator>(const ObjectFloat* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
-}
-
 ObjectBoolean* ObjectInteger::operator<(const ObjectInteger* other) const noexcept {
     return ObjectBoolean::as_object(value < other->get());
 }
@@ -170,14 +161,6 @@ ObjectFloat* ObjectFloat::operator-(const ObjectInteger* other) const noexcept {
 
 ObjectFloat* ObjectFloat::operator-(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{value - other->get()};
-}
-
-ObjectBoolean* ObjectFloat::operator>(const ObjectInteger* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
-}
-
-ObjectBoolean* ObjectFloat::operator>(const ObjectFloat* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
 }
 
 ObjectBoolean* ObjectFloat::operator>=(const ObjectInteger* other) const noexcept {
