@@ -25,7 +25,8 @@ enum TokenType {
     TOKEN_MINUS = 17,
     TOKEN_EXPONENT = 18,
     TOKEN_STAR = 19,
-    TOKEN_SLASH = 20
+    TOKEN_SLASH = 20,
+    TOKEN_DOUBLE_SLASH = 21
 };
 
 class Token {
@@ -83,6 +84,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "STAR";
         case 20:
             return "SLASH";
+        case 21:
+            return "DOUBLE_SLASH";
     }
     return "MISSING_CATEGORY" ;
 }

@@ -122,8 +122,14 @@ SKIP_WHITESPACES:
             break;
         case '/':
             current++;
-            ttype = TOKEN_SLASH;
-            value = "/";
+            if (has_next() && *current == '/') {
+                current++;
+                ttype = TOKEN_DOUBLE_SLASH;
+                value = "//";
+            } else {
+                ttype = TOKEN_SLASH;
+                value = "/";
+            }
             break;
         default:
             if (isspace(*current)) goto SKIP_WHITESPACES;
