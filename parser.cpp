@@ -45,7 +45,7 @@ ParseResult Parser::parse_comparison() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_GREATER})
+        check({TOKEN_GREATER, TOKEN_GREATER_EQUAL})
     ) {
         Token op = consume();
         ParseResult right = parse_term();
