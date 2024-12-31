@@ -30,7 +30,8 @@ enum TokenType {
     TOKEN_PERCENT = 22,
     TOKEN_PLUS = 23,
     TOKEN_GREATER = 24,
-    TOKEN_GREATER_EQUAL = 25
+    TOKEN_GREATER_EQUAL = 25,
+    TOKEN_LESS = 26
 };
 
 class Token {
@@ -98,6 +99,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "GREATER";
         case 25:
             return "GREATER_EQUAL";
+        case 26:
+            return "LESS";
     }
     return "MISSING_CATEGORY" ;
 }
