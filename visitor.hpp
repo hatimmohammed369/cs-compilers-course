@@ -7,6 +7,7 @@ class GroupedExpression;
 class Unary;
 class Exponential;
 class Factor;
+class Term;
 
 class Visitor {
 public:
@@ -16,6 +17,7 @@ public:
     virtual Object* visit_unary(Unary* unary) = 0;
     virtual Object* visit_exponential(Exponential* exponential) = 0;
     virtual Object* visit_factor(Factor* factor) = 0;
+    virtual Object* visit_term(Term* term) = 0;
 };
 
 #endif

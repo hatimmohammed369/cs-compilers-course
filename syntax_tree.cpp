@@ -10,7 +10,7 @@ std::string Term::to_string() const noexcept {
 }
 
 Object* Term::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_term(this);
 }
 
 std::string Factor::to_string() const noexcept {
