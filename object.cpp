@@ -3,8 +3,10 @@
 #include <sstream>
 #include "object.hpp"
 
+// ------------------------- Number -------------------------
+
 template <typename T>
-ObjectInteger* Number<T>::integer_div(const Number<i64>* other) const noexcept {
+Number<i64>* Number<T>::integer_div(const Number<i64>* other) const noexcept {
     if (!other->get()) {
         std::cerr << "Division by zero\n";
         exit(1);
@@ -15,13 +17,57 @@ ObjectInteger* Number<T>::integer_div(const Number<i64>* other) const noexcept {
 }
 
 template <typename T>
-ObjectInteger* Number<T>::integer_div(const Number<float64>* other) const noexcept {
+Number<i64>* Number<T>::integer_div(const Number<float64>* other) const noexcept {
     if (!other->get()) {
         std::cerr << "Division by zero\n";
         exit(1);
     }
     return new ObjectInteger {
         static_cast<i64>(get()) / static_cast<i64>(other->get())
+    };
+}
+
+template <typename T>
+Number<float64>* Number<T>::operator/(const Number<i64>* other) const noexcept {
+    if (!other->get()) {
+        std::cerr << "Division by zero\n";
+        exit(1);
+    }
+    return new ObjectFloat {
+        static_cast<float64>(get()) / static_cast<float64>(other->get())
+    };
+}
+
+template <typename T>
+Number<float64>* Number<T>::operator/(const Number<float64>* other) const noexcept {
+    if (!other->get()) {
+        std::cerr << "Division by zero\n";
+        exit(1);
+    }
+    return new ObjectFloat {
+        static_cast<float64>(get()) / static_cast<float64>(other->get())
+    };
+}
+
+// ------------------------- Number -------------------------
+
+// ------------------------- ObjectInteger -------------------------
+
+std::string ObjectInteger::to_string() const noexcept {
+    return std::to_string(value);
+}
+
+ObjectInteger* ObjectInteger::operator-() const noexcept {
+    return new ObjectInteger{-value};
+}
+
+ObjectInteger* ObjectInteger::operator*(const ObjectInteger* other) const noexcept {
+    return new ObjectInteger{value * other->get()};
+}
+
+ObjectFloat* ObjectInteger::operator*(const ObjectFloat* other) const noexcept {
+    return new ObjectFloat{
+        static_cast<float64>(value) * other->get()
     };
 }
 
@@ -41,45 +87,9 @@ ObjectFloat* ObjectInteger::operator+(const ObjectFloat* other) const noexcept {
     return new ObjectFloat {static_cast<float64>(value) + other->get()};
 }
 
-template <typename T>
-ObjectFloat* Number<T>::operator/(const Number<i64>* other) const noexcept {
-    if (!other->get()) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
-    return new ObjectFloat {
-        static_cast<float64>(get()) / static_cast<float64>(other->get())
-    };
-}
+// ------------------------- ObjectInteger -------------------------
 
-template <typename T>
-ObjectFloat* Number<T>::operator/(const Number<float64>* other) const noexcept {
-    if (!other->get()) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
-    return new ObjectFloat {
-        static_cast<float64>(get()) / static_cast<float64>(other->get())
-    };
-}
-
-std::string ObjectInteger::to_string() const noexcept {
-    return std::to_string(value);
-}
-
-ObjectInteger* ObjectInteger::operator-() const noexcept {
-    return new ObjectInteger{-value};
-}
-
-ObjectInteger* ObjectInteger::operator*(const ObjectInteger* other) const noexcept {
-    return new ObjectInteger{value * other->get()};
-}
-
-ObjectInteger* ObjectInteger::operator*(const ObjectFloat* other) const noexcept {
-    return new ObjectInteger{
-        static_cast<i64>(value * other->get())
-    };
-}
+// ------------------------- ObjectFloat -------------------------
 
 std::string ObjectFloat::to_string() const noexcept {
     std::ostringstream oss;
@@ -114,9 +124,17 @@ ObjectFloat* ObjectFloat::operator+(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{value + other->get()};
 }
 
+// ------------------------- ObjectFloat -------------------------
+
+// ------------------------- ObjectVoid -------------------------
+
 std::string ObjectVoid::to_string() const noexcept {
     return ObjectVoid::get_string_value();
 }
+
+// ------------------------- ObjectVoid -------------------------
+
+// ------------------------- ObjectString -------------------------
 
 ObjectString::ObjectString() {
     chars = nullptr;
@@ -153,6 +171,10 @@ size_t ObjectString::length() const noexcept {
     return _length;
 }
 
+// ------------------------- ObjectString -------------------------
+
+// ------------------------- ObjectBoolean -------------------------
+
 std::string ObjectBoolean::to_string() const noexcept {
     return str;
 }
@@ -160,3 +182,5 @@ std::string ObjectBoolean::to_string() const noexcept {
 bool ObjectBoolean::get() const noexcept {
     return value;
 }
+
+// ------------------------- ObjectBoolean -------------------------

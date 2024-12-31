@@ -14,9 +14,6 @@ inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
     return os << obj->to_string() ;
 }
 
-class ObjectInteger;
-class ObjectFloat;
-
 template <typename T>
 class Number: public Object {
 protected:
@@ -24,16 +21,16 @@ protected:
 public:
     friend class Interpreter;
     Number(const T& val): value{val} {}
-    T get() const noexcept {return value;}
+    inline T get() const noexcept {return value;}
     virtual std::string to_string() const noexcept = 0;
     virtual Number* operator-() const noexcept = 0;
-    virtual Number* operator*(const ObjectInteger* other) const noexcept = 0;
-    virtual Number* operator*(const ObjectFloat* other) const noexcept = 0;
-    ObjectInteger* integer_div(const Number<i64>* other) const noexcept;
-    ObjectInteger* integer_div(const Number<float64>* other) const noexcept;
-    ObjectFloat* operator/(const Number<i64>* other) const noexcept;
-    ObjectFloat* operator/(const Number<float64>* other) const noexcept;
+    Number<i64>* integer_div(const Number<i64>* other) const noexcept;
+    Number<i64>* integer_div(const Number<float64>* other) const noexcept;
+    Number<float64>* operator/(const Number<i64>* other) const noexcept;
+    Number<float64>* operator/(const Number<float64>* other) const noexcept;
 };
+
+class ObjectFloat;
 
 template class Number<i64>;
 class ObjectInteger: public Number<i64> {
@@ -42,8 +39,8 @@ public:
     using Number<i64>::operator/;
     std::string to_string() const noexcept override;
     ObjectInteger* operator-() const noexcept override;
-    ObjectInteger* operator*(const ObjectInteger* other) const noexcept override;
-    ObjectInteger* operator*(const ObjectFloat* other) const noexcept override;
+    ObjectInteger* operator*(const ObjectInteger* other) const noexcept;
+    ObjectFloat* operator*(const ObjectFloat* other) const noexcept;
     ObjectInteger* operator%(const ObjectInteger* other) const noexcept;
     ObjectInteger* operator+(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
@@ -57,8 +54,8 @@ public:
     using Number<float64>::operator/;
     std::string to_string() const noexcept override;
     ObjectFloat* operator-() const noexcept override;
-    ObjectFloat* operator*(const ObjectInteger* other) const noexcept override;
-    ObjectFloat* operator*(const ObjectFloat* other) const noexcept override;
+    ObjectFloat* operator*(const ObjectInteger* other) const noexcept;
+    ObjectFloat* operator*(const ObjectFloat* other) const noexcept;
     ObjectFloat* operator+(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     // More float specific code here later
