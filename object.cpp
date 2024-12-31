@@ -33,6 +33,14 @@ ObjectInteger* ObjectInteger::operator%(const ObjectInteger* other) const noexce
     return new ObjectInteger {get() % other->get()};
 }
 
+ObjectInteger* ObjectInteger::operator+(const ObjectInteger* other) const noexcept {
+    return new ObjectInteger {value + other->get()};
+}
+
+ObjectFloat* ObjectInteger::operator+(const ObjectFloat* other) const noexcept {
+    return new ObjectFloat {static_cast<float64>(value) + other->get()};
+}
+
 template <typename T>
 ObjectFloat* Number<T>::operator/(const Number<i64>* other) const noexcept {
     if (!other->get()) {
@@ -96,6 +104,14 @@ ObjectFloat* ObjectFloat::operator*(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{
         static_cast<float64>(value * other->get())
     };
+}
+
+ObjectFloat* ObjectFloat::operator+(const ObjectInteger* other) const noexcept {
+    return new ObjectFloat{value + static_cast<float64>(other->get())};
+}
+
+ObjectFloat* ObjectFloat::operator+(const ObjectFloat* other) const noexcept {
+    return new ObjectFloat{value + other->get()};
 }
 
 std::string ObjectVoid::to_string() const noexcept {
