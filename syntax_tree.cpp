@@ -1,6 +1,18 @@
 #include "syntax_tree.hpp"
 #include <sstream>
 
+std::string Term::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << left_factor->to_string() ;
+    oss << op.value ;
+    oss << right_factor->to_string() ;
+    return oss.str();
+}
+
+Object* Term::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 std::string Factor::to_string() const noexcept {
     std::ostringstream oss;
     oss << left_exponential->to_string() ;
