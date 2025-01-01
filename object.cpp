@@ -324,6 +324,10 @@ ObjectBoolean* ObjectBoolean::operator&&(const ObjectBoolean* other) const noexc
     return ObjectBoolean::as_object(value && other->value);
 }
 
+ObjectBoolean* ObjectBoolean::operator||(const ObjectBoolean* other) const noexcept {
+    return ObjectBoolean::as_object(value || other->value);
+}
+
 ObjectBoolean* ObjectBoolean::to_boolean() const noexcept {
     return ObjectBoolean::as_object(this->value);
 }
