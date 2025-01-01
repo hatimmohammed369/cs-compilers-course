@@ -393,6 +393,23 @@ SKIP_WHITESPACES:
                         }
                     }
 
+                    case 'x': {
+                        // checking for 'xor'
+                        current++;
+
+                        if (*current == 'o') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'r') {
+                            current++;
+                            ttype = TOKEN_LOGICAL_XOR;
+                            value = "xor";
+                            goto RETURN_TOKEN;
+                        } else {
+                            goto INVALID_TOKEN;
+                        }
+                    }
+
                     default: {
                     INVALID_TOKEN:
                         // Any other non-whitespace character
