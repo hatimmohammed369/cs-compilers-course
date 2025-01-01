@@ -78,6 +78,7 @@ public:
     ObjectInteger* operator<<(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator&(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator^(const ObjectInteger* count) const noexcept;
+    ObjectInteger* operator|(const ObjectInteger* count) const noexcept;
     // More integer specific code here later
 };
 
