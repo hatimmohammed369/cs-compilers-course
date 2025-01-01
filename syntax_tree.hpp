@@ -57,15 +57,10 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
-class Exponential: public Expression {
-    TreeBase* base;
-    TreeBase* exponent;
+class Exponential: public Binary {
 public:
-    friend class Interpreter;
-    Exponential(TreeBase* _base, TreeBase* _exponent):
-        base{_base}, exponent{_exponent} {}
-    virtual std::string to_string() const noexcept override;
-    virtual Object* accept(Visitor* visitor) override;
+    using Binary::Binary;
+    Object* accept(Visitor* visitor) override;
 };
 
 class Unary: public Expression {

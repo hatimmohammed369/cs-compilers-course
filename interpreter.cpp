@@ -82,20 +82,20 @@ Object* Interpreter::visit_exponential(Exponential* exponential) {
     ObjectInteger *int_base, *int_exponent;
     ObjectFloat *float_base, *float_exponent;
     int_base =
-        dynamic_cast<ObjectInteger*>(exponential->base->accept(this));
+        dynamic_cast<ObjectInteger*>(exponential->left->accept(this));
     if (int_base) goto FIND_EXPONENT;
     float_base =
-        dynamic_cast<ObjectFloat*>(exponential->base->accept(this));
+        dynamic_cast<ObjectFloat*>(exponential->left->accept(this));
     if (!float_base) {
         std::cerr << "Numeric operator ** used with non-numeric base\n" ;
         exit(1);
     }
 FIND_EXPONENT:
     int_exponent =
-        dynamic_cast<ObjectInteger*>(exponential->exponent->accept(this));
+        dynamic_cast<ObjectInteger*>(exponential->right->accept(this));
     if (int_exponent) goto EVALUATE;
     float_exponent =
-        dynamic_cast<ObjectFloat*>(exponential->exponent->accept(this));
+        dynamic_cast<ObjectFloat*>(exponential->right->accept(this));
     if (!float_exponent) {
         std::cerr << "Numeric operator ** used with non-numeric exponent\n" ;
         exit(1);

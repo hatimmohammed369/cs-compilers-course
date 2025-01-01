@@ -25,14 +25,6 @@ Object* Factor::accept(Visitor* visitor) {
     return visitor->visit_factor(this);
 }
 
-std::string Exponential::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << base->to_string() ;
-    oss << "**" ;
-    oss << exponent->to_string() ;
-    return oss.str();
-}
-
 Object* Exponential::accept(Visitor* visitor) {
     return visitor->visit_exponential(this);
 }

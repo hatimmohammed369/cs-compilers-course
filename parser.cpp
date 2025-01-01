@@ -147,12 +147,14 @@ ParseResult Parser::parse_exponential() {
     ParseResult result = parse_unary();
     if (!result.parsed_hunk)
         return result;
+    std::vector<Token> ops;
     std::vector<TreeBase*> items;
     items.push_back(result.parsed_hunk);
     while (result.error.empty() && check({TOKEN_EXPONENT})) {
         Token op = consume();
         ParseResult exponent = parse_unary();
         if (exponent.parsed_hunk) {
+            ops.push_back(op);
             items.push_back(exponent.parsed_hunk);
         } else if (!exponent.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -170,9 +172,10 @@ ParseResult Parser::parse_exponential() {
             items.pop_back();
             items.push_back(
                 reinterpret_cast<TreeBase*>(
-                    new Exponential{base, exponent}
+                    new Exponential{base, ops.back(), exponent}
                 )
             );
+            ops.pop_back();
         }
         result.parsed_hunk = items.back();
         items.pop_back();
