@@ -13,6 +13,7 @@ class Shift;
 class Equality;
 class BitwiseAnd;
 class BitwiseXor;
+class BitwiseOr;
 
 class Visitor {
 public:
@@ -28,6 +29,7 @@ public:
     virtual Object* visit_equality(Equality* equality) = 0;
     virtual Object* visit_bitwise_and(BitwiseAnd* bitwise_and) = 0;
     virtual Object* visit_bitwise_xor(BitwiseXor* bitwise_xor) = 0;
+    virtual Object* visit_bitwise_or(BitwiseOr* bitwise_or) = 0;
 };
 
 #endif

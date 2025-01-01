@@ -416,4 +416,9 @@ Object* Interpreter::visit_bitwise_xor(BitwiseXor* bitwise_xor) {
         std::cerr << "Applying bitwise xor `^` to non-integer operands\n";
         exit(1);
     }
-    return *left ^ right;}
+    return *left ^ right;
+}
+
+Object* Interpreter::visit_bitwise_or(BitwiseOr* bitwise_or) {
+    return nullptr;
+}
