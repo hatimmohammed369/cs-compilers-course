@@ -24,6 +24,7 @@ public:
     virtual std::string to_string() const noexcept = 0;
     virtual ObjectBoolean* equals(const Object* other) const noexcept = 0;
     inline ObjectType get_tag() const noexcept {return tag;}
+    virtual ObjectBoolean* to_boolean() const noexcept = 0;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
@@ -47,6 +48,7 @@ public:
     Number<i64>* integer_div(const Number<float64>* other) const noexcept;
     Number<float64>* operator/(const Number<i64>* other) const noexcept;
     Number<float64>* operator/(const Number<float64>* other) const noexcept;
+
     template <typename U>
     ObjectBoolean* operator>(const Number<U>* other) const noexcept;
     template <typename U>
@@ -55,6 +57,8 @@ public:
     ObjectBoolean* operator<(const Number<U>* other) const noexcept;
     template <typename U>
     ObjectBoolean* operator<=(const Number<U>* other) const noexcept;
+
+    ObjectBoolean* to_boolean() const noexcept override;
 };
 
 template class Number<i64>;
@@ -115,6 +119,7 @@ public:
 
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;
+    ObjectBoolean* to_boolean() const noexcept override;
 };
 
 class ObjectString: public Object {
@@ -131,6 +136,8 @@ public:
     std::string to_string() const noexcept override;
     const char* get() const noexcept;
     size_t length() const noexcept;
+
+    ObjectBoolean* to_boolean() const noexcept override;
     // More string specific code here later
 };
 
@@ -166,6 +173,8 @@ public:
     ObjectBoolean* operator!() const noexcept;
 
     ObjectBoolean* operator&&(const ObjectBoolean* other) const noexcept;
+
+    ObjectBoolean* to_boolean() const noexcept override;
 };
 
 template <typename T>
