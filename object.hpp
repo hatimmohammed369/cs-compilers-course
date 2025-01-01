@@ -161,8 +161,11 @@ public:
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;
     bool get() const noexcept;
+
     ObjectBoolean* negated() const noexcept;
     ObjectBoolean* operator!() const noexcept;
+
+    ObjectBoolean* operator&&(const ObjectBoolean* other) const noexcept;
 };
 
 template <typename T>

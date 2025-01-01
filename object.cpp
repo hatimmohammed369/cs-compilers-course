@@ -302,4 +302,8 @@ ObjectBoolean* ObjectBoolean::operator!() const noexcept {
     return ObjectBoolean::as_object(!value);
 }
 
+ObjectBoolean* ObjectBoolean::operator&&(const ObjectBoolean* other) const noexcept {
+    return ObjectBoolean::as_object(value && other->value);
+}
+
 // ------------------------- ObjectBoolean -------------------------
