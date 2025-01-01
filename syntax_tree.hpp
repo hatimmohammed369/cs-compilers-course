@@ -48,7 +48,6 @@ public:
 class Term: public Binary {
 public:
     using Binary::Binary;
-    std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };
 

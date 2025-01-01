@@ -17,14 +17,6 @@ Object* Comparison::accept(Visitor* visitor) {
     return visitor->visit_comparison(this);
 }
 
-std::string Term::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << left->to_string() ;
-    oss << op.value ;
-    oss << right->to_string() ;
-    return oss.str();
-}
-
 Object* Term::accept(Visitor* visitor) {
     return visitor->visit_term(this);
 }
