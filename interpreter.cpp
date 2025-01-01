@@ -387,3 +387,18 @@ Object* Interpreter::visit_equality(Equality* equality) {
     return nullptr;
 }
 
+Object* Interpreter::visit_bitwise_and(BitwiseAnd* bitwise_and) {
+    const ObjectInteger* left =
+        dynamic_cast<const ObjectInteger*>(
+            bitwise_and->left->accept(this)
+        );
+    const ObjectInteger* right =
+        dynamic_cast<const ObjectInteger*>(
+            bitwise_and->right->accept(this)
+        );
+    if (!left || !right) {
+        std::cerr << "Applying bitwise and `&` to non-integer operands\n";
+        exit(1);
+    }
+    return *left & right;
+}
