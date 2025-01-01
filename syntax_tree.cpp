@@ -9,6 +9,10 @@ std::string Binary::to_string() const noexcept {
     return oss.str();
 }
 
+Object* LogicalOr::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 Object* LogicalAnd::accept(Visitor* visitor) {
     return visitor->visit_logical_and(this);
 }
