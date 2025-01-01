@@ -32,6 +32,7 @@ public:
     bool check(const std::initializer_list<TokenType>& types) const noexcept;
     ParseResult parse_source();
     ParseResult parse_expression();
+    ParseResult parse_logical_and();
     ParseResult parse_bitwise_xor();
     ParseResult parse_bitwise_or();
     ParseResult parse_bitwise_and();
