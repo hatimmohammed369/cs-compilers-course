@@ -21,14 +21,6 @@ Object* Term::accept(Visitor* visitor) {
     return visitor->visit_term(this);
 }
 
-std::string Factor::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << left_exponential->to_string() ;
-    oss << op.value ;
-    oss << right_exponential->to_string() ;
-    return oss.str();
-}
-
 Object* Factor::accept(Visitor* visitor) {
     return visitor->visit_factor(this);
 }

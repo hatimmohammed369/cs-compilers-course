@@ -125,12 +125,12 @@ Object* Interpreter::visit_factor(Factor* factor) {
     ObjectFloat *left_float, *right_float;
     left_int =
         dynamic_cast<ObjectInteger*>(
-            factor->left_exponential->accept(this)
+            factor->left->accept(this)
         );
     if (left_int) goto FIND_RIGHT;
     left_float =
         dynamic_cast<ObjectFloat*>(
-            factor->left_exponential->accept(this)
+            factor->left->accept(this)
         );
     if (!left_float) {
         std::cerr <<
@@ -142,12 +142,12 @@ Object* Interpreter::visit_factor(Factor* factor) {
 FIND_RIGHT:
     right_int =
         dynamic_cast<ObjectInteger*>(
-            factor->right_exponential->accept(this)
+            factor->right->accept(this)
         );
     if (right_int) goto EVALUATE;
     right_float =
         dynamic_cast<ObjectFloat*>(
-            factor->right_exponential->accept(this)
+            factor->right->accept(this)
         );
     if (!right_float) {
         std::cerr <<
