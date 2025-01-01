@@ -136,6 +136,7 @@ std::string ObjectVoid::to_string() const noexcept {
 }
 
 ObjectBoolean* ObjectVoid::equals(const Object* other) const noexcept {
+    // There is only one (void)
     return ObjectBoolean::as_object(
         other->get_tag() == OBJECT_VOID
     );

@@ -145,6 +145,7 @@ class ObjectBoolean: public Object {
     bool value;
     std::string str;
     ObjectBoolean(bool val) {
+        tag = OBJECT_BOOLEAN;
         value = val;
         str = std::string(val ? "true" : "false");
     }
