@@ -9,6 +9,10 @@ std::string Binary::to_string() const noexcept {
     return oss.str();
 }
 
+Object* BitwiseOr::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 Object* BitwiseXor::accept(Visitor* visitor) {
     return visitor->visit_bitwise_xor(this);
 }
