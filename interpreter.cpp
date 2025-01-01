@@ -363,6 +363,8 @@ Object* Interpreter::visit_shift(Shift* shift) {
     switch (shift->op.ttype) {
         case TOKEN_RIGHT_SHIFT:
             return (*value) >> count;
+        case TOKEN_LEFT_SHIFT:
+            return (*value) << count;
         default: {
             std::cerr << "Invalid shift operator " << shift->op.value << " for numeric operands\n";
             exit(1);

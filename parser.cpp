@@ -71,7 +71,7 @@ ParseResult Parser::parse_shift() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_RIGHT_SHIFT})
+        check({TOKEN_RIGHT_SHIFT, TOKEN_LEFT_SHIFT})
     ) {
         Token op = consume();
         ParseResult right = parse_term();
