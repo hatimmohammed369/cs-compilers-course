@@ -21,14 +21,6 @@ Object* Shift::accept(Visitor* visitor) {
     return visitor->visit_shift(this);
 }
 
-std::string Comparison::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << left->to_string() ;
-    oss << op.value ;
-    oss << right->to_string() ;
-    return oss.str();
-}
-
 Object* Comparison::accept(Visitor* visitor) {
     return visitor->visit_comparison(this);
 }
