@@ -14,6 +14,7 @@ class Equality;
 class BitwiseAnd;
 class BitwiseXor;
 class BitwiseOr;
+class LogicalAnd;
 
 class Visitor {
 public:
@@ -30,6 +31,7 @@ public:
     virtual Object* visit_bitwise_and(BitwiseAnd* bitwise_and) = 0;
     virtual Object* visit_bitwise_xor(BitwiseXor* bitwise_xor) = 0;
     virtual Object* visit_bitwise_or(BitwiseOr* bitwise_or) = 0;
+    virtual Object* visit_logical_and(LogicalAnd* logical_and) = 0;
 };
 
 #endif

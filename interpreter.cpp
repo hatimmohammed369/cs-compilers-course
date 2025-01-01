@@ -432,4 +432,9 @@ Object* Interpreter::visit_bitwise_or(BitwiseOr* bitwise_or) {
         std::cerr << "Applying bitwise or `|` to non-integer operands\n";
         exit(1);
     }
-    return *left | right;}
+    return *left | right;
+}
+
+Object* Interpreter::visit_logical_and(LogicalAnd* logical_and) {
+    return nullptr;
+}
