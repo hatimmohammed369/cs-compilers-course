@@ -1,8 +1,8 @@
+#include <cmath>
 #include "interpreter.hpp"
 #include "common.hpp"
 #include "object.hpp"
 #include "token.hpp"
-#include <cmath>
 
 Object* Interpreter::interpret(TreeBase* tree) {
     return tree->accept(this);

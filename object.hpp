@@ -18,10 +18,12 @@ class ObjectFloat;
 class Object {
 protected:
     ObjectType tag;
+    virtual bool _equals(const Object* other) const noexcept = 0;
 public:
     friend class Interpreter;
     ~Object() {}
     virtual std::string to_string() const noexcept = 0;
+    ObjectBoolean* equals(const Object* other) const noexcept;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
