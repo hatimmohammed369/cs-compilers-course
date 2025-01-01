@@ -56,18 +56,15 @@ SKIP_WHITESPACES:
             break;
         case '!':
             current++;
-            if (*current != '=') {
-                ttype = TOKEN_BANG;
-                value = "!";
-                break;
-            } else if (this->has_next() && *current == '=') {
+            if (this->has_next() && *current == '=') {
                 current++;
                 ttype = TOKEN_LOGICAL_NOT_EQUAL;
                 value = "!=";
-                break;
             } else {
-                goto INVALID_TOKEN;
+                ttype = TOKEN_BANG;
+                value = "!";
             }
+            break;
         case '=':
             current++;
             if (this->has_next() && *current == '=') {
