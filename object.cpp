@@ -6,28 +6,6 @@
 // ------------------------- Number -------------------------
 
 template <typename T>
-Number<i64>* Number<T>::integer_div(const Number<i64>* other) const noexcept {
-    if (!other->get()) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
-    return new ObjectInteger {
-        static_cast<i64>(get()) / other->get()
-    };
-}
-
-template <typename T>
-Number<i64>* Number<T>::integer_div(const Number<float64>* other) const noexcept {
-    if (!other->get()) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
-    return new ObjectInteger {
-        static_cast<i64>(get()) / static_cast<i64>(other->get())
-    };
-}
-
-template <typename T>
 Number<float64>* Number<T>::operator/(const Number<i64>* other) const noexcept {
     if (!other->get()) {
         std::cerr << "Division by zero\n";
