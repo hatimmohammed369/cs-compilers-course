@@ -380,6 +380,19 @@ SKIP_WHITESPACES:
                         }
                     }
 
+                    case 'o': {
+                        // checking for 'or'
+                        current++;
+                        if (*current == 'r') {
+                            current++;
+                            ttype = TOKEN_LOGICAL_OR;
+                            value = "or";
+                            goto RETURN_TOKEN;
+                        } else {
+                            goto INVALID_TOKEN;
+                        }
+                    }
+
                     default: {
                     INVALID_TOKEN:
                         // Any other non-whitespace character

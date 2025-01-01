@@ -20,7 +20,7 @@ enum TokenType {
     TOKEN_LOGICAL_EQUAL = 12, // ==
     TOKEN_LOGICAL_NOT_EQUAL = 13, // !=
     TOKEN_LOGICAL_AND = 14, // and
-    TOKEN_LOGICAL_OR = 15, // ||
+    TOKEN_LOGICAL_OR = 15, // or
     TOKEN_LOGICAL_XOR = 16,
     TOKEN_MINUS = 17,
     TOKEN_EXPONENT = 18,
