@@ -8,7 +8,13 @@ LogicalXor => LogicalOr ( 'xor' LogicalOr )*
 
 LogicalOr => LogicalAnd ( 'or' LogicalAnd )*
 
-LogicalAnd => Equality ( 'and' Equality )*
+LogicalAnd => BitwiseOr ( 'and' BitwiseOr )*
+
+BitwiseOr => BitwiseXor ( '|' BitwiseXor )*
+
+BitwiseXor => BitwiseAnd ( '^' BitwiseAnd )*
+
+BitwiseAnd => Equality ( '&' Equality )*
 
 Equality => Comparison ( ( '!=' | '==' ) Comparison )*
 
