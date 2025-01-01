@@ -3,16 +3,6 @@
 #include <sstream>
 #include "object.hpp"
 
-// ------------------------- Object -------------------------
-
-ObjectBoolean* Object::equals(const Object* other) const noexcept {
-    return ObjectBoolean::as_object(
-        this->tag == other->tag && this->_equals(other)
-    );
-}
-
-// ------------------------- Object -------------------------
-
 // ------------------------- Number -------------------------
 template <typename T>
 Number<i64>* Number<T>::integer_div(const Number<i64>* other) const noexcept {
