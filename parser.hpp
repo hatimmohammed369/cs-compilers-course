@@ -33,6 +33,7 @@ public:
     ParseResult parse_source();
     ParseResult parse_expression();
     ParseResult parse_comparison();
+    ParseResult parse_shift();
     ParseResult parse_term();
     ParseResult parse_factor();
     ParseResult parse_exponential();

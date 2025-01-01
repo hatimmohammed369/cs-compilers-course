@@ -40,12 +40,38 @@ ParseResult Parser::parse_expression() {
 }
 
 ParseResult Parser::parse_comparison() {
-    ParseResult result = parse_term();
+    ParseResult result = parse_shift();
     if (!result.error.empty() || !result.parsed_hunk)
         return result;
     while (
         result.error.empty() &&
         check({TOKEN_GREATER, TOKEN_GREATER_EQUAL, TOKEN_LESS, TOKEN_LESS_EQUAL})
+    ) {
+        Token op = consume();
+        ParseResult right = parse_shift();
+        if (right.parsed_hunk) {
+            result.parsed_hunk = reinterpret_cast<TreeBase*>(
+                new Comparison{result.parsed_hunk, op, right.parsed_hunk}
+            );
+        } else if (!right.error.empty()) {
+            result.parsed_hunk = nullptr;
+            result.error = right.error;
+        } else {
+            result.parsed_hunk = nullptr;
+            result.error = "Expected expression after ";
+            result.error.append(op.value);
+        }
+    }
+    return result;
+}
+
+ParseResult Parser::parse_shift() {
+    ParseResult result = parse_term();
+    if (!result.error.empty() || !result.parsed_hunk)
+        return result;
+    while (
+        result.error.empty() &&
+        check({TOKEN_RIGHT_SHIFT})
     ) {
         Token op = consume();
         ParseResult right = parse_term();
