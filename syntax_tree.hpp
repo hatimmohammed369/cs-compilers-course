@@ -34,13 +34,13 @@ public:
 };
 
 class Shift: public Expression {
-    TreeBase* left_term;
+    TreeBase* expr;
     Token op;
-    TreeBase* right_term;
+    TreeBase* count;
 public:
     friend class Interpreter;
     Shift(TreeBase* lhs, Token _op, TreeBase* rhs):
-        left_term{lhs}, op{_op}, right_term{rhs} {}
+        expr{lhs}, op{_op}, count{rhs} {}
     virtual std::string to_string() const noexcept override;
     virtual Object* accept(Visitor* visitor) override;
 };

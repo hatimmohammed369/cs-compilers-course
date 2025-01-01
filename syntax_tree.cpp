@@ -3,9 +3,9 @@
 
 std::string Shift::to_string() const noexcept {
     std::ostringstream oss;
-    oss << left_term->to_string() ;
+    oss << expr->to_string() ;
     oss << op.value ;
-    oss << right_term->to_string() ;
+    oss << count->to_string() ;
     return oss.str();
 }
 
