@@ -436,5 +436,16 @@ Object* Interpreter::visit_bitwise_or(BitwiseOr* bitwise_or) {
 }
 
 Object* Interpreter::visit_logical_and(LogicalAnd* logical_and) {
-    return nullptr;
-}
+    const ObjectBoolean* left =
+        dynamic_cast<const ObjectBoolean*>(
+            logical_and->left->accept(this)
+        );
+    const ObjectBoolean* right =
+        dynamic_cast<const ObjectBoolean*>(
+            logical_and->right->accept(this)
+        );
+    if (!left || !right) {
+        std::cerr << "Applying logical and `&&` to non-integer operands\n";
+        exit(1);
+    }
+    return *left && right;}
