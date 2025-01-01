@@ -23,6 +23,7 @@ public:
     ~Object() {}
     virtual std::string to_string() const noexcept = 0;
     virtual ObjectBoolean* equals(const Object* other) const noexcept = 0;
+    inline ObjectType get_tag() const noexcept {return tag;}
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
@@ -36,9 +37,12 @@ protected:
 public:
     friend class Interpreter;
     Number(const T& val): value{val} {}
+
+    ObjectBoolean* equals(const Object* other) const noexcept override;
     inline T get() const noexcept {return value;}
-    virtual std::string to_string() const noexcept = 0;
+
     virtual Number* operator-() const noexcept = 0;
+
     Number<i64>* integer_div(const Number<i64>* other) const noexcept;
     Number<i64>* integer_div(const Number<float64>* other) const noexcept;
     Number<float64>* operator/(const Number<i64>* other) const noexcept;
