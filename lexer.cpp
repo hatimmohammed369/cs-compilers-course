@@ -31,28 +31,24 @@ SKIP_WHITESPACES:
     if (!has_next()) return Token{TOKEN_END_OF_FILE, string()};
     switch (*current) {
         case '{':
+            current++;
             ttype = TOKEN_LEFT_CURLY_BRACE;
             value = "{";
-            // Next
-            current++;
             break;
         case '}':
+            current++;
             ttype = TOKEN_RIGHT_CURLY_BRACE;
             value = "}";
-            // Next
-            current++;
             break;
         case '(':
+            current++;
             ttype = TOKEN_LEFT_ROUND_BRACE;
             value = "(";
-            // Next
-            current++;
             break;
         case ')':
+            current++;
             ttype = TOKEN_RIGHT_ROUND_BRACE;
             value = ")";
-            // Next
-            current++;
             break;
         case '!':
             current++;
@@ -68,6 +64,7 @@ SKIP_WHITESPACES:
         case '=':
             current++;
             if (this->has_next() && *current == '=') {
+                current++;
                 ttype = TOKEN_LOGICAL_EQUAL;
                 value = "==";
                 break;
@@ -77,6 +74,7 @@ SKIP_WHITESPACES:
         case '&':
             current++;
             if (this->has_next() && *current == '&') {
+                current++;
                 ttype = TOKEN_LOGICAL_AND;
                 value = "&&";
                 break;
@@ -86,6 +84,7 @@ SKIP_WHITESPACES:
         case '|':
             current++;
             if (this->has_next() && *current == '|') {
+                current++;
                 ttype = TOKEN_LOGICAL_OR;
                 value = "||";
                 break;
@@ -95,6 +94,7 @@ SKIP_WHITESPACES:
         case '^':
             current++;
             if (this->has_next() && *current == '^') {
+                current++;
                 ttype = TOKEN_LOGICAL_XOR;
                 value = "^^";
                 break;
@@ -313,10 +313,10 @@ SKIP_WHITESPACES:
                         }
                         break;
                     }
+
                     case 'v': {
                         // checking for 'void'
                         current++;
-
                         if (*current == 'o') current++;
                         else goto INVALID_TOKEN;
 
@@ -334,6 +334,7 @@ SKIP_WHITESPACES:
                         }
                         break;
                     }
+
                     case 't': {
                         // checking for 'true'
                         current++;
@@ -355,6 +356,7 @@ SKIP_WHITESPACES:
                         }
                         break;
                     }
+
                     case 'f': {
                         // checking for 'false'
                         current++;
@@ -378,6 +380,7 @@ SKIP_WHITESPACES:
                             goto INVALID_TOKEN;
                         }
                     }
+
                     default: {
                     INVALID_TOKEN:
                         // Any other non-whitespace character
