@@ -143,14 +143,21 @@ SKIP_WHITESPACES:
             break;
         case '>':
             current++;
-            if (has_next() && *current == '=') {
-                current++;
-                ttype = TOKEN_GREATER_EQUAL;
-                value = ">=";
-            } else {
-                ttype = TOKEN_GREATER;
-                value = ">";
+            if (has_next()) {
+                if (*current == '=') {
+                    current++;
+                    ttype = TOKEN_GREATER_EQUAL;
+                    value = ">=";
+                    goto RETURN_TOKEN;
+                } else if (*current == '>') {
+                    current++;
+                    ttype = TOKEN_RIGHT_SHIFT;
+                    value = ">>";
+                    goto RETURN_TOKEN;
+                }
             }
+            ttype = TOKEN_GREATER;
+            value = ">";
             break;
         case '<':
             current++;

@@ -33,7 +33,8 @@ enum TokenType {
     TOKEN_GREATER_EQUAL = 25,
     TOKEN_LESS = 26,
     TOKEN_LESS_EQUAL = 27,
-    TOKEN_TILDE = 28
+    TOKEN_TILDE = 28,
+    TOKEN_RIGHT_SHIFT = 29,
 };
 
 class Token {
@@ -107,6 +108,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "LESS_EQUAL";
         case 28:
             return "TILDE";
+        case 29:
+            return "RIGHT_SHIFT";
     }
     return "MISSING_CATEGORY" ;
 }

@@ -12,7 +12,9 @@ LogicalAnd => Equality ( 'and' Equality )*
 
 Equality => Comparison ( ( '!=' | '==' ) Comparison )*
 
-Comparison => Term ( ( '>' | '>=' | '<' | '<=' ) Term )*
+Comparison => Shift ( ( '>' | '>=' | '<' | '<=' ) Shift )*
+
+Shift => Term ( ( '>>' | '<<' ) Term )*
 
 Term => Factor ( ( '-' | '+' ) Factor )*
 
