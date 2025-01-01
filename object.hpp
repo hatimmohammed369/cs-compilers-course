@@ -33,6 +33,7 @@ class Number: public Object {
 protected:
     T value;
 public:
+    friend class Interpreter;
     Number(const T& val): value{val} {}
     inline T get() const noexcept {return value;}
     virtual std::string to_string() const noexcept = 0;
