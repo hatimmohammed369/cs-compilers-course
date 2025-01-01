@@ -387,52 +387,34 @@ Object* Interpreter::visit_equality(Equality* equality) {
     return nullptr;
 }
 
-Object* Interpreter::visit_bitwise_and(BitwiseAnd* bitwise_and) {
+Object* Interpreter::visit_bitwise(Bitwise* bitwise) {
     const ObjectInteger* left =
         dynamic_cast<const ObjectInteger*>(
-            bitwise_and->left->accept(this)
+            bitwise->left->accept(this)
         );
     const ObjectInteger* right =
         dynamic_cast<const ObjectInteger*>(
-            bitwise_and->right->accept(this)
+            bitwise->right->accept(this)
         );
     if (!left || !right) {
-        std::cerr << "Applying bitwise and `&` to non-integer operands\n";
+        std::cerr << "Applying bitwise `"
+            << bitwise->op.value
+            << "` to non-integer operands\n";
         exit(1);
     }
-    return *left & right;
-}
-
-Object* Interpreter::visit_bitwise_xor(BitwiseXor* bitwise_xor) {
-    const ObjectInteger* left =
-        dynamic_cast<const ObjectInteger*>(
-            bitwise_xor->left->accept(this)
-        );
-    const ObjectInteger* right =
-        dynamic_cast<const ObjectInteger*>(
-            bitwise_xor->right->accept(this)
-        );
-    if (!left || !right) {
-        std::cerr << "Applying bitwise xor `^` to non-integer operands\n";
-        exit(1);
+    switch (bitwise->op.ttype) {
+        case TOKEN_BITWISE_XOR:
+            return *left ^ right;
+        case TOKEN_BITWISE_OR:
+            return *left | right;
+        case TOKEN_BITWISE_AND:
+            return *left & right;
+        default: {
+            std::cerr << "Invalid bitwise operator `" << bitwise->op.value << "`\n";
+            exit(1);
+        }
     }
-    return *left ^ right;
-}
-
-Object* Interpreter::visit_bitwise_or(BitwiseOr* bitwise_or) {
-    const ObjectInteger* left =
-        dynamic_cast<const ObjectInteger*>(
-            bitwise_or->left->accept(this)
-        );
-    const ObjectInteger* right =
-        dynamic_cast<const ObjectInteger*>(
-            bitwise_or->right->accept(this)
-        );
-    if (!left || !right) {
-        std::cerr << "Applying bitwise or `|` to non-integer operands\n";
-        exit(1);
-    }
-    return *left | right;
+    return nullptr;
 }
 
 Object* Interpreter::visit_logical_and(LogicalAnd* logical_and) {

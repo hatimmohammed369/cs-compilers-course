@@ -21,16 +21,8 @@ Object* LogicalAnd::accept(Visitor* visitor) {
     return visitor->visit_logical_and(this);
 }
 
-Object* BitwiseOr::accept(Visitor* visitor) {
-    return visitor->visit_bitwise_or(this);
-}
-
-Object* BitwiseXor::accept(Visitor* visitor) {
-    return visitor->visit_bitwise_xor(this);
-}
-
-Object* BitwiseAnd::accept(Visitor* visitor) {
-    return visitor->visit_bitwise_and(this);
+Object* Bitwise::accept(Visitor* visitor) {
+    return visitor->visit_bitwise(this);
 }
 
 Object* Equality::accept(Visitor* visitor) {

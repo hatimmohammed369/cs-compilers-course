@@ -51,19 +51,7 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
-class BitwiseOr: public Binary {
-public:
-    using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
-};
-
-class BitwiseXor: public Binary {
-public:
-    using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
-};
-
-class BitwiseAnd: public Binary {
+class Bitwise: public Binary {
 public:
     using Binary::Binary;
     Object* accept(Visitor* visitor) override;

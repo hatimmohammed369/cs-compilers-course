@@ -129,7 +129,7 @@ ParseResult Parser::parse_bitwise_xor() {
         ParseResult right = parse_bitwise_or();
         if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new BitwiseXor{result.parsed_hunk, op, right.parsed_hunk}
+                new Bitwise{result.parsed_hunk, op, right.parsed_hunk}
             );
         } else if (!right.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -155,7 +155,7 @@ ParseResult Parser::parse_bitwise_or() {
         ParseResult right = parse_bitwise_and();
         if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new BitwiseOr{result.parsed_hunk, op, right.parsed_hunk}
+                new Bitwise{result.parsed_hunk, op, right.parsed_hunk}
             );
         } else if (!right.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -181,7 +181,7 @@ ParseResult Parser::parse_bitwise_and() {
         ParseResult right = parse_equality();
         if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new BitwiseAnd{result.parsed_hunk, op, right.parsed_hunk}
+                new Bitwise{result.parsed_hunk, op, right.parsed_hunk}
             );
         } else if (!right.error.empty()) {
             result.parsed_hunk = nullptr;
