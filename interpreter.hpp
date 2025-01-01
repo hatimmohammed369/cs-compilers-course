@@ -16,6 +16,7 @@ public:
     Object* visit_shift(Shift* shift);
     Object* visit_equality(Equality* equality);
     Object* visit_bitwise_and(BitwiseAnd* bitwise_and);
+    Object* visit_bitwise_xor(BitwiseXor* bitwise_xor);
 };
 
 #endif

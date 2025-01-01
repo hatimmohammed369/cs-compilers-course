@@ -402,3 +402,7 @@ Object* Interpreter::visit_bitwise_and(BitwiseAnd* bitwise_and) {
     }
     return *left & right;
 }
+
+Object* Interpreter::visit_bitwise_xor(BitwiseXor* bitwise_xor) {
+    return nullptr;
+}
