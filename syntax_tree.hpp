@@ -22,12 +22,24 @@ public:
 };
 
 class Comparison: public Expression {
+    TreeBase* left_shift;
+    Token op;
+    TreeBase* right_shift;
+public:
+    friend class Interpreter;
+    Comparison(TreeBase* lhs, Token _op, TreeBase* rhs):
+        left_shift{lhs}, op{_op}, right_shift{rhs} {}
+    virtual std::string to_string() const noexcept override;
+    virtual Object* accept(Visitor* visitor) override;
+};
+
+class Shift: public Expression {
     TreeBase* left_term;
     Token op;
     TreeBase* right_term;
 public:
     friend class Interpreter;
-    Comparison(TreeBase* lhs, Token _op, TreeBase* rhs):
+    Shift(TreeBase* lhs, Token _op, TreeBase* rhs):
         left_term{lhs}, op{_op}, right_term{rhs} {}
     virtual std::string to_string() const noexcept override;
     virtual Object* accept(Visitor* visitor) override;
