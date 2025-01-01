@@ -94,6 +94,10 @@ ObjectFloat* ObjectInteger::operator-(const ObjectFloat* other) const noexcept {
     return new ObjectFloat {static_cast<float64>(value) - other->get()};
 }
 
+ObjectInteger* ObjectFloat::operator~() const noexcept {
+    return new ObjectInteger{~value};
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
