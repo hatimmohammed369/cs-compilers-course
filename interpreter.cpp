@@ -370,14 +370,15 @@ Object* Interpreter::visit_shift(Shift* shift) {
 }
 
 Object* Interpreter::visit_equality(Equality* equality) {
+    const Object* left =
+        equality->left->accept(this);
+    const Object* right =
+        equality->right->accept(this);
     switch (equality->op.ttype) {
-        case TOKEN_LOGICAL_EQUAL: {
-            const Object* left =
-                equality->left->accept(this);
-            const Object* right =
-                equality->right->accept(this);
+        case TOKEN_LOGICAL_EQUAL:
             return left->equals(right);
-        }
+        case TOKEN_LOGICAL_NOT_EQUAL:
+            return left->equals(right)->negated();
         default: {
             std::cerr << "Invalid equality operator " << equality->op.value << '\n' ;
             exit(1);

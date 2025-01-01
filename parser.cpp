@@ -45,7 +45,7 @@ ParseResult Parser::parse_equality() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_LOGICAL_EQUAL})
+        check({TOKEN_LOGICAL_EQUAL, TOKEN_LOGICAL_NOT_EQUAL})
     ) {
         Token op = consume();
         ParseResult right = parse_comparison();
