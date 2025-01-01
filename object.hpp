@@ -4,7 +4,20 @@
 #include <cstring>
 #include "common.hpp"
 
+enum ObjectType {
+    OBJECT_VOID,
+    OBJECT_BOOLEAN,
+    OBJECT_INTEGER,
+    OBJECT_FLOAT,
+    OBJECT_STRING,
+};
+
+class ObjectBoolean;
+class ObjectFloat;
+
 class Object {
+protected:
+    ObjectType tag;
 public:
     friend class Interpreter;
     ~Object() {}
@@ -14,8 +27,6 @@ public:
 inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
     return os << obj->to_string() ;
 }
-
-class ObjectBoolean;
 
 template <typename T>
 class Number: public Object {
@@ -43,12 +54,10 @@ public:
 template class Number<i64>;
 template class Number<float64>;
 
-class ObjectBoolean;
-class ObjectFloat;
-
 class ObjectInteger: public Number<i64> {
 public:
-    using Number::Number;
+    ObjectInteger(const i64& val):
+        Number(val) {tag = OBJECT_INTEGER;}
     std::string to_string() const noexcept override;
     ObjectInteger* operator-() const noexcept override;
     ObjectInteger* operator*(const ObjectInteger* other) const noexcept;
@@ -66,7 +75,8 @@ public:
 
 class ObjectFloat: public Number<float64> {
 public:
-    using Number::Number;
+    ObjectFloat(const float64& val):
+        Number(val) {tag = OBJECT_FLOAT;}
     std::string to_string() const noexcept override;
     ObjectFloat* operator-() const noexcept override;
     ObjectFloat* operator*(const ObjectInteger* other) const noexcept;
@@ -80,7 +90,7 @@ public:
 
 class ObjectVoid: public Object {
 private:
-    ObjectVoid() {} // Only a single object availaible
+    ObjectVoid() {tag = OBJECT_VOID;} // Only a single object availaible
     ObjectVoid(const ObjectVoid&) = delete; // No copy constructor
     ObjectVoid& operator=(const ObjectVoid&) = delete; // No copy assignment
 

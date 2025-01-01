@@ -164,11 +164,13 @@ std::string ObjectVoid::to_string() const noexcept {
 // ------------------------- ObjectString -------------------------
 
 ObjectString::ObjectString() {
+    tag = OBJECT_STRING;
     chars = nullptr;
     _length = 0;
 }
 
 ObjectString::ObjectString(const char* s, size_t len) {
+    tag = OBJECT_STRING;
     chars = new char[len + 1];
     chars[len] = '\0';
     strncpy(chars, s, len);
