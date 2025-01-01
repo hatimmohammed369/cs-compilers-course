@@ -265,6 +265,15 @@ size_t ObjectString::length() const noexcept {
 
 // ------------------------- ObjectBoolean -------------------------
 
+ObjectBoolean* ObjectBoolean::equals(const Object* other) const noexcept {
+    const ObjectBoolean* boolean =
+        dynamic_cast<const ObjectBoolean*>(other);
+    return ObjectBoolean::as_object(
+        other->get_tag() == OBJECT_BOOLEAN &&
+        this->value == boolean->value
+    );
+} 
+
 std::string ObjectBoolean::to_string() const noexcept {
     return str;
 }
