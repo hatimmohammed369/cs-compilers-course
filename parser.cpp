@@ -36,7 +36,33 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_expression() {
-    return parse_bitwise_and();
+    return parse_bitwise_xor();
+}
+
+ParseResult Parser::parse_bitwise_xor() {
+    ParseResult result = parse_bitwise_and();
+    if (!result.error.empty() || !result.parsed_hunk)
+        return result;
+    while (
+        result.error.empty() &&
+        check({TOKEN_BITWISE_XOR})
+    ) {
+        Token op = consume();
+        ParseResult right = parse_bitwise_and();
+        if (right.parsed_hunk) {
+            result.parsed_hunk = reinterpret_cast<TreeBase*>(
+                new BitwiseXor{result.parsed_hunk, op, right.parsed_hunk}
+            );
+        } else if (!right.error.empty()) {
+            result.parsed_hunk = nullptr;
+            result.error = right.error;
+        } else {
+            result.parsed_hunk = nullptr;
+            result.error = "Expected expression after ";
+            result.error.append(op.value);
+        }
+    }
+    return result;
 }
 
 ParseResult Parser::parse_bitwise_and() {
