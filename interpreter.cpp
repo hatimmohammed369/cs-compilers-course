@@ -348,13 +348,13 @@ EVALUATE:
 
 Object* Interpreter::visit_shift(Shift* shift) {
     ObjectInteger* value =
-        dynamic_cast<ObjectInteger*>(shift->expr->accept(this));
+        dynamic_cast<ObjectInteger*>(shift->left->accept(this));
     if (!value) {
         std::cerr << "Can not shift a non-integer value\n";
         exit(1);
     }
     ObjectInteger* count =
-        dynamic_cast<ObjectInteger*>(shift->count->accept(this));
+        dynamic_cast<ObjectInteger*>(shift->right->accept(this));
     if (!count || count->value < 0) {
         std::cerr << "Shift count is negative\n";
         exit(1);

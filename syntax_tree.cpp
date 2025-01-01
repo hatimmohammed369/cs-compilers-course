@@ -9,14 +9,6 @@ std::string Binary::to_string() const noexcept {
     return oss.str();
 }
 
-std::string Shift::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << expr->to_string() ;
-    oss << op.value ;
-    oss << count->to_string() ;
-    return oss.str();
-}
-
 Object* Shift::accept(Visitor* visitor) {
     return visitor->visit_shift(this);
 }

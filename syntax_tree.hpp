@@ -39,16 +39,10 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
-class Shift: public Expression {
-    TreeBase* expr;
-    Token op;
-    TreeBase* count;
+class Shift: public Binary {
 public:
-    friend class Interpreter;
-    Shift(TreeBase* lhs, Token _op, TreeBase* rhs):
-        expr{lhs}, op{_op}, count{rhs} {}
-    virtual std::string to_string() const noexcept override;
-    virtual Object* accept(Visitor* visitor) override;
+    using Binary::Binary;
+    Object* accept(Visitor* visitor) override;
 };
 
 class Term: public Expression {
