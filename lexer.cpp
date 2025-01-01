@@ -311,8 +311,7 @@ SKIP_WHITESPACES:
                         if (*current == 'd') {
                             current++;
                             ttype = TOKEN_VOID;
-                            value.clear();
-                            value.append("void");
+                            value = "void";
                             goto RETURN_TOKEN;
                         } else {
                             goto INVALID_TOKEN;
@@ -333,8 +332,7 @@ SKIP_WHITESPACES:
                         if (*current == 'e') {
                             current++;
                             ttype = TOKEN_TRUE;
-                            value.clear();
-                            value.append("true");
+                            value = "true";
                             goto RETURN_TOKEN;
                         } else {
                             goto INVALID_TOKEN;
@@ -358,8 +356,24 @@ SKIP_WHITESPACES:
                         if (*current == 'e') {
                             current++;
                             ttype = TOKEN_FALSE;
-                            value.clear();
-                            value.append("false");
+                            value = "false";
+                            goto RETURN_TOKEN;
+                        } else {
+                            goto INVALID_TOKEN;
+                        }
+                    }
+
+                    case 'a': {
+                        // checking for 'and'
+                        current++;
+
+                        if (*current == 'n') current++;
+                        else goto INVALID_TOKEN;
+
+                        if (*current == 'd') {
+                            current++;
+                            ttype = TOKEN_LOGICAL_AND;
+                            value = "and";
                             goto RETURN_TOKEN;
                         } else {
                             goto INVALID_TOKEN;
