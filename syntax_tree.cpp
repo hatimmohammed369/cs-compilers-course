@@ -19,9 +19,9 @@ Object* Comparison::accept(Visitor* visitor) {
 
 std::string Term::to_string() const noexcept {
     std::ostringstream oss;
-    oss << left_factor->to_string() ;
+    oss << left->to_string() ;
     oss << op.value ;
-    oss << right_factor->to_string() ;
+    oss << right->to_string() ;
     return oss.str();
 }
 

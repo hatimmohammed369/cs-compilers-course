@@ -205,12 +205,12 @@ Object* Interpreter::visit_term(Term* term) {
     ObjectFloat *left_float, *right_float;
     left_int =
         dynamic_cast<ObjectInteger*>(
-            term->left_factor->accept(this)
+            term->left->accept(this)
         );
     if (left_int) goto FIND_RIGHT;
     left_float =
         dynamic_cast<ObjectFloat*>(
-            term->left_factor->accept(this)
+            term->left->accept(this)
         );
     if (!left_float) {
         std::cerr <<
@@ -222,12 +222,12 @@ Object* Interpreter::visit_term(Term* term) {
 FIND_RIGHT:
     right_int =
         dynamic_cast<ObjectInteger*>(
-            term->right_factor->accept(this)
+            term->right->accept(this)
         );
     if (right_int) goto EVALUATE;
     right_float =
         dynamic_cast<ObjectFloat*>(
-            term->right_factor->accept(this)
+            term->right->accept(this)
         );
     if (!right_float) {
         std::cerr <<

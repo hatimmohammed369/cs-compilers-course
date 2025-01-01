@@ -45,16 +45,11 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
-class Term: public Expression {
-    TreeBase* left_factor;
-    Token op;
-    TreeBase* right_factor;
+class Term: public Binary {
 public:
-    friend class Interpreter;
-    Term(TreeBase* lhs, Token _op, TreeBase* rhs):
-        left_factor{lhs}, op{_op}, right_factor{rhs} {}
-    virtual std::string to_string() const noexcept override;
-    virtual Object* accept(Visitor* visitor) override;
+    using Binary::Binary;
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
 };
 
 class Factor: public Expression {
