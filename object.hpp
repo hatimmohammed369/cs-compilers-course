@@ -148,6 +148,7 @@ public:
 
     std::string to_string() const noexcept override;
     bool get() const noexcept;
+    ObjectBoolean* negated() const noexcept;
 };
 
 template <typename T>

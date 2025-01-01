@@ -212,4 +212,8 @@ bool ObjectBoolean::get() const noexcept {
     return value;
 }
 
+ObjectBoolean* ObjectBoolean::negated() const noexcept {
+    return ObjectBoolean::as_object(!value);
+}
+
 // ------------------------- ObjectBoolean -------------------------

@@ -25,11 +25,7 @@ Object* Interpreter::visit_unary(Unary* unary) {
                 std::cerr << "Unary logical operator ! applied to non-boolean" ;
                 exit(1);
             }
-            return (
-                !obj->get() ?
-                ObjectBoolean::get_true_object() :
-                ObjectBoolean::get_false_object()
-            );
+            return obj->negated();
         }
         case TOKEN_MINUS: {
             Object* expr_value = unary->expr->accept(this);
