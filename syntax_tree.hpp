@@ -33,6 +33,12 @@ public:
     std::string to_string() const noexcept override;
 };
 
+class Equality: public Binary {
+public:
+    using Binary::Binary;
+    Object* accept(Visitor* visitor) override;
+};
+
 class Comparison: public Binary {
 public:
     using Binary::Binary;
