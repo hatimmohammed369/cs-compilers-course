@@ -9,6 +9,10 @@ std::string Binary::to_string() const noexcept {
     return oss.str();
 }
 
+Object* BitwiseAnd::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 Object* Equality::accept(Visitor* visitor) {
     return visitor->visit_equality(this);
 }
