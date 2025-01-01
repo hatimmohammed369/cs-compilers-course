@@ -8,11 +8,11 @@ LogicalXor => LogicalOr ( 'xor' LogicalOr )*
 
 LogicalOr => LogicalAnd ( 'or' LogicalAnd )*
 
-LogicalAnd => BitwiseOr ( 'and' BitwiseOr )*
+LogicalAnd => BitwiseXor ( 'and' BitwiseXor )*
 
-BitwiseOr => BitwiseXor ( '|' BitwiseXor )*
+BitwiseXor => BitwiseOr ( '^' BitwiseOr )*
 
-BitwiseXor => BitwiseAnd ( '^' BitwiseAnd )*
+BitwiseOr => BitwiseAnd ( '|' BitwiseAnd )*
 
 BitwiseAnd => Equality ( '&' Equality )*
 
