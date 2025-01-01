@@ -442,3 +442,7 @@ Object* Interpreter::visit_logical_and(LogicalAnd* logical_and) {
         logical_and->right->accept(this)->to_boolean();
     return *left && right;
 }
+
+Object* Interpreter::visit_logical_or(LogicalOr* logical_or) {
+    return nullptr;
+}
