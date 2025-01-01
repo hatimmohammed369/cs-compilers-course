@@ -404,5 +404,16 @@ Object* Interpreter::visit_bitwise_and(BitwiseAnd* bitwise_and) {
 }
 
 Object* Interpreter::visit_bitwise_xor(BitwiseXor* bitwise_xor) {
-    return nullptr;
-}
+    const ObjectInteger* left =
+        dynamic_cast<const ObjectInteger*>(
+            bitwise_xor->left->accept(this)
+        );
+    const ObjectInteger* right =
+        dynamic_cast<const ObjectInteger*>(
+            bitwise_xor->right->accept(this)
+        );
+    if (!left || !right) {
+        std::cerr << "Applying bitwise xor `^` to non-integer operands\n";
+        exit(1);
+    }
+    return *left ^ right;}

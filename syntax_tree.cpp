@@ -10,7 +10,7 @@ std::string Binary::to_string() const noexcept {
 }
 
 Object* BitwiseXor::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_bitwise_xor(this);
 }
 
 Object* BitwiseAnd::accept(Visitor* visitor) {
