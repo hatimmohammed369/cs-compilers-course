@@ -36,6 +36,9 @@ enum TokenType {
     TOKEN_TILDE = 28,
     TOKEN_RIGHT_SHIFT = 29,
     TOKEN_LEFT_SHIFT = 30,
+    TOKEN_BITWISE_OR = 31, // |
+    TOKEN_BITWISE_XOR = 32, // ^
+    TOKEN_BITWISE_AND = 33, // ^
 };
 
 class Token {
@@ -113,6 +116,12 @@ static const char* token_type_name(const TokenType& ttype) {
             return "RIGHT_SHIFT";
         case 30:
             return "LEFT_SHIT";
+        case 31:
+            return "BITWISE_OR";
+        case 32:
+            return "BITWISE_XOR";
+        case 33:
+            return "BITWISE_AND";
     }
     return "MISSING_CATEGORY" ;
 }

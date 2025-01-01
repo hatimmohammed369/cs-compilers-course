@@ -73,34 +73,19 @@ SKIP_WHITESPACES:
             }
         case '&':
             current++;
-            if (this->has_next() && *current == '&') {
-                current++;
-                ttype = TOKEN_LOGICAL_AND;
-                value = "&&";
-                break;
-            } else {
-                goto INVALID_TOKEN;
-            }
+            ttype = TOKEN_BITWISE_AND;
+            value = "&";
+            break;
         case '|':
             current++;
-            if (this->has_next() && *current == '|') {
-                current++;
-                ttype = TOKEN_LOGICAL_OR;
-                value = "||";
-                break;
-            } else {
-                goto INVALID_TOKEN;
-            }
+            ttype = TOKEN_BITWISE_OR;
+            value = "|";
+            break;
         case '^':
             current++;
-            if (this->has_next() && *current == '^') {
-                current++;
-                ttype = TOKEN_LOGICAL_XOR;
-                value = "^^";
-                break;
-            } else {
-                goto INVALID_TOKEN;
-            }
+            ttype = TOKEN_BITWISE_XOR;
+            value = "^";
+            break;
         case '-':
             current++;
             ttype = TOKEN_MINUS;
