@@ -46,8 +46,8 @@ public:
 
     template <typename U>
     Number<i64>* integer_div(const Number<U>* other) const noexcept;
-    Number<float64>* operator/(const Number<i64>* other) const noexcept;
-    Number<float64>* operator/(const Number<float64>* other) const noexcept;
+    template <typename U>
+    Number<float64>* operator/(const Number<U>* other) const noexcept;
 
     template <typename U>
     ObjectBoolean* operator>(const Number<U>* other) const noexcept;
@@ -187,7 +187,19 @@ Number<i64>* Number<T>::integer_div(const Number<U>* other) const noexcept {
         exit(1);
     }
     return new ObjectInteger {
-        static_cast<i64>(get()) /static_cast<i64>(other->get()) 
+        static_cast<i64>(get()) / static_cast<i64>(other->get()) 
+    };
+}
+
+template <typename T>
+template <typename U>
+Number<float64>* Number<T>::operator/(const Number<U>* other) const noexcept {
+    if (!other->get()) {
+        std::cerr << "Division by zero\n";
+        exit(1);
+    }
+    return new ObjectFloat {
+        static_cast<float64>(get()) / static_cast<float64>(other->get()) 
     };
 }
 

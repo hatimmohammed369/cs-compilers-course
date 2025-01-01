@@ -6,28 +6,6 @@
 // ------------------------- Number -------------------------
 
 template <typename T>
-Number<float64>* Number<T>::operator/(const Number<i64>* other) const noexcept {
-    if (!other->get()) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
-    return new ObjectFloat {
-        static_cast<float64>(get()) / static_cast<float64>(other->get())
-    };
-}
-
-template <typename T>
-Number<float64>* Number<T>::operator/(const Number<float64>* other) const noexcept {
-    if (!other->get()) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
-    return new ObjectFloat {
-        static_cast<float64>(get()) / static_cast<float64>(other->get())
-    };
-}
-
-template <typename T>
 ObjectBoolean* Number<T>::to_boolean() const noexcept {
     // Zero is false
     // Non-zero is true
