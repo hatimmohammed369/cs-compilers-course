@@ -17,17 +17,17 @@ class Logical;
 class Visitor {
 public:
     ~Visitor() = default;
-    virtual Object* visit_literal(Literal* literal) = 0;
-    virtual Object* visit_grouped_expression(GroupedExpression* group) = 0;
-    virtual Object* visit_unary(Unary* unary) = 0;
-    virtual Object* visit_exponential(Exponential* exponential) = 0;
-    virtual Object* visit_factor(Factor* factor) = 0;
-    virtual Object* visit_term(Term* term) = 0;
-    virtual Object* visit_comparison(Comparison* comparison) = 0;
-    virtual Object* visit_shift(Shift* shift) = 0;
-    virtual Object* visit_equality(Equality* equality) = 0;
-    virtual Object* visit_bitwise(Bitwise* bitwise) = 0;
-    virtual Object* visit_logical(Logical* logical) = 0;
+    virtual Object* visit_literal(Literal* tree) = 0;
+    virtual Object* visit_grouped_expression(GroupedExpression* tree) = 0;
+    virtual Object* visit_unary(Unary* tree) = 0;
+    virtual Object* visit_exponential(Exponential* tree) = 0;
+    virtual Object* visit_factor(Factor* tree) = 0;
+    virtual Object* visit_term(Term* tree) = 0;
+    virtual Object* visit_comparison(Comparison* tree) = 0;
+    virtual Object* visit_shift(Shift* tree) = 0;
+    virtual Object* visit_equality(Equality* tree) = 0;
+    virtual Object* visit_bitwise(Bitwise* tree) = 0;
+    virtual Object* visit_logical(Logical* tree) = 0;
 };
 
 #endif
