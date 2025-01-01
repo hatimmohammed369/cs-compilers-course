@@ -15,6 +15,7 @@ public:
     Object* visit_comparison(Comparison* comparison);
     Object* visit_shift(Shift* shift);
     Object* visit_equality(Equality* equality);
+    Object* visit_bitwise_and(BitwiseAnd* bitwise_and);
 };
 
 #endif
