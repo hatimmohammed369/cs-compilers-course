@@ -203,4 +203,26 @@ ObjectBoolean* Number<T>::operator<=(const Number<U>* other) const noexcept {
     return ObjectBoolean::as_object(value <= other->get());
 }
 
+template <typename T>
+ObjectBoolean* Number<T>::equals(const Object* other) const noexcept {
+    if (
+        other->get_tag() != OBJECT_INTEGER &&
+        other->get_tag() != OBJECT_FLOAT
+    )
+        return ObjectBoolean::get_false_object();
+
+    const ObjectInteger* other_int =
+        dynamic_cast<const ObjectInteger*>(other);
+    if (other_int)
+        return ObjectBoolean::as_object(
+            this->value == other_int->get()
+        );
+
+    const ObjectFloat* other_float =
+        dynamic_cast<const ObjectFloat*>(other);
+    return ObjectBoolean::as_object(
+        this->value == other_float->get()
+    );
+}
+
 #endif

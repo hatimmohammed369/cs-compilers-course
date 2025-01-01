@@ -5,50 +5,6 @@
 
 // ------------------------- Number -------------------------
 
-template <>
-ObjectBoolean* Number<i64>::equals(const Object* other) const noexcept {
-    if (
-        other->get_tag() != OBJECT_INTEGER &&
-        other->get_tag() != OBJECT_FLOAT
-    )
-        return ObjectBoolean::get_false_object();
-
-    const ObjectInteger* other_int =
-        dynamic_cast<const ObjectInteger*>(other);
-    if (other_int)
-        return ObjectBoolean::as_object(
-            this->value == other_int->get()
-        );
-
-    const ObjectFloat* other_float =
-        dynamic_cast<const ObjectFloat*>(other);
-    return ObjectBoolean::as_object(
-        this->value == other_float->get()
-    );
-}
-
-template <>
-ObjectBoolean* Number<float64>::equals(const Object* other) const noexcept {
-    if (
-        other->get_tag() != OBJECT_INTEGER &&
-        other->get_tag() != OBJECT_FLOAT
-    )
-        return ObjectBoolean::get_false_object();
-
-    const ObjectInteger* other_int =
-        dynamic_cast<const ObjectInteger*>(other);
-    if (other_int)
-        return ObjectBoolean::as_object(
-            this->value == other_int->get()
-        );
-
-    const ObjectFloat* other_float =
-        dynamic_cast<const ObjectFloat*>(other);
-    return ObjectBoolean::as_object(
-        this->value == other_float->get()
-    );
-}
-
 template <typename T>
 Number<i64>* Number<T>::integer_div(const Number<i64>* other) const noexcept {
     if (!other->get()) {
