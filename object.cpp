@@ -224,7 +224,7 @@ ObjectString::ObjectString(const char* s, size_t len) {
     tag = OBJECT_STRING;
     chars = new char[len + 1];
     chars[len] = '\0';
-    strncpy(chars, s, len);
+    std::strncpy(chars, s, len);
     _length = len;
 }
 
@@ -234,6 +234,16 @@ ObjectString::ObjectString(const std::string& s):
     ObjectString(s.c_str(), s.length()) {}
 
 ObjectString::~ObjectString() {delete chars;}
+
+ObjectBoolean* ObjectString::equals(const Object* other) const noexcept {
+    const ObjectString* str =
+        dynamic_cast<const ObjectString*>(other);
+    return ObjectBoolean::as_object(
+        other->get_tag() == OBJECT_STRING &&
+        this->_length == str->_length &&
+        std::strncmp(this->chars, str->chars, this->_length) == 0
+    );
+} 
 
 std::string ObjectString::to_string() const noexcept {
     std::ostringstream oss;
