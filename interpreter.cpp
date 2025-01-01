@@ -452,5 +452,9 @@ Object* Interpreter::visit_logical_or(LogicalOr* logical_or) {
 }
 
 Object* Interpreter::visit_logical_xor(LogicalXor* logical_xor) {
-    return nullptr;
+    const ObjectBoolean* left =
+        logical_xor->left->accept(this)->to_boolean();
+    const ObjectBoolean* right =
+        logical_xor->right->accept(this)->to_boolean();
+    return left->xor_with(right);
 }
