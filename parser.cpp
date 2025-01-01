@@ -77,7 +77,7 @@ ParseResult Parser::parse_shift() {
         ParseResult right = parse_term();
         if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new Comparison{result.parsed_hunk, op, right.parsed_hunk}
+                new Shift{result.parsed_hunk, op, right.parsed_hunk}
             );
         } else if (!right.error.empty()) {
             result.parsed_hunk = nullptr;
