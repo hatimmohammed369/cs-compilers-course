@@ -36,7 +36,33 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_expression() {
-    return parse_logical_and();
+    return parse_logical_or();
+}
+
+ParseResult Parser::parse_logical_or() {
+    ParseResult result = parse_logical_and();
+    if (!result.error.empty() || !result.parsed_hunk)
+        return result;
+    while (
+        result.error.empty() &&
+        check({TOKEN_LOGICAL_OR})
+    ) {
+        Token op = consume();
+        ParseResult right = parse_logical_and();
+        if (right.parsed_hunk) {
+            result.parsed_hunk = reinterpret_cast<TreeBase*>(
+                new LogicalOr{result.parsed_hunk, op, right.parsed_hunk}
+            );
+        } else if (!right.error.empty()) {
+            result.parsed_hunk = nullptr;
+            result.error = right.error;
+        } else {
+            result.parsed_hunk = nullptr;
+            result.error = "Expected expression after ";
+            result.error.append(op.value);
+        }
+    }
+    return result;
 }
 
 ParseResult Parser::parse_logical_and() {
