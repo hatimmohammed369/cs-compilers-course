@@ -14,6 +14,7 @@ public:
     Object* visit_term(Term* term);
     Object* visit_comparison(Comparison* comparison);
     Object* visit_shift(Shift* shift);
+    Object* visit_equality(Equality* equality);
 };
 
 #endif

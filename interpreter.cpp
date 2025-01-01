@@ -373,3 +373,7 @@ Object* Interpreter::visit_shift(Shift* shift) {
     return nullptr;
 }
 
+Object* Interpreter::visit_equality(Equality* equality) {
+    return nullptr;
+}
+

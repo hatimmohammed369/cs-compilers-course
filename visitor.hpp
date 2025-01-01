@@ -10,6 +10,7 @@ class Factor;
 class Term;
 class Comparison;
 class Shift;
+class Equality;
 
 class Visitor {
 public:
@@ -22,6 +23,7 @@ public:
     virtual Object* visit_term(Term* term) = 0;
     virtual Object* visit_comparison(Comparison* comparison) = 0;
     virtual Object* visit_shift(Shift* shift) = 0;
+    virtual Object* visit_equality(Equality* equality) = 0;
 };
 
 #endif

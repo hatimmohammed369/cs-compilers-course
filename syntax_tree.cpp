@@ -9,6 +9,10 @@ std::string Binary::to_string() const noexcept {
     return oss.str();
 }
 
+Object* Equality::accept(Visitor* visitor) {
+    return visitor->visit_equality(this);
+}
+
 Object* Shift::accept(Visitor* visitor) {
     return visitor->visit_shift(this);
 }
