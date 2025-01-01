@@ -61,6 +61,15 @@ Object* Interpreter::visit_unary(Unary* unary) {
             std::cerr << "Unary logical operator + applied to non-numeric" ;
             exit(1);
         }
+        case TOKEN_TILDE: {
+            ObjectInteger* int_obj =
+                dynamic_cast<ObjectInteger*>(unary->expr->accept(this));
+            if (!int_obj) {
+                std::cerr << "Unary logical operator + applied to non-numeric" ;
+                exit(1);
+            }
+            return ~(*int_obj);
+        }
         default: {
             std::cerr << "Invalid unary operator " << unary->unary_op.value << '\n';
             exit(1);

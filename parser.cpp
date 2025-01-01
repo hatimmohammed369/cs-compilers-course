@@ -155,7 +155,7 @@ ParseResult Parser::parse_exponential() {
 }
 
 ParseResult Parser::parse_unary() {
-    if (!check({TOKEN_BANG, TOKEN_MINUS, TOKEN_PLUS}))
+    if (!check({TOKEN_BANG, TOKEN_MINUS, TOKEN_PLUS, TOKEN_TILDE}))
         return parse_primary();
     ParseResult result;
     Token op = consume();
