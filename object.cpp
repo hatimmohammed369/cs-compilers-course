@@ -155,6 +155,10 @@ ObjectInteger* ObjectInteger::operator&(const ObjectInteger* count) const noexce
     return new ObjectInteger{value & count->value};
 }
 
+ObjectInteger* ObjectInteger::operator^(const ObjectInteger* count) const noexcept {
+    return new ObjectInteger{value ^ count->value};
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
