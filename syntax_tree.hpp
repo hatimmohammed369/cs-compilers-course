@@ -33,6 +33,12 @@ public:
     std::string to_string() const noexcept override;
 };
 
+class BitwiseXor: public Binary {
+public:
+    using Binary::Binary;
+    Object* accept(Visitor* visitor) override;
+};
+
 class BitwiseAnd: public Binary {
 public:
     using Binary::Binary;
