@@ -269,12 +269,12 @@ Object* Interpreter::visit_comparison(Comparison* comparison) {
     ObjectFloat *left_float, *right_float;
     left_int =
         dynamic_cast<ObjectInteger*>(
-            comparison->left_term->accept(this)
+            comparison->left_shift->accept(this)
         );
     if (left_int) goto FIND_RIGHT;
     left_float =
         dynamic_cast<ObjectFloat*>(
-            comparison->left_term->accept(this)
+            comparison->left_shift->accept(this)
         );
     if (!left_float) {
         std::cerr <<
@@ -286,12 +286,12 @@ Object* Interpreter::visit_comparison(Comparison* comparison) {
 FIND_RIGHT:
     right_int =
         dynamic_cast<ObjectInteger*>(
-            comparison->right_term->accept(this)
+            comparison->right_shift->accept(this)
         );
     if (right_int) goto EVALUATE;
     right_float =
         dynamic_cast<ObjectFloat*>(
-            comparison->right_term->accept(this)
+            comparison->right_shift->accept(this)
         );
     if (!right_float) {
         std::cerr <<
@@ -340,6 +340,31 @@ EVALUATE:
         }
         default: {
             std::cerr << "Invalid binary operator " << comparison->op.value << " for numeric operands\n";
+            exit(1);
+        }
+    }
+    return nullptr;
+}
+
+Object* Interpreter::visit_shift(Shift* shift) {
+    ObjectInteger* value =
+        dynamic_cast<ObjectInteger*>(shift->expr->accept(this));
+    if (!value) {
+        std::cerr << "Can not shift a non-integer value\n";
+        exit(1);
+    }
+    ObjectInteger* count =
+        dynamic_cast<ObjectInteger*>(shift->count->accept(this));
+    if (!count || count->value < 0) {
+        std::cerr << "Shift count is negative\n";
+        exit(1);
+    }
+
+    switch (shift->op.ttype) {
+        case TOKEN_RIGHT_SHIFT:
+            return (*value) >> count;
+        default: {
+            std::cerr << "Invalid shift operator " << shift->op.value << " for numeric operands\n";
             exit(1);
         }
     }

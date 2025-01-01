@@ -13,6 +13,7 @@ public:
     Object* visit_factor(Factor* factor);
     Object* visit_term(Term* term);
     Object* visit_comparison(Comparison* comparison);
+    Object* visit_shift(Shift* shift);
 };
 
 #endif

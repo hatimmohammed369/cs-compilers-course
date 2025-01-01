@@ -10,7 +10,7 @@ std::string Shift::to_string() const noexcept {
 }
 
 Object* Shift::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_shift(this);
 }
 
 std::string Comparison::to_string() const noexcept {
