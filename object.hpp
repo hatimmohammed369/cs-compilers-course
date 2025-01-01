@@ -174,6 +174,7 @@ public:
 
     ObjectBoolean* operator&&(const ObjectBoolean* other) const noexcept;
     ObjectBoolean* operator||(const ObjectBoolean* other) const noexcept;
+    ObjectBoolean* xor_with(const ObjectBoolean* other) const noexcept;
 
     ObjectBoolean* to_boolean() const noexcept override;
 };
