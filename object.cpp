@@ -47,7 +47,7 @@ ObjectBoolean* Number<float64>::equals(const Object* other) const noexcept {
     return ObjectBoolean::as_object(
         this->value == other_float->get()
     );
-} 
+}
 
 template <typename T>
 Number<i64>* Number<T>::integer_div(const Number<i64>* other) const noexcept {
@@ -203,6 +203,12 @@ ObjectFloat* ObjectFloat::operator-(const ObjectFloat* other) const noexcept {
 std::string ObjectVoid::to_string() const noexcept {
     return ObjectVoid::get_string_value();
 }
+
+ObjectBoolean* ObjectVoid::equals(const Object* other) const noexcept {
+    return ObjectBoolean::as_object(
+        other->get_tag() == OBJECT_VOID
+    );
+} 
 
 // ------------------------- ObjectVoid -------------------------
 
