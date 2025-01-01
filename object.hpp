@@ -59,6 +59,7 @@ public:
     ObjectInteger* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
     ObjectInteger* operator~() const noexcept;
+    ObjectInteger* operator>>(const ObjectInteger* count) const noexcept;
     // More integer specific code here later
 };
 

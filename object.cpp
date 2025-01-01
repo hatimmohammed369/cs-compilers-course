@@ -98,6 +98,10 @@ ObjectInteger* ObjectInteger::operator~() const noexcept {
     return new ObjectInteger{~value};
 }
 
+ObjectInteger* ObjectInteger::operator>>(const ObjectInteger* count) const noexcept {
+    return new ObjectInteger{value >> count->value};
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
