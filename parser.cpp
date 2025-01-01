@@ -36,7 +36,7 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_expression() {
-    return parse_equality();
+    return parse_bitwise_and();
 }
 
 ParseResult Parser::parse_bitwise_and() {
