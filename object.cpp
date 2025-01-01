@@ -102,6 +102,10 @@ ObjectInteger* ObjectInteger::operator>>(const ObjectInteger* count) const noexc
     return new ObjectInteger{value >> count->value};
 }
 
+ObjectInteger* ObjectInteger::operator<<(const ObjectInteger* count) const noexcept {
+    return new ObjectInteger{value << count->value};
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
