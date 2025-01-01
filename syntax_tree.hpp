@@ -33,19 +33,7 @@ public:
     std::string to_string() const noexcept override;
 };
 
-class LogicalXor: public Binary {
-public:
-    using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
-};
-
-class LogicalOr: public Binary {
-public:
-    using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
-};
-
-class LogicalAnd: public Binary {
+class Logical: public Binary {
 public:
     using Binary::Binary;
     Object* accept(Visitor* visitor) override;

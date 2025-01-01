@@ -51,7 +51,7 @@ ParseResult Parser::parse_logical_xor() {
         ParseResult right = parse_logical_or();
         if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new LogicalXor{result.parsed_hunk, op, right.parsed_hunk}
+                new Logical{result.parsed_hunk, op, right.parsed_hunk}
             );
         } else if (!right.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -77,7 +77,7 @@ ParseResult Parser::parse_logical_or() {
         ParseResult right = parse_logical_and();
         if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new LogicalOr{result.parsed_hunk, op, right.parsed_hunk}
+                new Logical{result.parsed_hunk, op, right.parsed_hunk}
             );
         } else if (!right.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -103,7 +103,7 @@ ParseResult Parser::parse_logical_and() {
         ParseResult right = parse_bitwise_xor();
         if (right.parsed_hunk) {
             result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new LogicalAnd{result.parsed_hunk, op, right.parsed_hunk}
+                new Logical{result.parsed_hunk, op, right.parsed_hunk}
             );
         } else if (!right.error.empty()) {
             result.parsed_hunk = nullptr;

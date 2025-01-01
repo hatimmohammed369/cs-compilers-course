@@ -417,26 +417,23 @@ Object* Interpreter::visit_bitwise(Bitwise* bitwise) {
     return nullptr;
 }
 
-Object* Interpreter::visit_logical_and(LogicalAnd* logical_and) {
+Object* Interpreter::visit_logical(Logical* logical) {
     const ObjectBoolean* left =
-        logical_and->left->accept(this)->to_boolean();
+        logical->left->accept(this)->to_boolean();
     const ObjectBoolean* right =
-        logical_and->right->accept(this)->to_boolean();
-    return *left && right;
+        logical->right->accept(this)->to_boolean();
+    switch (logical->op.ttype) {
+        case TOKEN_LOGICAL_XOR:
+            return left->xor_with(right);
+        case TOKEN_LOGICAL_OR:
+            return *left || right;
+        case TOKEN_LOGICAL_AND:
+            return *left && right;
+        default: {
+            std::cerr << "Invalid logical operator `" << logical->op.value << "`\n";
+            exit(1);
+        }
+    }
+    return nullptr;
 }
 
-Object* Interpreter::visit_logical_or(LogicalOr* logical_or) {
-    const ObjectBoolean* left =
-        logical_or->left->accept(this)->to_boolean();
-    const ObjectBoolean* right =
-        logical_or->right->accept(this)->to_boolean();
-    return *left || right;
-}
-
-Object* Interpreter::visit_logical_xor(LogicalXor* logical_xor) {
-    const ObjectBoolean* left =
-        logical_xor->left->accept(this)->to_boolean();
-    const ObjectBoolean* right =
-        logical_xor->right->accept(this)->to_boolean();
-    return left->xor_with(right);
-}

@@ -12,9 +12,7 @@ class Comparison;
 class Shift;
 class Equality;
 class Bitwise;
-class LogicalAnd;
-class LogicalOr;
-class LogicalXor;
+class Logical;
 
 class Visitor {
 public:
@@ -29,9 +27,7 @@ public:
     virtual Object* visit_shift(Shift* shift) = 0;
     virtual Object* visit_equality(Equality* equality) = 0;
     virtual Object* visit_bitwise(Bitwise* bitwise) = 0;
-    virtual Object* visit_logical_and(LogicalAnd* logical_and) = 0;
-    virtual Object* visit_logical_or(LogicalOr* logical_or) = 0;
-    virtual Object* visit_logical_xor(LogicalXor* logical_xor) = 0;
+    virtual Object* visit_logical(Logical* logical) = 0;
 };
 
 #endif

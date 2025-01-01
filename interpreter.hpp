@@ -16,9 +16,7 @@ public:
     Object* visit_shift(Shift* shift);
     Object* visit_equality(Equality* equality);
     Object* visit_bitwise(Bitwise* bitwise);
-    Object* visit_logical_and(LogicalAnd* logical_and);
-    Object* visit_logical_or(LogicalOr* logical_or);
-    Object* visit_logical_xor(LogicalXor* logical_xor);
+    Object* visit_logical(Logical* logical);
 };
 
 #endif
