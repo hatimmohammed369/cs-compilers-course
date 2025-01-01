@@ -269,12 +269,12 @@ Object* Interpreter::visit_comparison(Comparison* comparison) {
     ObjectFloat *left_float, *right_float;
     left_int =
         dynamic_cast<ObjectInteger*>(
-            comparison->left_shift->accept(this)
+            comparison->left->accept(this)
         );
     if (left_int) goto FIND_RIGHT;
     left_float =
         dynamic_cast<ObjectFloat*>(
-            comparison->left_shift->accept(this)
+            comparison->left->accept(this)
         );
     if (!left_float) {
         std::cerr <<
@@ -286,12 +286,12 @@ Object* Interpreter::visit_comparison(Comparison* comparison) {
 FIND_RIGHT:
     right_int =
         dynamic_cast<ObjectInteger*>(
-            comparison->right_shift->accept(this)
+            comparison->right->accept(this)
         );
     if (right_int) goto EVALUATE;
     right_float =
         dynamic_cast<ObjectFloat*>(
-            comparison->right_shift->accept(this)
+            comparison->right->accept(this)
         );
     if (!right_float) {
         std::cerr <<

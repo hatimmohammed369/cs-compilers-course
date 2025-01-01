@@ -21,16 +21,23 @@ public:
     ~Expression() {}
 };
 
-class Comparison: public Expression {
-    TreeBase* left_shift;
+class Binary: public Expression {
+protected:
+    TreeBase* left;
     Token op;
-    TreeBase* right_shift;
+    TreeBase* right;
 public:
     friend class Interpreter;
-    Comparison(TreeBase* lhs, Token _op, TreeBase* rhs):
-        left_shift{lhs}, op{_op}, right_shift{rhs} {}
-    virtual std::string to_string() const noexcept override;
-    virtual Object* accept(Visitor* visitor) override;
+    Binary(TreeBase* lhs, Token _op, TreeBase* rhs):
+        left{lhs}, op{_op}, right{rhs} {}
+    std::string to_string() const noexcept override;
+};
+
+class Comparison: public Binary {
+public:
+    using Binary::Binary;
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
 };
 
 class Shift: public Expression {

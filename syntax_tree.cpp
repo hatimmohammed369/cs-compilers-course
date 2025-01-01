@@ -1,5 +1,13 @@
-#include "syntax_tree.hpp"
 #include <sstream>
+#include "syntax_tree.hpp"
+
+std::string Binary::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << left->to_string() ;
+    oss << ' ' << op.value << ' ' ;
+    oss << right->to_string() ;
+    return oss.str();
+}
 
 std::string Shift::to_string() const noexcept {
     std::ostringstream oss;
@@ -15,9 +23,9 @@ Object* Shift::accept(Visitor* visitor) {
 
 std::string Comparison::to_string() const noexcept {
     std::ostringstream oss;
-    oss << left_shift->to_string() ;
+    oss << left->to_string() ;
     oss << op.value ;
-    oss << right_shift->to_string() ;
+    oss << right->to_string() ;
     return oss.str();
 }
 
