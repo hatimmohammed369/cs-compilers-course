@@ -161,14 +161,21 @@ SKIP_WHITESPACES:
             break;
         case '<':
             current++;
-            if (has_next() && *current == '=') {
-                current++;
-                ttype = TOKEN_LESS_EQUAL;
-                value = "<=";
-            } else {
-                ttype = TOKEN_LESS;
-                value = "<";
+            if (has_next()) {
+                if (*current == '=') {
+                    current++;
+                    ttype = TOKEN_LESS_EQUAL;
+                    value = "<=";
+                    goto RETURN_TOKEN;
+                } else if (*current == '<') {
+                    current++;
+                    ttype = TOKEN_LEFT_SHIFT;
+                    value = "<<";
+                    goto RETURN_TOKEN;
+                }
             }
+            ttype = TOKEN_LESS;
+            value = "<";
             break;
         case '~':
             current++;

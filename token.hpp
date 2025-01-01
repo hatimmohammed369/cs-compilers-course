@@ -35,6 +35,7 @@ enum TokenType {
     TOKEN_LESS_EQUAL = 27,
     TOKEN_TILDE = 28,
     TOKEN_RIGHT_SHIFT = 29,
+    TOKEN_LEFT_SHIFT = 30,
 };
 
 class Token {
@@ -110,6 +111,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "TILDE";
         case 29:
             return "RIGHT_SHIFT";
+        case 30:
+            return "LEFT_SHIT";
     }
     return "MISSING_CATEGORY" ;
 }
