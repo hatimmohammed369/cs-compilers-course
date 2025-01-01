@@ -60,10 +60,10 @@ SKIP_WHITESPACES:
                 ttype = TOKEN_BANG;
                 value = "!";
                 break;
-            } else if (this->has_next() && *(current+1) == '=') {
-                current += 2;
+            } else if (this->has_next() && *current == '=') {
+                current++;
                 ttype = TOKEN_LOGICAL_NOT_EQUAL;
-                value = "!==";
+                value = "!=";
                 break;
             } else {
                 goto INVALID_TOKEN;
