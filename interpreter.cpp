@@ -450,3 +450,7 @@ Object* Interpreter::visit_logical_or(LogicalOr* logical_or) {
         logical_or->right->accept(this)->to_boolean();
     return *left || right;
 }
+
+Object* Interpreter::visit_logical_xor(LogicalXor* logical_xor) {
+    return nullptr;
+}

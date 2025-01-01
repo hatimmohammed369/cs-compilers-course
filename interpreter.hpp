@@ -20,6 +20,7 @@ public:
     Object* visit_bitwise_or(BitwiseOr* bitwise_or);
     Object* visit_logical_and(LogicalAnd* logical_and);
     Object* visit_logical_or(LogicalOr* logical_or);
+    Object* visit_logical_xor(LogicalXor* logical_xor);
 };
 
 #endif
