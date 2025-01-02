@@ -6,17 +6,18 @@
 class Interpreter: public Visitor {
 public:
     Object* interpret(TreeBase* tree);
-    Object* visit_literal(Literal* literal);
-    Object* visit_grouped_expression(GroupedExpression* group);
-    Object* visit_unary(Unary* unary);
-    Object* visit_exponential(Exponential* exponential);
-    Object* visit_factor(Factor* factor);
-    Object* visit_term(Term* term);
-    Object* visit_comparison(Comparison* comparison);
-    Object* visit_shift(Shift* shift);
-    Object* visit_equality(Equality* equality);
-    Object* visit_bitwise(Bitwise* bitwise);
-    Object* visit_logical(Logical* logical);
+    Object* visit_program(Program* tree);
+    Object* visit_literal(Literal* tree);
+    Object* visit_grouped_expression(GroupedExpression* tree);
+    Object* visit_unary(Unary* tree);
+    Object* visit_exponential(Exponential* tree);
+    Object* visit_factor(Factor* tree);
+    Object* visit_term(Term* tree);
+    Object* visit_comparison(Comparison* tree);
+    Object* visit_shift(Shift* tree);
+    Object* visit_equality(Equality* tree);
+    Object* visit_bitwise(Bitwise* tree);
+    Object* visit_logical(Logical* tree);
 };
 
 #endif
