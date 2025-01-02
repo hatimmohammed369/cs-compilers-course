@@ -196,10 +196,20 @@ Token Lexer::generate_identifier_token() {
     return Token{ttype, value};
 }
 
+Token Lexer::generate_invalid_token() {
+    // Any other non-whitespace character
+    const TokenType ttype = TOKEN_INVALID;
+    string value;
+    while (this->has_next() && !isspace(*current)) {
+        value.push_back(*current);
+        current++;
+    }
+    return Token{ttype, value};
+}
+
 Token Lexer::get_next_token() {
     TokenType ttype;
     string value;
-SKIP_WHITESPACES:
     skip_whitespaces();
     if (!has_next()) return Token{TOKEN_END_OF_FILE, string()};
     switch (*current) {
@@ -242,7 +252,7 @@ SKIP_WHITESPACES:
                 value = "==";
                 break;
             } else {
-                goto INVALID_TOKEN;
+                return generate_invalid_token();
             }
         case '&':
             current++;
@@ -338,9 +348,7 @@ SKIP_WHITESPACES:
             value = "~";
             break;
         default: {
-            if (isspace(*current))
-                goto SKIP_WHITESPACES;
-            else if (isdigit(*current))
+            if (isdigit(*current))
                 return generate_number_token();
             else if (*current == '"')
                 return generate_string_token();
@@ -348,14 +356,6 @@ SKIP_WHITESPACES:
                 return generate_identifier_token();
         }
     }
-INVALID_TOKEN:
-    // Any other non-whitespace character
-    ttype = TOKEN_INVALID;
-    while (this->has_next() && !isspace(*current)) {
-        value.push_back(*current);
-        current++;
-    }
-    if (value.empty()) goto SKIP_WHITESPACES;
 RETURN_TOKEN:
     return Token{ttype, value};
 }

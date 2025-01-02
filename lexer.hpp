@@ -11,6 +11,7 @@ class Lexer {
     inline void skip_whitespaces();
     Token generate_string_token();
     Token generate_identifier_token();
+    Token generate_invalid_token();
 public:
     void init(char* in, size_t source_len);
     void reset();
