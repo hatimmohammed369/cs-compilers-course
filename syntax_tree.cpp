@@ -9,7 +9,7 @@ std::string Program::to_string() const noexcept {
 }
 
 Object* Program::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_program(this);
 }
 
 std::string Binary::to_string() const noexcept {

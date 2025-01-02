@@ -13,10 +13,12 @@ class Shift;
 class Equality;
 class Bitwise;
 class Logical;
+class Program;
 
 class Visitor {
 public:
     ~Visitor() = default;
+    virtual Object* visit_program(Program* tree) = 0;
     virtual Object* visit_literal(Literal* tree) = 0;
     virtual Object* visit_grouped_expression(GroupedExpression* tree) = 0;
     virtual Object* visit_unary(Unary* tree) = 0;

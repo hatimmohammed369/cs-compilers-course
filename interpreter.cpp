@@ -8,6 +8,12 @@ Object* Interpreter::interpret(TreeBase* tree) {
     return tree->accept(this);
 }
 
+Object* Interpreter::visit_program(Program* tree) {
+    for (auto stmt_ptr = tree->statements.begin(); stmt_ptr != tree->statements.end()-1; stmt_ptr++)
+        std::cout << (*stmt_ptr)->accept(this) << '\n' ;
+    return tree->statements.back()->accept(this);
+}
+
 Object* Interpreter::visit_literal(Literal* tree) {
     return tree->value_object;
 }
