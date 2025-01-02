@@ -47,6 +47,7 @@ enum TokenType {
     TOKEN_COLON_EQUAL = 39,
     TOKEN_COMMA = 40,
     TOKEN_SEMI_COLON = 41,
+    TOKEN_NEWLINE = 42,
 };
 
 class Token {
@@ -146,6 +147,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "COMMA";
         case 41:
             return "SEMI_COLON";
+        case 42:
+            return "NEWLINE";
     }
     return "MISSING_CATEGORY" ;
 }
