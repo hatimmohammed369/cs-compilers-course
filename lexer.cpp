@@ -90,11 +90,87 @@ RETURN_TOKEN:
     return Token{ttype, value};
 }
 
+inline void Lexer::skip_whitespaces() {
+    while (this->has_next() && isspace(*current))
+        current++;
+}
+
+Token Lexer::generate_string_token() {
+    TokenType ttype;
+    std::string value;
+    current++;
+    ttype = TOKEN_STRING;
+    while (this->has_next()) {
+        current++;
+        switch (*current) {
+            case '"': goto RETURN_TOKEN;
+            case '\\': {
+                if (!this->has_next()) {
+                    ttype = TOKEN_INVALID;
+                    goto RETURN_TOKEN;
+                }
+                switch (*current) {
+                    case '\\': {
+                        // Quoted slash
+                        value.push_back('\\');
+                        break;
+                    }
+                    case '"': {
+                        // Quoted "
+                        value.push_back('"');
+                        break;
+                    }
+                    case '0': {
+                        // Null character
+                        value.push_back('\0');
+                        break;
+                    }
+                    case 'a': {
+                        value.push_back('\a');
+                        break;
+                    }
+                    case 'b': {
+                        value.push_back('\b');
+                        break;
+                    }
+                    case 'f': {
+                        value.push_back('\f');
+                        break;
+                    }
+                    case 'n': {
+                        value.push_back('\n');
+                        break;
+                    }
+                    case 'r': {
+                        value.push_back('\r');
+                        break;
+                    }
+                    case 't': {
+                        value.push_back('\t');
+                        break;
+                    }
+                    case 'v': {
+                        value.push_back('\v');
+                        break;
+                    }
+                    default: {
+                        ttype = TOKEN_INVALID;
+                        goto RETURN_TOKEN;
+                    }
+                }
+            }
+            default: value.push_back(*current);
+        }
+    }
+RETURN_TOKEN:
+    return Token{ttype, value};
+}
+
 Token Lexer::get_next_token() {
     TokenType ttype;
     string value;
 SKIP_WHITESPACES:
-    while (this->has_next() && isspace(*current)) current++;
+    skip_whitespaces();
     if (!has_next()) return Token{TOKEN_END_OF_FILE, string()};
     switch (*current) {
         case '{':
