@@ -30,19 +30,25 @@ bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcep
 }
 
 ParseResult Parser::parse_source() {
-    Program *source_tree = new Program;
-    ParseResult result = parse_expression();
-    while (
-        result.parsed_hunk &&
-        result.error.empty() && (
-            !current.is_end_marker() ||
-            check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})
-        )
-    ) {
-        // Skip ; or \n
+    // Skip empty lines
+    while (check({TOKEN_NEWLINE}))
         read_next_token();
-        source_tree->statements.push_back(result.parsed_hunk);
+    Program *source_tree = new Program;
+    ParseResult result;
+    while (true) {
         result = parse_expression();
+        if (!result.error.empty() || !result.parsed_hunk)
+            break;
+        source_tree->statements.push_back(result.parsed_hunk);
+        if (check({TOKEN_END_OF_FILE})) {
+            break;
+        } else if (check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
+            read_next_token();
+            result = parse_expression();
+        } else {
+            result.error = "Unexpected item after statement";
+            break;
+        }
     }
     if (result.error.empty())
         result.parsed_hunk = source_tree;
