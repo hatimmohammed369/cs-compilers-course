@@ -27,6 +27,7 @@ public:
 };
 
 class Statement: public TreeBase {
+protected:
     TreeBase* action;
     Token end_token;
 public:
@@ -34,6 +35,15 @@ public:
     friend class Parser;
     Statement(TreeBase* _action, Token _end_token):
         action{_action}, end_token{_end_token} {}
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
+};
+
+class BlockStatement: public Statement {
+public:
+    friend class Interpreter;
+    friend class Parser;
+    using Statement::Statement;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };

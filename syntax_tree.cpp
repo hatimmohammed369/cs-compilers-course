@@ -1,6 +1,18 @@
 #include <sstream>
 #include "syntax_tree.hpp"
 
+std::string BlockStatement::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << "{\n" ;
+    oss << action->to_string() ;
+    oss << "\n}" << end_token.value ;
+    return oss.str();
+}
+
+Object* BlockStatement::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 std::string Statement::to_string() const noexcept {
     std::ostringstream oss;
     oss << action->to_string() ;
