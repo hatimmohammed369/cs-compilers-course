@@ -9,6 +9,8 @@ Object* Interpreter::interpret(TreeBase* tree) {
 }
 
 Object* Interpreter::visit_program(Program* tree) {
+    if (!tree || tree->statements.empty())
+        return nullptr;
     for (auto stmt_ptr = tree->statements.begin(); stmt_ptr != tree->statements.end()-1; stmt_ptr++)
         std::cout << (*stmt_ptr)->accept(this) << '\n' ;
     return tree->statements.back()->accept(this);
