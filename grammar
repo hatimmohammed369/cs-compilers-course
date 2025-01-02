@@ -2,6 +2,10 @@
 
 # CAPITALIZED_ITEMS are regular expressions
 
+VariableDeclaration => type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )* ';'
+
+type => 'int' | 'float' | 'bool' | 'string' | 'void'
+
 Expression => LogicalXor
 
 LogicalXor => LogicalOr ( 'xor' LogicalOr )*
@@ -32,7 +36,7 @@ Unary => ( ( '!' | '-' | '+' | '~' ) Unary ) | Primary
 
 Primary => '(' Expression ')' | Literal
 
-Literal => Void | Boolean | Number | STRING
+Literal => NAME | Void | Boolean | Number | STRING
 
 Void => 'void'
 
