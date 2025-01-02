@@ -7,6 +7,7 @@ class Lexer {
     char* source;
     char* current;
     size_t source_length;
+    Token generate_number_token();
 public:
     void init(char* in, size_t source_len);
     void reset();

@@ -23,6 +23,73 @@ bool Lexer::has_next() {
     return static_cast<size_t>(diff) < source_length;
 }
 
+Token Lexer::generate_number_token() {
+    TokenType ttype;
+    std::string value;
+    // Generate a INTEGER/FLOAT token
+    // Roughly it's: \d+([.]\d+((e|E)[+-]?\d+)?)?
+    ttype = TOKEN_INTEGER;
+
+    // Read digits before decimal point before end of input
+    while (this->has_next() && isdigit(*current)) {
+        value.push_back(*current);
+        current++;
+    }
+
+    if (!this->has_next() || *current != '.') {
+        // We found an integer
+        goto RETURN_TOKEN;
+    }
+
+    // Read decimal point
+    value.push_back('.');
+    // Move over decimal point
+    current++;
+
+    if (!this->has_next() || !isdigit(*current)) {
+        // Invalid numeric literal: no digits after decimal point
+        ttype = TOKEN_INVALID;
+        goto RETURN_TOKEN;
+    }
+
+    ttype = TOKEN_FLOAT;
+    // Read digits after decimal point before end of input
+    while (this->has_next() && isdigit(*current)) {
+        value.push_back(*current);
+        current++;
+    }
+
+    if (!this->has_next() || !(*current == 'e' || *current == 'E')) {
+        // No exponent
+        goto RETURN_TOKEN;
+    }
+
+    // Push e
+    value.push_back(*current);
+    // Move over e
+    current++;
+
+    if (!this->has_next() || !(isdigit(*current) || *current == '+' || *current == '-')) {
+        // Invalid numeric literal: Missing exponent value
+        ttype = TOKEN_INVALID;
+        goto RETURN_TOKEN;
+    }
+
+    // Push exponent sign or first digit after e/E
+    value.push_back(*current);
+    // Move over
+    current++;
+
+    // Read digits after exponent sign
+    while (this->has_next() && isdigit(*current)) {
+        value.push_back(*current);
+        current++;
+    }
+
+RETURN_TOKEN:
+    return Token{ttype, value};
+}
+
 Token Lexer::get_next_token() {
     TokenType ttype;
     string value;
@@ -165,68 +232,11 @@ SKIP_WHITESPACES:
             value = "~";
             break;
         default:
-            if (isspace(*current)) goto SKIP_WHITESPACES;
-            else if (isdigit(*current)) {
-                // Generate a INTEGER/FLOAT token
-                // Roughly it's: \d+([.]\d+((e|E)[+-]?\d+)?)?
-                ttype = TOKEN_INTEGER;
-
-                // Read digits before decimal point before end of input
-                while (this->has_next() && isdigit(*current)) {
-                    value.push_back(*current);
-                    current++;
-                }
-
-                if (!this->has_next() || *current != '.') {
-                    // We found an integer
-                    goto RETURN_TOKEN;
-                }
-
-                // Read decimal point
-                value.push_back('.');
-                // Move over decimal point
-                current++;
-
-                if (!this->has_next() || !isdigit(*current)) {
-                    // Invalid numeric literal: no digits after decimal point
-                    ttype = TOKEN_INVALID;
-                    goto RETURN_TOKEN;
-                }
-
-                ttype = TOKEN_FLOAT;
-                // Read digits after decimal point before end of input
-                while (this->has_next() && isdigit(*current)) {
-                    value.push_back(*current);
-                    current++;
-                }
-
-                if (!this->has_next() || !(*current == 'e' || *current == 'E')) {
-                    // No exponent
-                    goto RETURN_TOKEN;
-                }
-
-                // Push e
-                value.push_back(*current);
-                // Move over e
-                current++;
-
-                if (!this->has_next() || !(isdigit(*current) || *current == '+' || *current == '-')) {
-                    // Invalid numeric literal: Missing exponent value
-                    ttype = TOKEN_INVALID;
-                    goto RETURN_TOKEN;
-                }
-
-                // Push exponent sign or first digit after e/E
-                value.push_back(*current);
-                // Move over
-                current++;
-
-                // Read digits after exponent sign
-                while (this->has_next() && isdigit(*current)) {
-                    value.push_back(*current);
-                    current++;
-                }
-            } else {
+            if (isspace(*current))
+                goto SKIP_WHITESPACES;
+            else if (isdigit(*current))
+                return generate_number_token();
+            else {
                 switch (*current) {
                     case '"':  {
                         current++;
