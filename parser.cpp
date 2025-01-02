@@ -35,23 +35,29 @@ ParseResult Parser::parse_source() {
         read_next_token();
     Program *source_tree = new Program;
     ParseResult result;
-    while (true) {
-        result = parse_expression();
+    while (!check({TOKEN_END_OF_FILE})) {
+        result = parse_statement();
         if (!result.error.empty() || !result.parsed_hunk)
             break;
         source_tree->statements.push_back(result.parsed_hunk);
-        if (check({TOKEN_END_OF_FILE})) {
-            break;
-        } else if (check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
-            read_next_token();
-            result = parse_expression();
-        } else {
-            result.error = "Unexpected item after statement";
-            break;
-        }
     }
     if (result.error.empty())
         result.parsed_hunk = source_tree;
+    return result;
+}
+
+ParseResult Parser::parse_statement() {
+    ParseResult result = parse_expression();
+    if (check({TOKEN_END_OF_FILE}) || !result.error.empty()) {
+        return result;
+    } else if (!check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
+        result.parsed_hunk = nullptr;
+        result.error = "Unexpected item";
+    } else {
+        Token end_token = consume();
+        result.parsed_hunk =
+            new Statement{result.parsed_hunk, end_token};
+    }
     return result;
 }
 

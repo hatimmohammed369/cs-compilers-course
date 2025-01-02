@@ -31,6 +31,7 @@ public:
     Token consume();
     bool check(const std::initializer_list<TokenType>& types) const noexcept;
     ParseResult parse_source();
+    ParseResult parse_statement();
     ParseResult parse_expression();
     ParseResult parse_logical_xor();
     ParseResult parse_logical_or();
