@@ -17,7 +17,7 @@ Object* Interpreter::visit_program(Program* tree) {
 }
 
 Object* Interpreter::visit_statement(Statement* tree) {
-    const Object* eval =
+    Object* eval =
         tree->action->accept(this);
     switch (tree->end_token.ttype) {
         case TOKEN_SEMI_COLON:
