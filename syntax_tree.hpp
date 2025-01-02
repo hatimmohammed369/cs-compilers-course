@@ -26,6 +26,18 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
+class Statement: public TreeBase {
+    TreeBase* action;
+    Token end_token;
+public:
+    friend class Interpreter;
+    friend class Parser;
+    Statement(TreeBase* _action, Token _end_token):
+        action{_action}, end_token{_end_token} {}
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
+};
+
 class Expression: public TreeBase {
 public:
     ~Expression() {}

@@ -1,6 +1,17 @@
 #include <sstream>
 #include "syntax_tree.hpp"
 
+std::string Statement::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << action->to_string() ;
+    oss << end_token.value ;
+    return oss.str();
+}
+
+Object* Statement::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 std::string Program::to_string() const noexcept {
     std::ostringstream oss;
     for (TreeBase* stmt : statements)
