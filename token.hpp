@@ -45,6 +45,7 @@ enum TokenType {
     TOKEN_KEYWORD_BOOL = 37,
     TOKEN_KEYWORD_STRING = 38,
     TOKEN_COLON_EQUAL = 39,
+    TOKEN_COMMA = 40,
 };
 
 class Token {
@@ -140,6 +141,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "KEYWORD_STRING";
         case 39:
             return "COLON_EQUAL";
+        case 40:
+            return "COMMA";
     }
     return "MISSING_CATEGORY" ;
 }

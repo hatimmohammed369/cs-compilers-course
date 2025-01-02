@@ -213,6 +213,11 @@ Token Lexer::get_next_token() {
     skip_whitespaces();
     if (!has_next()) return Token{TOKEN_END_OF_FILE, string()};
     switch (*current) {
+        case ',':
+            current++;
+            ttype = TOKEN_COMMA;
+            value = ",";
+            break;
         case ':':
             current++;
             if (has_next() && *current == '=') {
