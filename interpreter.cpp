@@ -16,6 +16,22 @@ Object* Interpreter::visit_program(Program* tree) {
     return tree->statements.back()->accept(this);
 }
 
+Object* Interpreter::visit_statement(Statement* tree) {
+    const Object* eval =
+        tree->action->accept(this);
+    switch (tree->end_token.ttype) {
+        case TOKEN_SEMI_COLON:
+            return ObjectVoid::get_void_object();
+        case TOKEN_NEWLINE:
+            return eval;
+        default: {
+            std::cerr << "Invalid statement end token " << tree->end_token.ttype << '\n' ;
+            exit(1);
+        }
+    }
+    return nullptr;
+}
+
 Object* Interpreter::visit_literal(Literal* tree) {
     return tree->value_object;
 }

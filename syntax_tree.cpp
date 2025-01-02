@@ -9,7 +9,7 @@ std::string Statement::to_string() const noexcept {
 }
 
 Object* Statement::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_statement(this);
 }
 
 std::string Program::to_string() const noexcept {

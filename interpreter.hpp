@@ -7,6 +7,7 @@ class Interpreter: public Visitor {
 public:
     Object* interpret(TreeBase* tree);
     Object* visit_program(Program* tree);
+    Object* visit_statement(Statement* tree);
     Object* visit_literal(Literal* tree);
     Object* visit_grouped_expression(GroupedExpression* tree);
     Object* visit_unary(Unary* tree);
