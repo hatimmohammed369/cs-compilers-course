@@ -166,6 +166,36 @@ RETURN_TOKEN:
     return Token{ttype, value};
 }
 
+Token Lexer::generate_identifier_token() {
+    TokenType ttype = TOKEN_IDENTIFIER;
+    std::string value;
+    while (has_next() && std::isalnum(*current)) {
+        value.push_back(*current);
+        current++;
+    }
+    if (std::strcmp(value.c_str(), "and") == 0)
+        ttype = TOKEN_KEYWORD_AND;
+    else if (std::strcmp(value.c_str(), "bool") == 0)
+        ttype = TOKEN_KEYWORD_BOOL;
+    else if (std::strcmp(value.c_str(), "false") == 0)
+        ttype = TOKEN_KEYWORD_FALSE;
+    else if (std::strcmp(value.c_str(), "float") == 0)
+        ttype = TOKEN_KEYWORD_FLOAT;
+    else if (std::strcmp(value.c_str(), "int") == 0)
+        ttype = TOKEN_KEYWORD_INT;
+    else if (std::strcmp(value.c_str(), "or") == 0)
+        ttype = TOKEN_KEYWORD_OR;
+    else if (std::strcmp(value.c_str(), "string") == 0)
+        ttype = TOKEN_KEYWORD_STRING;
+    else if (std::strcmp(value.c_str(), "true") == 0)
+        ttype = TOKEN_KEYWORD_TRUE;
+    else if (std::strcmp(value.c_str(), "void") == 0)
+        ttype = TOKEN_KEYWORD_VOID;
+    else if (std::strcmp(value.c_str(), "xor") == 0)
+        ttype = TOKEN_KEYWORD_XOR;
+    return Token{ttype, value};
+}
+
 Token Lexer::get_next_token() {
     TokenType ttype;
     string value;
@@ -307,139 +337,25 @@ SKIP_WHITESPACES:
             ttype = TOKEN_TILDE;
             value = "~";
             break;
-        default:
+        default: {
             if (isspace(*current))
                 goto SKIP_WHITESPACES;
             else if (isdigit(*current))
                 return generate_number_token();
-            else {
-                switch (*current) {
-                    case '"':  return generate_string_token();
-
-                    case 'v': {
-                        // checking for 'void'
-                        current++;
-                        if (*current == 'o') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'i') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'd') {
-                            current++;
-                            ttype = TOKEN_KEYWORD_VOID;
-                            value = "void";
-                            goto RETURN_TOKEN;
-                        } else {
-                            goto INVALID_TOKEN;
-                        }
-                        break;
-                    }
-
-                    case 't': {
-                        // checking for 'true'
-                        current++;
-
-                        if (*current == 'r') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'u') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'e') {
-                            current++;
-                            ttype = TOKEN_KEYWORD_TRUE;
-                            value = "true";
-                            goto RETURN_TOKEN;
-                        } else {
-                            goto INVALID_TOKEN;
-                        }
-                        break;
-                    }
-
-                    case 'f': {
-                        // checking for 'false'
-                        current++;
-
-                        if (*current == 'a') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'l') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 's') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'e') {
-                            current++;
-                            ttype = TOKEN_KEYWORD_FALSE;
-                            value = "false";
-                            goto RETURN_TOKEN;
-                        } else {
-                            goto INVALID_TOKEN;
-                        }
-                    }
-
-                    case 'a': {
-                        // checking for 'and'
-                        current++;
-
-                        if (*current == 'n') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'd') {
-                            current++;
-                            ttype = TOKEN_KEYWORD_AND;
-                            value = "and";
-                            goto RETURN_TOKEN;
-                        } else {
-                            goto INVALID_TOKEN;
-                        }
-                    }
-
-                    case 'o': {
-                        // checking for 'or'
-                        current++;
-                        if (*current == 'r') {
-                            current++;
-                            ttype = TOKEN_KEYWORD_OR;
-                            value = "or";
-                            goto RETURN_TOKEN;
-                        } else {
-                            goto INVALID_TOKEN;
-                        }
-                    }
-
-                    case 'x': {
-                        // checking for 'xor'
-                        current++;
-
-                        if (*current == 'o') current++;
-                        else goto INVALID_TOKEN;
-
-                        if (*current == 'r') {
-                            current++;
-                            ttype = TOKEN_KEYWORD_XOR;
-                            value = "xor";
-                            goto RETURN_TOKEN;
-                        } else {
-                            goto INVALID_TOKEN;
-                        }
-                    }
-
-                    default: {
-                    INVALID_TOKEN:
-                        // Any other non-whitespace character
-                        ttype = TOKEN_INVALID;
-                        while (this->has_next() && !isspace(*current)) {
-                            value.push_back(*current);
-                            current++;
-                        }
-                        if (value.empty()) goto SKIP_WHITESPACES;
-                    }
-                }
-            }
+            else if (*current == '"')
+                return generate_string_token();
+            else
+                return generate_identifier_token();
+        }
     }
+INVALID_TOKEN:
+    // Any other non-whitespace character
+    ttype = TOKEN_INVALID;
+    while (this->has_next() && !isspace(*current)) {
+        value.push_back(*current);
+        current++;
+    }
+    if (value.empty()) goto SKIP_WHITESPACES;
 RETURN_TOKEN:
     return Token{ttype, value};
 }

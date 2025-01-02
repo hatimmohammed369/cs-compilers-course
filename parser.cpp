@@ -397,7 +397,7 @@ ParseResult Parser::parse_literal() {
     std::string error;
     TreeBase* parsed_hunk = nullptr;
     switch (current.ttype) {
-        case TOKEN_VOID: {
+        case TOKEN_KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
             Literal* void_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};

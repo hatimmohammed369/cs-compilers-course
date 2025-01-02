@@ -1,7 +1,6 @@
 #ifndef OBJECT_H_INCLUDED
 #define OBJECT_H_INCLUDED
 
-#include <cstring>
 #include "common.hpp"
 
 enum ObjectType {

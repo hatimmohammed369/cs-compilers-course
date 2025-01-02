@@ -10,6 +10,7 @@ class Lexer {
     Token generate_number_token();
     inline void skip_whitespaces();
     Token generate_string_token();
+    Token generate_identifier_token();
 public:
     void init(char* in, size_t source_len);
     void reset();
