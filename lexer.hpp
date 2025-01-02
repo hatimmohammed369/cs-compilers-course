@@ -7,6 +7,8 @@ class Lexer {
     char* source;
     char* current;
     size_t source_length;
+    size_t line = 1;
+
     Token generate_number_token();
     inline void skip_whitespaces();
     Token generate_string_token();

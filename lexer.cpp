@@ -91,11 +91,10 @@ RETURN_TOKEN:
 }
 
 inline void Lexer::skip_whitespaces() {
-    while (
-        this->has_next() &&
-        (*current != '\n' && isspace(*current))
-    )
+    while (has_next() && std::isspace(*current)) {
         current++;
+        if (has_next() && *current == '\n') line++;
+    }
 }
 
 Token Lexer::generate_string_token() {
@@ -213,8 +212,12 @@ Token Lexer::generate_invalid_token() {
 Token Lexer::get_next_token() {
     TokenType ttype;
     string value;
+    size_t old_line = line;
     skip_whitespaces();
-    if (!has_next()) return Token{TOKEN_END_OF_FILE, string()};
+    if (!has_next())
+        return Token{TOKEN_END_OF_FILE, string()};
+    else if (old_line < line)
+        return Token{TOKEN_NEWLINE, std::string("\n")};
     switch (*current) {
         case '\n':
             current++;
