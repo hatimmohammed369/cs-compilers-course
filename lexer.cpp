@@ -91,7 +91,10 @@ RETURN_TOKEN:
 }
 
 inline void Lexer::skip_whitespaces() {
-    while (this->has_next() && isspace(*current))
+    while (
+        this->has_next() &&
+        (*current != '\n' && isspace(*current))
+    )
         current++;
 }
 

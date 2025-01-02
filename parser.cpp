@@ -30,9 +30,23 @@ bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcep
 }
 
 ParseResult Parser::parse_source() {
-    if (current.is_end_marker())
-        return ParseResult{};
-    return parse_expression();
+    Program *source_tree = new Program;
+    ParseResult result = parse_expression();
+    while (
+        result.parsed_hunk &&
+        result.error.empty() && (
+            !current.is_end_marker() ||
+            check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})
+        )
+    ) {
+        // Skip ; or \n
+        read_next_token();
+        source_tree->statements.push_back(result.parsed_hunk);
+        result = parse_expression();
+    }
+    if (result.error.empty())
+        result.parsed_hunk = source_tree;
+    return result;
 }
 
 ParseResult Parser::parse_expression() {

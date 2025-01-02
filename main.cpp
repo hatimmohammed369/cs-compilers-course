@@ -42,7 +42,8 @@ int main(int argc, char* argv[]) {
         // Read total file size
         u64 file_size = input_file.tellg();
         // Allocate enough space to hold file contents
-        char* input = new char[file_size];
+        char* input = new char[file_size + 1];
+        input[file_size] = '\0';
         // Seek back to beginning of file to start contents copy
         input_file.seekg(0, std::ios::beg);
         // Read all characters
