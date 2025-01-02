@@ -327,7 +327,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'd') {
                             current++;
-                            ttype = TOKEN_VOID;
+                            ttype = TOKEN_KEYWORD_VOID;
                             value = "void";
                             goto RETURN_TOKEN;
                         } else {

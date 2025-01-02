@@ -10,7 +10,7 @@ enum TokenType {
     TOKEN_FLOAT = 2,
     TOKEN_LEFT_CURLY_BRACE = 3,
     TOKEN_RIGHT_CURLY_BRACE = 4,
-    TOKEN_VOID = 5,
+    TOKEN_KEYWORD_VOID = 5,
     TOKEN_TRUE = 6,
     TOKEN_FALSE = 7,
     TOKEN_STRING = 8,
@@ -39,6 +39,11 @@ enum TokenType {
     TOKEN_BITWISE_OR = 31, // |
     TOKEN_BITWISE_XOR = 32, // ^
     TOKEN_BITWISE_AND = 33, // ^
+    TOKEN_IDENTIFIER = 34,
+    TOKEN_KEYWORD_INT = 35,
+    TOKEN_KEYWORD_FLOAT = 36,
+    TOKEN_KEYWORD_BOOL = 37,
+    TOKEN_KEYWORD_STRING = 38,
 };
 
 class Token {
@@ -122,6 +127,16 @@ static const char* token_type_name(const TokenType& ttype) {
             return "BITWISE_XOR";
         case 33:
             return "BITWISE_AND";
+        case 34:
+            return "IDENTIFIER";
+        case 35:
+            return "KEYWORD_INT";
+        case 36:
+            return "KEYWORD_FLOAT";
+        case 37:
+            return "KEYWORD_BOOL";
+        case 38:
+            return "KEYWORD_STRING";
     }
     return "MISSING_CATEGORY" ;
 }
