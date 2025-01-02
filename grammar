@@ -2,9 +2,12 @@
 
 # CAPITALIZED_ITEMS are regular expressions
 
-VariableDeclaration => type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )* ';'
+VariableDeclaration =>
+	type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )* End
 
 type => 'int' | 'float' | 'bool' | 'string' | 'void'
+
+End => ';' | '\n'
 
 Expression => LogicalXor
 
