@@ -11,17 +11,17 @@ enum TokenType {
     TOKEN_LEFT_CURLY_BRACE = 3,
     TOKEN_RIGHT_CURLY_BRACE = 4,
     TOKEN_KEYWORD_VOID = 5,
-    TOKEN_TRUE = 6,
-    TOKEN_FALSE = 7,
+    TOKEN_KEYWORD_TRUE = 6,
+    TOKEN_KEYWORD_FALSE = 7,
     TOKEN_STRING = 8,
     TOKEN_LEFT_ROUND_BRACE = 9,
     TOKEN_RIGHT_ROUND_BRACE = 10,
     TOKEN_BANG = 11,
     TOKEN_LOGICAL_EQUAL = 12, // ==
     TOKEN_LOGICAL_NOT_EQUAL = 13, // !=
-    TOKEN_LOGICAL_AND = 14, // and
-    TOKEN_LOGICAL_OR = 15, // or
-    TOKEN_LOGICAL_XOR = 16, // xor
+    TOKEN_KEYWORD_AND = 14, // and
+    TOKEN_KEYWORD_OR = 15, // or
+    TOKEN_KEYWORD_XOR = 16, // xor
     TOKEN_MINUS = 17,
     TOKEN_EXPONENT = 18,
     TOKEN_STAR = 19,
@@ -72,9 +72,9 @@ static const char* token_type_name(const TokenType& ttype) {
         case 5:
             return "VOID" ;
         case 6:
-            return "TRUE" ;
+            return "KEYWORD_TRUE" ;
         case 7:
-            return "FALSE" ;
+            return "KEYWORD_FALSE" ;
         case 8:
             return "STRING" ;
         case 9:
@@ -88,11 +88,11 @@ static const char* token_type_name(const TokenType& ttype) {
         case 13:
             return "LOGICAL_NOT_EQUAL";
         case 14:
-            return "LOGICAL_AND";
+            return "KEYWORD_AND";
         case 15:
-            return "LOGICAL_OR";
+            return "KEYWORD_OR";
         case 16:
-            return "LOGICAL_XOR";
+            return "KEYWORD_XOR";
         case 17:
             return "MINUS";
         case 18:

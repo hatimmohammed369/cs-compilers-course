@@ -423,11 +423,11 @@ Object* Interpreter::visit_logical(Logical* tree) {
     const ObjectBoolean* right =
         tree->right->accept(this)->to_boolean();
     switch (tree->op.ttype) {
-        case TOKEN_LOGICAL_XOR:
+        case TOKEN_KEYWORD_XOR:
             return left->xor_with(right);
-        case TOKEN_LOGICAL_OR:
+        case TOKEN_KEYWORD_OR:
             return *left || right;
-        case TOKEN_LOGICAL_AND:
+        case TOKEN_KEYWORD_AND:
             return *left && right;
         default: {
             std::cerr << "Invalid logical operator `" << tree->op.value << "`\n";

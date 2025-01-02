@@ -348,7 +348,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'e') {
                             current++;
-                            ttype = TOKEN_TRUE;
+                            ttype = TOKEN_KEYWORD_TRUE;
                             value = "true";
                             goto RETURN_TOKEN;
                         } else {
@@ -372,7 +372,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'e') {
                             current++;
-                            ttype = TOKEN_FALSE;
+                            ttype = TOKEN_KEYWORD_FALSE;
                             value = "false";
                             goto RETURN_TOKEN;
                         } else {
@@ -389,7 +389,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'd') {
                             current++;
-                            ttype = TOKEN_LOGICAL_AND;
+                            ttype = TOKEN_KEYWORD_AND;
                             value = "and";
                             goto RETURN_TOKEN;
                         } else {
@@ -402,7 +402,7 @@ SKIP_WHITESPACES:
                         current++;
                         if (*current == 'r') {
                             current++;
-                            ttype = TOKEN_LOGICAL_OR;
+                            ttype = TOKEN_KEYWORD_OR;
                             value = "or";
                             goto RETURN_TOKEN;
                         } else {
@@ -419,7 +419,7 @@ SKIP_WHITESPACES:
 
                         if (*current == 'r') {
                             current++;
-                            ttype = TOKEN_LOGICAL_XOR;
+                            ttype = TOKEN_KEYWORD_XOR;
                             value = "xor";
                             goto RETURN_TOKEN;
                         } else {

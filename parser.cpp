@@ -45,7 +45,7 @@ ParseResult Parser::parse_logical_xor() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_LOGICAL_XOR})
+        check({TOKEN_KEYWORD_XOR})
     ) {
         Token op = consume();
         ParseResult right = parse_logical_or();
@@ -71,7 +71,7 @@ ParseResult Parser::parse_logical_or() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_LOGICAL_OR})
+        check({TOKEN_KEYWORD_OR})
     ) {
         Token op = consume();
         ParseResult right = parse_logical_and();
@@ -97,7 +97,7 @@ ParseResult Parser::parse_logical_and() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_LOGICAL_AND})
+        check({TOKEN_KEYWORD_AND})
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_xor();
@@ -405,7 +405,7 @@ ParseResult Parser::parse_literal() {
             parsed_hunk = reinterpret_cast<TreeBase*>(void_literal);
             break;
         }
-        case TOKEN_TRUE: {
+        case TOKEN_KEYWORD_TRUE: {
             ObjectBoolean* obj = ObjectBoolean::get_true_object();
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -413,7 +413,7 @@ ParseResult Parser::parse_literal() {
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
-        case TOKEN_FALSE: {
+        case TOKEN_KEYWORD_FALSE: {
             ObjectBoolean* obj = ObjectBoolean::get_false_object();
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
