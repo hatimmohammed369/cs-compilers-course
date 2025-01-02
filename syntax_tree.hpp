@@ -18,8 +18,10 @@ inline std::ostream& operator<<(std::ostream& os, const TreeBase* tree_node) {
 }
 
 class Program: public TreeBase {
-public:
     std::vector<TreeBase*> statements;
+public:
+    friend class Interpreter;
+    friend class Parser;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };
