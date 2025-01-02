@@ -213,6 +213,17 @@ Token Lexer::get_next_token() {
     skip_whitespaces();
     if (!has_next()) return Token{TOKEN_END_OF_FILE, string()};
     switch (*current) {
+        case ':':
+            current++;
+            if (has_next() && *current == '=') {
+                current++;
+                ttype = TOKEN_COLON_EQUAL;
+                value = ":=";
+                break;
+            } else {
+                current--;
+                return generate_invalid_token();
+            }
         case '{':
             current++;
             ttype = TOKEN_LEFT_CURLY_BRACE;
@@ -252,6 +263,7 @@ Token Lexer::get_next_token() {
                 value = "==";
                 break;
             } else {
+                current--;
                 return generate_invalid_token();
             }
         case '&':
