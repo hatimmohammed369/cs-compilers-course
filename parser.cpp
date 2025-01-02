@@ -416,6 +416,12 @@ ParseResult Parser::parse_primary() {
 ParseResult Parser::parse_literal() {
     std::string error;
     TreeBase* parsed_hunk = nullptr;
+    if (check({TOKEN_NEWLINE})) {
+        read_next_token();
+        if (check({TOKEN_NEWLINE}))
+            error.append("Expected expression");
+        return ParseResult{error, parsed_hunk};
+    }
     switch (current.ttype) {
         case TOKEN_KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
