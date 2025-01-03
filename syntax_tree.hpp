@@ -18,10 +18,8 @@ inline std::ostream& operator<<(std::ostream& os, const TreeBase* tree_node) {
 }
 
 class Program: public TreeBase {
-    std::vector<TreeBase*> statements;
 public:
-    friend class Interpreter;
-    friend class Parser;
+    std::vector<TreeBase*> statements;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };
@@ -37,21 +35,17 @@ public:
 };
 
 class Block: public Expression {
-    std::vector<Statement*> statements;
 public:
-    friend class Interpreter;
-    friend class Parser;
+    std::vector<Statement*> statements;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };
 
 class Binary: public Expression {
-protected:
+public:
     TreeBase* left;
     Token op;
     TreeBase* right;
-public:
-    friend class Interpreter;
     Binary(TreeBase* lhs, Token _op, TreeBase* rhs):
         left{lhs}, op{_op}, right{rhs} {}
     std::string to_string() const noexcept override;
@@ -106,10 +100,9 @@ public:
 };
 
 class Unary: public Expression {
+public:
     Token unary_op;
     TreeBase* expr;
-public:
-    friend class Interpreter;
     Unary(Token op, TreeBase* node):
         unary_op{op}, expr{node} {}
     virtual std::string to_string() const noexcept override;
@@ -117,18 +110,16 @@ public:
 };
 
 class Literal: public Expression {
-    Object* value_object;
 public:
-    friend class Interpreter;
+    Object* value_object;
     Literal(Object* val): value_object{val} {}
     virtual std::string to_string() const noexcept override;
     virtual Object* accept(Visitor* visitor) override;
 };
 
 class GroupedExpression: public Expression {
-    TreeBase* grouped_expr;
 public:
-    friend class Interpreter;
+    TreeBase* grouped_expr;
     GroupedExpression(TreeBase* expr):
         grouped_expr{expr} {}
     virtual std::string to_string() const noexcept override;

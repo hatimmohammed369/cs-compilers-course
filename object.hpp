@@ -15,10 +15,8 @@ class ObjectBoolean;
 class ObjectFloat;
 
 class Object {
-protected:
-    ObjectType tag;
 public:
-    friend class Interpreter;
+    ObjectType tag;
     ~Object() {}
     virtual std::string to_string() const noexcept = 0;
     virtual ObjectBoolean* equals(const Object* other) const noexcept = 0;
@@ -32,10 +30,8 @@ inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
 
 template <typename T>
 class Number: public Object {
-protected:
-    T value;
 public:
-    friend class Interpreter;
+    T value;
     Number(const T& val): value{val} {}
 
     ObjectBoolean* equals(const Object* other) const noexcept override;
