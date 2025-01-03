@@ -26,34 +26,23 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
-class Statement;
+class Statement: public TreeBase {
+public:
+    ~Statement() = default;
+};
 
-class Block: public TreeBase {
+class Expression: public Statement {
+public:
+    ~Expression() = default;
+};
+
+class Block: public Expression {
     std::vector<Statement*> statements;
 public:
     friend class Interpreter;
     friend class Parser;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
-};
-
-class Statement: public TreeBase {
-public:
-    ~Statement() = default;
-};
-
-class BlockStatement: public Statement {
-public:
-    friend class Interpreter;
-    friend class Parser;
-    using Statement::Statement;
-    std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
-};
-
-class Expression: public TreeBase {
-public:
-    ~Expression() = default;
 };
 
 class Binary: public Expression {
