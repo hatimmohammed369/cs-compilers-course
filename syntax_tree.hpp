@@ -28,8 +28,6 @@ class Statement: public TreeBase {
 public:
     Token* end_semicolon = nullptr;
     ~Statement() = default;
-    virtual std::string to_string() const noexcept = 0;
-    virtual Object* accept(Visitor* visitor) = 0;
 };
 
 class Expression: public Statement {
@@ -39,7 +37,7 @@ public:
 
 class Block: public Expression {
 public:
-    std::vector<Statement*> statements;
+    std::vector<TreeBase*> statements;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };

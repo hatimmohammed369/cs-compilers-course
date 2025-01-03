@@ -47,7 +47,16 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_statement() {
-    return ParseResult{};
+    ParseResult result = parse_expression();
+    if (result.error.empty()) {
+        if (check({TOKEN_SEMI_COLON})) {
+            Expression* expr =
+                reinterpret_cast<Expression*>(result.parsed_hunk);
+            expr->end_semicolon = new Token;
+            *expr->end_semicolon = consume();
+        }
+    }
+    return result;
 }
 
 ParseResult Parser::parse_expression() {
@@ -431,6 +440,35 @@ ParseResult Parser::parse_primary() {
                 reinterpret_cast<TreeBase*>(grouped_expr);
             return result;
         }
+        case TOKEN_LEFT_CURLY_BRACE: {
+            // Skip opening curly brace
+            read_next_token();
+            Block* block = new Block;
+            ParseResult result;
+            while (!check({TOKEN_END_OF_FILE})) {
+                result = parse_statement();
+                if (!result.error.empty() || !result.parsed_hunk)
+                    break;
+                block->statements.push_back(result.parsed_hunk);
+            }
+            if (!result.error.empty()) {
+                result.parsed_hunk = nullptr;
+            } else if (!check({TOKEN_RIGHT_CURLY_BRACE})) {
+                result.parsed_hunk = nullptr;
+                // Expected closing curly brace after statement
+                result.error = "Expected \x7d after statement";
+            } else {
+                // Skip closing curly brace
+                read_next_token();
+                if (check({TOKEN_SEMI_COLON})) {
+                    block->end_semicolon = new Token;
+                    *block->end_semicolon = consume();
+                }
+                result.parsed_hunk =
+                    reinterpret_cast<TreeBase*>(block);
+            }
+            return result;
+        } 
         case TOKEN_KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
             Literal* void_literal =
