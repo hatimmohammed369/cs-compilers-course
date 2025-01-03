@@ -39,9 +39,11 @@ Exponential => Unary ( '**' Unary )*
 
 Unary => ( ( '!' | '-' | '+' | '~' ) Unary ) | Primary
 
-Primary => Block | '(' Expression ')' | Literal
+Primary => Block | Group | Literal
 
 Block => '{' Statement* '}'
+
+Group => '(' Expression ')'
 
 Literal => NAME | Void | Boolean | Number | STRING
 

@@ -26,7 +26,10 @@ public:
 
 class Statement: public TreeBase {
 public:
+    Token* end_semicolon = nullptr;
     ~Statement() = default;
+    virtual std::string to_string() const noexcept = 0;
+    virtual Object* accept(Visitor* visitor) = 0;
 };
 
 class Expression: public Statement {
