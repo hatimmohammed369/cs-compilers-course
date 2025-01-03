@@ -46,8 +46,6 @@ public:
     ParseResult parse_exponential();
     ParseResult parse_unary();
     ParseResult parse_primary();
-    ParseResult parse_literal();
-    ParseResult parse_grouped_expression();
 };
 
 #endif

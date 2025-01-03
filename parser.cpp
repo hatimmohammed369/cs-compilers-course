@@ -433,14 +433,6 @@ ParseResult Parser::parse_unary() {
 }
 
 ParseResult Parser::parse_primary() {
-    return (
-        check({TOKEN_LEFT_ROUND_BRACE}) ?
-        parse_grouped_expression() :
-        parse_literal()
-    );
-}
-
-ParseResult Parser::parse_literal() {
     std::string error;
     TreeBase* parsed_hunk = nullptr;
     if (check({TOKEN_NEWLINE})) {
@@ -450,6 +442,28 @@ ParseResult Parser::parse_literal() {
         return ParseResult{error, parsed_hunk};
     }
     switch (current.ttype) {
+        case TOKEN_LEFT_ROUND_BRACE: {
+            // Skip opening round brace
+            read_next_token();
+            ParseResult result = parse_expression();
+            if (!result.parsed_hunk) {
+                // Expected expression after opening round brace
+                result.error = "Expected expression after \x28";
+                return result;
+            } else if (!check({TOKEN_RIGHT_ROUND_BRACE})) {
+                result.parsed_hunk = nullptr;
+                // Expected closing round brace after statement
+                result.error = "Expected \x29 after statement";
+                return result;
+            }
+            // Skip closing round brace
+            read_next_token();
+            GroupedExpression* grouped_expr =
+                new GroupedExpression{result.parsed_hunk};
+            result.parsed_hunk =
+                reinterpret_cast<TreeBase*>(grouped_expr);
+            return result;
+        }
         case TOKEN_KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
             Literal* void_literal =
@@ -498,27 +512,4 @@ ParseResult Parser::parse_literal() {
         default: {}
     }
     return ParseResult{error, parsed_hunk};
-}
-
-ParseResult Parser::parse_grouped_expression() {
-    read_next_token(); // Skip (
-    ParseResult result = parse_expression();
-    if (!result.error.empty()) {
-        // Syntax error occurred
-        return result;
-    } else if (!result.parsed_hunk) {
-        result.parsed_hunk = nullptr;
-        result.error = "Expected expression after (";
-    } else if (!check({TOKEN_RIGHT_ROUND_BRACE})) {
-        result.parsed_hunk = nullptr;
-        result.error = "Expected ) after expression";
-    } else {
-        // Skip )
-        read_next_token();
-        GroupedExpression* grouped_expr =
-            new GroupedExpression{result.parsed_hunk};
-        result.parsed_hunk =
-            reinterpret_cast<TreeBase*>(grouped_expr);
-    }
-    return result;
 }
