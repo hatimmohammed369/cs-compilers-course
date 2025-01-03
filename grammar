@@ -4,9 +4,9 @@
 
 Program => Statement*
 
-Statement => ( '{' Statement '}' | VariableDeclaration | Expression ) End
+Statement => ( '{' Statement '}' | VariableDeclaration | Expression ) End?
 
-End => ';' | '\n'
+End => ';'
 
 VariableDeclaration =>
 	type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )*

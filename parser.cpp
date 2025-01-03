@@ -47,16 +47,38 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_statement() {
-    ParseResult result = parse_expression();
-    if (check({TOKEN_END_OF_FILE}) || !result.error.empty()) {
-        return result;
-    } else if (!check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
-        result.parsed_hunk = nullptr;
-        result.error = "Unexpected item";
-    } else {
-        Token end_token = consume();
-        result.parsed_hunk =
-            new Statement{result.parsed_hunk, end_token};
+    ParseResult result;
+    switch (current.ttype) {
+        case TOKEN_LEFT_CURLY_BRACE: {
+            // Skip opening curly brace
+            read_next_token();
+            result = parse_statement();
+            if (!result.parsed_hunk) {
+                // Expected statement after opening curly brace
+                result.error = "Expected statement after \x7b";
+                return result;
+            } else if (!check({TOKEN_RIGHT_CURLY_BRACE})) {
+                result.parsed_hunk = nullptr;
+                // Expected closing curly brace after statement
+                result.error = "Expected \x7d after statement";
+                return result;
+            }
+            // Skip closing curly brace
+            read_next_token();
+            break;
+        }
+        default:
+            result = parse_expression();
+    }
+    if (result.error.empty()) {
+        Token* semicolon = nullptr;
+        if (check({TOKEN_SEMI_COLON})) {
+            semicolon = new Token;
+            *semicolon = consume();
+        }
+        Statement* stmt =
+            new Statement{result.parsed_hunk, semicolon};
+        result.parsed_hunk = stmt;
     }
     return result;
 }
@@ -354,7 +376,10 @@ ParseResult Parser::parse_exponential() {
     std::vector<Token> ops;
     std::vector<TreeBase*> items;
     items.push_back(result.parsed_hunk);
-    while (result.error.empty() && check({TOKEN_EXPONENT})) {
+    while (
+        result.error.empty() &&
+        check({TOKEN_EXPONENT})
+    ) {
         Token op = consume();
         ParseResult exponent = parse_unary();
         if (exponent.parsed_hunk) {

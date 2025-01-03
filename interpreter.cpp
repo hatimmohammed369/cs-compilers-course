@@ -19,17 +19,13 @@ Object* Interpreter::visit_program(Program* tree) {
 Object* Interpreter::visit_statement(Statement* tree) {
     Object* eval =
         tree->action->accept(this);
-    switch (tree->end_token.ttype) {
-        case TOKEN_SEMI_COLON:
-            return ObjectVoid::get_void_object();
-        case TOKEN_NEWLINE:
-            return eval;
-        default: {
-            std::cerr << "Invalid statement end token " << tree->end_token.ttype << '\n' ;
-            exit(1);
-        }
-    }
-    return nullptr;
+    if (tree->end_semicolon)
+        return ObjectVoid::get_void_object();
+    return eval;
+}
+
+Object* Interpreter::visit_block_statement(BlockStatement* tree) {
+    return this->visit_statement((Statement*)tree);
 }
 
 Object* Interpreter::visit_literal(Literal* tree) {

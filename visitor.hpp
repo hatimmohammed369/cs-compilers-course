@@ -15,12 +15,14 @@ class Bitwise;
 class Logical;
 class Program;
 class Statement;
+class BlockStatement;
 
 class Visitor {
 public:
     ~Visitor() = default;
     virtual Object* visit_program(Program* tree) = 0;
     virtual Object* visit_statement(Statement* tree) = 0;
+    virtual Object* visit_block_statement(BlockStatement* tree) = 0;
     virtual Object* visit_literal(Literal* tree) = 0;
     virtual Object* visit_grouped_expression(GroupedExpression* tree) = 0;
     virtual Object* visit_unary(Unary* tree) = 0;

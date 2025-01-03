@@ -160,6 +160,7 @@ Token Lexer::generate_string_token() {
                         goto RETURN_TOKEN;
                     }
                 }
+                break;
             }
             default: value.push_back(*current);
         }

@@ -3,20 +3,26 @@
 
 std::string BlockStatement::to_string() const noexcept {
     std::ostringstream oss;
-    oss << "{\n" ;
-    oss << action->to_string() ;
-    oss << "\n}" << end_token.value ;
+    oss << "{" ;
+    std::string action_str = action->to_string();
+    bool multilined = (action_str.find('\n') != std::string::npos);
+    if (multilined)
+        oss << '\n';
+    oss << action_str ;
+    if (multilined)
+        oss << '\n';
+    oss << "}" ;
     return oss.str();
 }
 
 Object* BlockStatement::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_block_statement(this);
 }
 
 std::string Statement::to_string() const noexcept {
     std::ostringstream oss;
     oss << action->to_string() ;
-    oss << end_token.value ;
+    if (end_semicolon) oss << end_semicolon->value ;
     return oss.str();
 }
 
