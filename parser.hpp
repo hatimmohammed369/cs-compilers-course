@@ -33,7 +33,6 @@ public:
     ParseResult parse_source();
     ParseResult parse_statement();
     ParseResult parse_expression();
-    ParseResult parse_logical_xor();
     ParseResult parse_logical_or();
     ParseResult parse_logical_and();
     ParseResult parse_bitwise_xor();

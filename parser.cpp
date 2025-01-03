@@ -62,10 +62,6 @@ ParseResult Parser::parse_statement() {
 }
 
 ParseResult Parser::parse_expression() {
-    return parse_logical_xor();
-}
-
-ParseResult Parser::parse_logical_xor() {
     ParseResult result = parse_logical_or();
     if (!result.error.empty() || !result.parsed_hunk)
         return result;

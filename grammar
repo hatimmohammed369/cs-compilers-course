@@ -13,9 +13,7 @@ VariableDeclaration =>
 
 type => 'int' | 'float' | 'bool' | 'string' | 'void'
 
-Expression => LogicalXor
-
-LogicalXor => LogicalOr ( 'xor' LogicalOr )*
+Expression => LogicalOr ( 'xor' LogicalOr )*
 
 LogicalOr => LogicalAnd ( 'or' LogicalAnd )*
 
