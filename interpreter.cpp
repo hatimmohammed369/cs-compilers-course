@@ -16,16 +16,8 @@ Object* Interpreter::visit_program(Program* tree) {
     return tree->statements.back()->accept(this);
 }
 
-Object* Interpreter::visit_statement(Statement* tree) {
-    Object* eval =
-        tree->action->accept(this);
-    if (tree->end_semicolon)
-        return ObjectVoid::get_void_object();
-    return eval;
-}
-
-Object* Interpreter::visit_block_statement(BlockStatement* tree) {
-    return this->visit_statement((Statement*)tree);
+Object* Interpreter::visit_block(Block* tree) {
+    return nullptr;
 }
 
 Object* Interpreter::visit_literal(Literal* tree) {

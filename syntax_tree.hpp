@@ -8,7 +8,7 @@
 
 class TreeBase {
 public:
-    ~TreeBase() {}
+    ~TreeBase() = default;
     virtual std::string to_string() const noexcept = 0;
     virtual Object* accept(Visitor* visitor) = 0;
 };
@@ -26,17 +26,20 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
-class Statement: public TreeBase {
-protected:
-    TreeBase* action;
-    Token* end_semicolon = nullptr;
+class Statement;
+
+class Block: public TreeBase {
+    std::vector<Statement*> statements;
 public:
     friend class Interpreter;
     friend class Parser;
-    Statement(TreeBase* _action, Token* semicolon):
-        action{_action}, end_semicolon{semicolon} {}
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
+};
+
+class Statement: public TreeBase {
+public:
+    ~Statement() = default;
 };
 
 class BlockStatement: public Statement {
@@ -50,7 +53,7 @@ public:
 
 class Expression: public TreeBase {
 public:
-    ~Expression() {}
+    ~Expression() = default;
 };
 
 class Binary: public Expression {

@@ -1,33 +1,12 @@
 #include <sstream>
 #include "syntax_tree.hpp"
 
-std::string BlockStatement::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << "{" ;
-    std::string action_str = action->to_string();
-    bool multilined = (action_str.find('\n') != std::string::npos);
-    if (multilined)
-        oss << '\n';
-    oss << action_str ;
-    if (multilined)
-        oss << '\n';
-    oss << "}" ;
-    return oss.str();
+std::string Block::to_string() const noexcept {
+    return std::string();
 }
 
-Object* BlockStatement::accept(Visitor* visitor) {
-    return visitor->visit_block_statement(this);
-}
-
-std::string Statement::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << action->to_string() ;
-    if (end_semicolon) oss << end_semicolon->value ;
-    return oss.str();
-}
-
-Object* Statement::accept(Visitor* visitor) {
-    return visitor->visit_statement(this);
+Object* Block::accept(Visitor* visitor) {
+    return visitor->visit_block(this);
 }
 
 std::string Program::to_string() const noexcept {

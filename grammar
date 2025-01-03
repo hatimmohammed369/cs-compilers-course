@@ -4,9 +4,7 @@
 
 Program => Statement*
 
-Statement => ( '{' Statement '}' | VariableDeclaration | Expression ) End?
-
-End => ';'
+Statement => ( VariableDeclaration | Expression ) ( ';' )?
 
 VariableDeclaration =>
 	type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )*
@@ -39,7 +37,9 @@ Exponential => Unary ( '**' Unary )*
 
 Unary => ( ( '!' | '-' | '+' | '~' ) Unary ) | Primary
 
-Primary => '(' Expression ')' | Literal
+Primary => Block | '(' Expression ')' | Literal
+
+Block => '{' Statement* '}'
 
 Literal => NAME | Void | Boolean | Number | STRING
 
