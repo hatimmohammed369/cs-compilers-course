@@ -45,4 +45,14 @@ public:
     }
 };
 
+class TypeString: public Type {
+    TypeString() {name = TYPENAME_STRING;}
+public:
+    static TypeString* get_int_type_object() {
+        static TypeString* int_type_obj =
+            new TypeString;
+        return int_type_obj;
+    }
+};
+
 #endif
