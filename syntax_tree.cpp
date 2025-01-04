@@ -1,6 +1,17 @@
 #include <sstream>
 #include "syntax_tree.hpp"
 
+std::string Cast::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << '(' << this->target_type << ')' ;
+    oss << casted_expr->to_string() ;
+    return oss.str();
+}
+
+Object* Cast::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 std::string Block::to_string() const noexcept {
     std::ostringstream oss;
     oss << "{" ;

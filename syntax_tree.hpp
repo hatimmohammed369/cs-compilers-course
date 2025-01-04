@@ -4,6 +4,7 @@
 #include <vector>
 #include "token.hpp"
 #include "object.hpp"
+#include "typing.hpp"
 #include "visitor.hpp"
 
 class TreeBase {
@@ -33,6 +34,16 @@ public:
 class Expression: public Statement {
 public:
     ~Expression() = default;
+};
+
+class Cast: public Expression {
+public:
+    Type* target_type;
+    TreeBase* casted_expr;
+    Cast(Type* to_type, TreeBase* expr):
+        target_type{to_type}, casted_expr{expr} {}
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
 };
 
 class Block: public Expression {
