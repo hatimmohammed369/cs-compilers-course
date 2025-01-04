@@ -28,13 +28,17 @@ static const char* type_name_string(const TypeName& name) {
             return "void";
         default: {}
     }
-    return "MISSING_TYPE";
+    return "MISSING_TYPE_NAME";
 }
 
-class Type {
+class Type: public Object {
+protected:
+    Type() {tag = OBJECT_TYPE;}
 public:
-    template <typename Target>
-    Target* cast(const Target* obj);
+    TypeName name;
+    virtual ~Type() = default;
+    std::string to_string() const noexcept;
+    ObjectBoolean* to_boolean() const noexcept;
 };
 
 #endif

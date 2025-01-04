@@ -9,6 +9,7 @@ enum ObjectType {
     OBJECT_INTEGER,
     OBJECT_FLOAT,
     OBJECT_STRING,
+    OBJECT_TYPE,
 };
 
 class ObjectBoolean;
@@ -17,7 +18,7 @@ class ObjectFloat;
 class Object {
 public:
     ObjectType tag;
-    ~Object() {}
+    virtual ~Object() = default;
     virtual std::string to_string() const noexcept = 0;
     virtual ObjectBoolean* equals(const Object* other) const noexcept = 0;
     inline ObjectType get_tag() const noexcept {return tag;}
