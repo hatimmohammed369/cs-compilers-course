@@ -15,6 +15,7 @@ class Bitwise;
 class Logical;
 class Program;
 class Block;
+class Cast;
 
 class Visitor {
 public:
@@ -32,6 +33,7 @@ public:
     virtual Object* visit_bitwise(Bitwise* tree) = 0;
     virtual Object* visit_logical(Logical* tree) = 0;
     virtual Object* visit_block(Block* tree) = 0;
+    virtual Object* visit_cast(Cast* tree) = 0;
 };
 
 #endif

@@ -8,7 +8,7 @@ std::string Cast::to_string() const noexcept {
 }
 
 Object* Cast::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_cast(this);
 }
 
 std::string Block::to_string() const noexcept {

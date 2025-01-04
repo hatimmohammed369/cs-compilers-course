@@ -19,6 +19,7 @@ public:
     Object* visit_bitwise(Bitwise* tree);
     Object* visit_logical(Logical* tree);
     Object* visit_block(Block* tree);
+    Object* visit_cast(Cast* tree);
 };
 
 #endif
