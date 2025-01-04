@@ -24,4 +24,14 @@ public:
     ObjectBoolean* equals(const Object* other) const noexcept;
 };
 
+class TypeInt: public Type {
+    TypeInt() {name = TYPENAME_INT;}
+public:
+    static TypeInt* get_int_type_object() {
+        static TypeInt* int_type_obj =
+            new TypeInt;
+        return int_type_obj;
+    }
+};
+
 #endif
