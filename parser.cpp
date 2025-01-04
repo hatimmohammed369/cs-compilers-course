@@ -432,6 +432,8 @@ ParseResult Parser::parse_primary() {
             if (!result.error.empty()) {
                 result.parsed_hunk = nullptr;
                 return result;
+            } else if (result.parsed_hunk) {
+                return result;
             }
             return parse_group();
         }
@@ -566,19 +568,26 @@ ParseResult Parser::parse_cast() {
     // Skip opening round brace around target type
     read_next_token();
     Token type_token = consume();
-    Type* target_type = nullptr;
+    Type* target_type =
+        Type::get_type_by_token(type_token.ttype);
+    if (!target_type) {
+        std::cerr << "Undefined type '" << type_token.value << "'\n" ;
+        exit(1);
+    }
     // Skip closing round brace around target type
     read_next_token();
-    ParseResult result = parse_group();
+    ParseResult result = (
+        check({TOKEN_LEFT_ROUND_BRACE}) ?
+        parse_group() :
+        parse_literal()
+    );
     if (!result.error.empty()) {
+        result.parsed_hunk = nullptr;
         return result;
     } else if (!result.parsed_hunk) {
-        result = parse_literal();
-        if (!result.parsed_hunk) {
-            // Expected expression cast target type
-            result.error = "Expected expression cast target type";
-            return result;
-        }
+        // Expected expression  after cast target type
+        result.error = "Expected expression  after cast target type";
+        return result;
     }
     Cast* cast_expr = new Cast{
         target_type,
