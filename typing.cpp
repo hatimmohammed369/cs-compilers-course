@@ -1,5 +1,6 @@
 #include <sstream>
 #include "typing.hpp"
+#include "token.hpp"
 
 static const char* type_name_string(const TypeName& name) {
     switch (name) {
@@ -39,4 +40,13 @@ ObjectBoolean* Type::equals(const Object* other) const noexcept {
         other->tag == OBJECT_TYPE &&
         this->name == type_obj->name
     );
+}
+
+Type* Type::get_type_by_token(TokenType type_keyword) {
+    switch (type_keyword) {
+        case TOKEN_KEYWORD_INT:
+            return TypeInt::get_int_type_object();
+        default: {}
+    }
+    return nullptr;
 }

@@ -22,6 +22,7 @@ public:
     std::string to_string() const noexcept;
     ObjectBoolean* to_boolean() const noexcept;
     ObjectBoolean* equals(const Object* other) const noexcept;
+    static Type* get_type_by_token(TokenType type_keyword);
 };
 
 class TypeInt: public Type {
