@@ -65,6 +65,7 @@ public:
     TypeString* copy() const noexcept override {
         return get_string_type_object();
     }
+    ObjectString* cast(const Object* obj) const noexcept override;
 };
 
 class TypeBoolean: public Type {
