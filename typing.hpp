@@ -64,4 +64,14 @@ public:
         return int_type_obj;
     }
 };
+
+class TypeVoid: public Type {
+    TypeVoid() {name = TYPENAME_VOID;}
+public:
+    static TypeVoid* get_int_type_object() {
+        static TypeVoid* int_type_obj =
+            new TypeVoid;
+        return int_type_obj;
+    }
+};
 #endif
