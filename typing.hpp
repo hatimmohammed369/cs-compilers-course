@@ -51,6 +51,7 @@ public:
     TypeFloat* copy() const noexcept override {
         return get_float_type_object();
     }
+    ObjectFloat* cast(const Object* obj) const noexcept override;
 };
 
 class TypeString: public Type {

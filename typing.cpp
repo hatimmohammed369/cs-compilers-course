@@ -95,3 +95,41 @@ ObjectInteger* TypeInt::cast(const Object* obj) const noexcept {
     }
     return reinterpret_cast<ObjectInteger*>(obj->copy());
 }
+
+ObjectFloat* TypeFloat::cast(const Object* obj) const noexcept {
+    switch (obj->tag) {
+        case OBJECT_VOID: {
+            return new ObjectFloat{0.0};
+        }
+        case OBJECT_INTEGER: {
+            const ObjectInteger* _obj =
+                reinterpret_cast<const ObjectInteger*>(obj);
+            return new ObjectFloat{
+                static_cast<float64>(_obj->value)
+            };
+        }
+        case OBJECT_STRING: {
+            const ObjectString* _obj =
+                reinterpret_cast<const ObjectString*>(obj);
+            return new ObjectFloat{
+                std::stold(std::string(_obj->get(), _obj->length()), nullptr)
+            };
+        }
+        case OBJECT_BOOLEAN: {
+            const ObjectBoolean* _obj =
+                reinterpret_cast<const ObjectBoolean*>(obj);
+            return new ObjectFloat{
+                static_cast<float64>(_obj->get())
+            };
+        }
+        case OBJECT_TYPE: {
+            // unreachable
+            std::cerr << "Type object can't be created by user!\n";
+            exit(1);
+        }
+        default: {
+            // case OBJECT_FLOAT
+        }
+    }
+    return reinterpret_cast<ObjectFloat*>(obj->copy());
+}
