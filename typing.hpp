@@ -35,4 +35,14 @@ public:
     }
 };
 
+class TypeFloat: public Type {
+    TypeFloat() {name = TYPENAME_FLOAT;}
+public:
+    static TypeFloat* get_int_type_object() {
+        static TypeFloat* int_type_obj =
+            new TypeFloat;
+        return int_type_obj;
+    }
+};
+
 #endif
