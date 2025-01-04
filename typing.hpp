@@ -79,6 +79,7 @@ public:
     TypeBoolean* copy() const noexcept override {
         return get_boolean_type_object();
     }
+    ObjectBoolean* cast(const Object* obj) const noexcept override;
 };
 
 class TypeVoid: public Type {

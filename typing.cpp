@@ -167,3 +167,7 @@ ObjectString* TypeString::cast(const Object* obj) const noexcept {
     }
     return reinterpret_cast<ObjectString*>(obj->copy());
 }
+
+ObjectBoolean* TypeBoolean::cast(const Object* obj) const noexcept {
+    return obj->to_boolean();
+}
