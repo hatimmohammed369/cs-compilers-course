@@ -47,6 +47,7 @@ public:
     ParseResult parse_unary();
     ParseResult parse_primary();
     ParseResult parse_block();
+    ParseResult parse_group();
 };
 
 #endif

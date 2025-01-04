@@ -419,26 +419,7 @@ ParseResult Parser::parse_primary() {
     }
     switch (current.ttype) {
         case TOKEN_LEFT_ROUND_BRACE: {
-            // Skip opening round brace
-            read_next_token();
-            ParseResult result = parse_expression();
-            if (!result.parsed_hunk) {
-                // Expected expression after opening round brace
-                result.error = "Expected expression after \x28";
-                return result;
-            } else if (!check({TOKEN_RIGHT_ROUND_BRACE})) {
-                result.parsed_hunk = nullptr;
-                // Expected closing round brace after statement
-                result.error = "Expected \x29 after statement";
-                return result;
-            }
-            // Skip closing round brace
-            read_next_token();
-            GroupedExpression* grouped_expr =
-                new GroupedExpression{result.parsed_hunk};
-            result.parsed_hunk =
-                reinterpret_cast<TreeBase*>(grouped_expr);
-            return result;
+            return parse_group();
         }
         case TOKEN_LEFT_CURLY_BRACE: {
             return parse_block();
@@ -526,5 +507,28 @@ ParseResult Parser::parse_block() {
         result.parsed_hunk =
             reinterpret_cast<TreeBase*>(block);
     }
+    return result;
+}
+
+ParseResult Parser::parse_group() {
+    // Skip opening round brace
+    read_next_token();
+    ParseResult result = parse_expression();
+    if (!result.parsed_hunk) {
+        // Expected expression after opening round brace
+        result.error = "Expected expression after \x28";
+        return result;
+    } else if (!check({TOKEN_RIGHT_ROUND_BRACE})) {
+        result.parsed_hunk = nullptr;
+        // Expected closing round brace after statement
+        result.error = "Expected \x29 after statement";
+        return result;
+    }
+    // Skip closing round brace
+    read_next_token();
+    GroupedExpression* grouped_expr =
+        new GroupedExpression{result.parsed_hunk};
+    result.parsed_hunk =
+        reinterpret_cast<TreeBase*>(grouped_expr);
     return result;
 }
