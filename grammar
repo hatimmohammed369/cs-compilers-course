@@ -39,7 +39,9 @@ Exponential => Unary ( '**' Unary )*
 
 Unary => ( ( '!' | '-' | '+' | '~' ) Unary ) | Primary
 
-Primary => Block | Group | Literal
+Primary => Cast | Block | Group | Literal
+
+Cast => '(' type ')' ( Group | Literal )
 
 Block => '{' Statement* '}'
 
