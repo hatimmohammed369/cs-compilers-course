@@ -46,6 +46,14 @@ Type* Type::get_type_by_token(TokenType type_keyword) {
     switch (type_keyword) {
         case TOKEN_KEYWORD_INT:
             return TypeInt::get_int_type_object();
+        case TOKEN_KEYWORD_FLOAT:
+            return TypeFloat::get_int_type_object();
+        case TOKEN_KEYWORD_STRING:
+            return TypeString::get_int_type_object();
+        case TOKEN_KEYWORD_BOOLEAN:
+            return TypeBoolean::get_int_type_object();
+        case TOKEN_KEYWORD_VOID:
+            return TypeVoid::get_int_type_object();
         default: {}
     }
     return nullptr;
