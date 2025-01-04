@@ -1,6 +1,5 @@
 #include <cmath>
 #include <iomanip>
-#include <sstream>
 #include "object.hpp"
 
 // ------------------------- Number -------------------------

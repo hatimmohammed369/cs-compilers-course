@@ -1,4 +1,3 @@
-#include <sstream>
 #include "syntax_tree.hpp"
 
 std::string Cast::to_string() const noexcept {

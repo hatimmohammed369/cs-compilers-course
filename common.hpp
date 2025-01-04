@@ -2,6 +2,7 @@
 #define COMMON_H_INCLUDED
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <cstring>
 #include <cstdint>
