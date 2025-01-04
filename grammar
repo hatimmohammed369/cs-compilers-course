@@ -11,7 +11,7 @@ StatmentEnd => ';'
 VariableDeclaration =>
 	type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )*
 
-type => 'int' | 'float' | 'bool' | 'string' | 'void'
+type => 'int' | 'float' | 'boolean' | 'string' | 'void'
 
 Expression => LogicalOr ( 'xor' LogicalOr )*
 

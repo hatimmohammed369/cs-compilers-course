@@ -9,8 +9,8 @@ static const char* type_name_string(const TypeName& name) {
             return "int";
         case TYPENAME_FLOAT:
             return "float";
-        case TYPENAME_BOOL:
-            return "bool";
+        case TYPENAME_BOOLEAN:
+            return "boolean";
         case TYPENAME_STRING:
             return "string";
         case TYPENAME_VOID:

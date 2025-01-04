@@ -2,12 +2,13 @@
 #define TYPING_H_INCLUDED
 
 #include "object.hpp"
+#include "token.hpp"
 
 enum TypeName {
     TYPENAME_TYPE,
     TYPENAME_INT,
     TYPENAME_FLOAT,
-    TYPENAME_BOOL,
+    TYPENAME_BOOLEAN,
     TYPENAME_STRING,
     TYPENAME_VOID,
 };
