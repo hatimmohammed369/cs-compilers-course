@@ -184,7 +184,7 @@ Number<i64>* Number<T>::integer_div(const Number<U>* other) const noexcept {
         exit(1);
     }
     return new ObjectInteger {
-        static_cast<i64>(get()) / static_cast<i64>(other->get()) 
+        static_cast<i64>(get()) / static_cast<i64>(other->get())
     };
 }
 
@@ -196,7 +196,7 @@ Number<float64>* Number<T>::operator/(const Number<U>* other) const noexcept {
         exit(1);
     }
     return new ObjectFloat {
-        static_cast<float64>(get()) / static_cast<float64>(other->get()) 
+        static_cast<float64>(get()) / static_cast<float64>(other->get())
     };
 }
 

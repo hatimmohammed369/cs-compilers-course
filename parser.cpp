@@ -438,15 +438,9 @@ ParseResult Parser::parse_primary() {
         case TOKEN_LEFT_CURLY_BRACE: {
             return parse_block();
         }
-        case TOKEN_KEYWORD_VOID:
-        case TOKEN_KEYWORD_TRUE:
-        case TOKEN_KEYWORD_FALSE:
-        case TOKEN_INTEGER:
-        case TOKEN_FLOAT:
-        case TOKEN_STRING: {
+        default: {
             return parse_literal();
         }
-        default: {}
     }
     return ParseResult{error, parsed_hunk};
 }

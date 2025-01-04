@@ -140,7 +140,7 @@ ObjectBoolean* ObjectVoid::equals(const Object* other) const noexcept {
     return ObjectBoolean::as_object(
         other->get_tag() == OBJECT_VOID
     );
-} 
+}
 
 ObjectBoolean* ObjectVoid::to_boolean() const noexcept {
     // Void is always false
@@ -180,7 +180,7 @@ ObjectBoolean* ObjectString::equals(const Object* other) const noexcept {
         this->_length == str->_length &&
         std::strncmp(this->chars, str->chars, this->_length) == 0
     );
-} 
+}
 
 std::string ObjectString::to_string() const noexcept {
     std::ostringstream oss;
@@ -215,7 +215,7 @@ ObjectBoolean* ObjectBoolean::equals(const Object* other) const noexcept {
         other->get_tag() == OBJECT_BOOLEAN &&
         this->value == boolean->value
     );
-} 
+}
 
 std::string ObjectBoolean::to_string() const noexcept {
     return str;
