@@ -7,7 +7,6 @@ class Interpreter: public Visitor {
 public:
     Object* interpret(TreeBase* tree);
     Object* visit_program(Program* tree);
-    Object* visit_block(Block* tree);
     Object* visit_literal(Literal* tree);
     Object* visit_grouped_expression(GroupedExpression* tree);
     Object* visit_unary(Unary* tree);
@@ -19,6 +18,7 @@ public:
     Object* visit_equality(Equality* tree);
     Object* visit_bitwise(Bitwise* tree);
     Object* visit_logical(Logical* tree);
+    Object* visit_block(Block* tree);
 };
 
 #endif

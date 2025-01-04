@@ -21,27 +21,6 @@ Object* Interpreter::visit_program(Program* tree) {
     return tree->statements.back()->accept(this);
 }
 
-Object* Interpreter::visit_block(Block* tree) {
-    if (!tree)
-        return nullptr;
-    else if (tree->statements.empty()) {
-        return ObjectVoid::get_void_object();
-    } else {
-        for (
-            auto stmt_ptr = tree->statements.begin();
-            stmt_ptr != tree->statements.end()-1;
-            stmt_ptr++
-        ) {
-            (void)(*stmt_ptr)->accept(this);
-        }
-    }
-    return (
-        tree->end_token && tree->end_token->ttype == TOKEN_SEMI_COLON ?
-        ObjectVoid::get_void_object() :
-        tree->statements.back()->accept(this)
-    );
-}
-
 Object* Interpreter::visit_literal(Literal* tree) {
     return tree->value_object;
 }
@@ -469,5 +448,26 @@ Object* Interpreter::visit_logical(Logical* tree) {
         }
     }
     return nullptr;
+}
+
+Object* Interpreter::visit_block(Block* tree) {
+    if (!tree)
+        return nullptr;
+    else if (tree->statements.empty()) {
+        return ObjectVoid::get_void_object();
+    } else {
+        for (
+            auto stmt_ptr = tree->statements.begin();
+            stmt_ptr != tree->statements.end()-1;
+            stmt_ptr++
+        ) {
+            (void)(*stmt_ptr)->accept(this);
+        }
+    }
+    return (
+        tree->end_token && tree->end_token->ttype == TOKEN_SEMI_COLON ?
+        ObjectVoid::get_void_object() :
+        tree->statements.back()->accept(this)
+    );
 }
 
