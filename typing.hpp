@@ -55,4 +55,13 @@ public:
     }
 };
 
+class TypeBoolean: public Type {
+    TypeBoolean() {name = TYPENAME_BOOLEAN;}
+public:
+    static TypeBoolean* get_int_type_object() {
+        static TypeBoolean* int_type_obj =
+            new TypeBoolean;
+        return int_type_obj;
+    }
+};
 #endif
