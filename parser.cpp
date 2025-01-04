@@ -419,6 +419,9 @@ ParseResult Parser::parse_primary() {
     }
     switch (current.ttype) {
         case TOKEN_LEFT_ROUND_BRACE: {
+            ParseResult result = parse_cast();
+            if (!result.error.empty() || !result.parsed_hunk)
+                return result;
             return parse_group();
         }
         case TOKEN_LEFT_CURLY_BRACE: {
@@ -438,7 +441,6 @@ ParseResult Parser::parse_primary() {
 }
 
 ParseResult Parser::parse_literal() {
-    std::string error;
     TreeBase* parsed_hunk = nullptr;
     switch (current.ttype) {
         case TOKEN_KEYWORD_VOID: {
@@ -488,6 +490,7 @@ ParseResult Parser::parse_literal() {
         }
         default: {}
     }
+    const std::string error{};
     return ParseResult{error, parsed_hunk};
 }
 
@@ -547,5 +550,32 @@ ParseResult Parser::parse_group() {
         new GroupedExpression{result.parsed_hunk};
     result.parsed_hunk =
         reinterpret_cast<TreeBase*>(grouped_expr);
+    return result;
+}
+
+ParseResult Parser::parse_cast() {
+    // Skip opening round brace around target type
+    read_next_token();
+    Token type_token = consume();
+    Type* target_type = nullptr;
+    // Skip closing round brace around target type
+    read_next_token();
+    ParseResult result = parse_group();
+    if (!result.error.empty()) {
+        return result;
+    } else if (!result.parsed_hunk) {
+        result = parse_literal();
+        if (!result.parsed_hunk) {
+            // Expected expression cast target type
+            result.error = "Expected expression cast target type";
+            return result;
+        }
+    }
+    Cast* cast_expr = new Cast{
+        target_type,
+        reinterpret_cast<TreeBase*>(result.parsed_hunk)
+    };
+    result.parsed_hunk =
+        reinterpret_cast<TreeBase*>(cast_expr);
     return result;
 }

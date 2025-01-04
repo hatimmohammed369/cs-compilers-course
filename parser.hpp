@@ -49,6 +49,7 @@ public:
     ParseResult parse_literal();
     ParseResult parse_block();
     ParseResult parse_group();
+    ParseResult parse_cast();
 };
 
 #endif
