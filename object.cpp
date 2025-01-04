@@ -2,17 +2,6 @@
 #include <iomanip>
 #include "object.hpp"
 
-// ------------------------- Number -------------------------
-
-template <typename T>
-ObjectBoolean* Number<T>::to_boolean() const noexcept {
-    // Zero is false
-    // Non-zero is true
-    return ObjectBoolean::as_object(this->value != 0);
-}
-
-// ------------------------- Number -------------------------
-
 // ------------------------- ObjectInteger -------------------------
 
 std::string ObjectInteger::to_string() const noexcept {
@@ -81,6 +70,10 @@ ObjectInteger* ObjectInteger::operator|(const ObjectInteger* count) const noexce
     return new ObjectInteger{value | count->value};
 }
 
+ObjectInteger* ObjectInteger::copy() const noexcept {
+    return new ObjectInteger{this->value};
+}
+
 // ------------------------- ObjectInteger -------------------------
 
 // ------------------------- ObjectFloat -------------------------
@@ -126,6 +119,10 @@ ObjectFloat* ObjectFloat::operator-(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{value - other->get()};
 }
 
+ObjectFloat* ObjectFloat::copy() const noexcept {
+    return new ObjectFloat{this->value};
+}
+
 // ------------------------- ObjectFloat -------------------------
 
 // ------------------------- ObjectVoid -------------------------
@@ -144,6 +141,10 @@ ObjectBoolean* ObjectVoid::equals(const Object* other) const noexcept {
 ObjectBoolean* ObjectVoid::to_boolean() const noexcept {
     // Void is always false
     return ObjectBoolean::get_false_object();
+}
+
+ObjectVoid* ObjectVoid::copy() const noexcept {
+    return ObjectVoid::get_void_object();
 }
 
 // ------------------------- ObjectVoid -------------------------
@@ -203,6 +204,10 @@ ObjectBoolean* ObjectString::to_boolean() const noexcept {
     return ObjectBoolean::as_object(this->_length != 0);
 }
 
+ObjectString* ObjectString::copy() const noexcept {
+    return new ObjectString{this->chars, this->_length};
+}
+
 // ------------------------- ObjectString -------------------------
 
 // ------------------------- ObjectBoolean -------------------------
@@ -248,6 +253,10 @@ ObjectBoolean* ObjectBoolean::xor_with(const ObjectBoolean* other) const noexcep
 }
 
 ObjectBoolean* ObjectBoolean::to_boolean() const noexcept {
+    return ObjectBoolean::as_object(this->value);
+}
+
+ObjectBoolean* ObjectBoolean::copy() const noexcept {
     return ObjectBoolean::as_object(this->value);
 }
 

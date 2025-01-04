@@ -23,6 +23,7 @@ public:
     virtual ObjectBoolean* equals(const Object* other) const noexcept = 0;
     inline ObjectType get_tag() const noexcept {return tag;}
     virtual ObjectBoolean* to_boolean() const noexcept = 0;
+    virtual Object* copy() const noexcept = 0;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
@@ -79,6 +80,7 @@ public:
     ObjectInteger* operator&(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator^(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator|(const ObjectInteger* count) const noexcept;
+    ObjectInteger* copy() const noexcept override;
     // More integer specific code here later
 };
 
@@ -94,6 +96,7 @@ public:
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectFloat* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
+    ObjectFloat* copy() const noexcept override;
     // More float specific code here later
 };
 
@@ -116,6 +119,7 @@ public:
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;
     ObjectBoolean* to_boolean() const noexcept override;
+    ObjectVoid* copy() const noexcept override;
 };
 
 class ObjectString: public Object {
@@ -134,6 +138,7 @@ public:
     size_t length() const noexcept;
 
     ObjectBoolean* to_boolean() const noexcept override;
+    ObjectString* copy() const noexcept override;
     // More string specific code here later
 };
 
@@ -174,7 +179,17 @@ public:
     ObjectBoolean* xor_with(const ObjectBoolean* other) const noexcept;
 
     ObjectBoolean* to_boolean() const noexcept override;
+    ObjectBoolean* copy() const noexcept override;
 };
+
+// ------------------------- Number -------------------------
+
+template <typename T>
+ObjectBoolean* Number<T>::to_boolean() const noexcept {
+    // Zero is false
+    // Non-zero is true
+    return ObjectBoolean::as_object(this->value != 0);
+}
 
 template <typename T>
 template <typename U>
@@ -245,5 +260,7 @@ ObjectBoolean* Number<T>::equals(const Object* other) const noexcept {
         this->value == other_float->get()
     );
 }
+
+// ------------------------- Number -------------------------
 
 #endif
