@@ -36,7 +36,7 @@ Object* Interpreter::visit_block(Block* tree) {
         }
     }
     return (
-        tree->end_semicolon ?
+        tree->end_token && tree->end_token->ttype == TOKEN_SEMI_COLON ?
         ObjectVoid::get_void_object() :
         tree->statements.back()->accept(this)
     );

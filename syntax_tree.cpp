@@ -2,7 +2,24 @@
 #include "syntax_tree.hpp"
 
 std::string Block::to_string() const noexcept {
-    return std::string();
+    std::ostringstream oss;
+    oss << "{" ;
+    if (this->closing_newline)
+        oss << '\n';
+    for (
+        auto stmt_ptr = this->statements.begin();
+        stmt_ptr != this->statements.end()-1;
+        stmt_ptr++
+    ) {
+        auto tree = *stmt_ptr;
+        oss << tree->to_string() ;
+        if (tree->end_token)
+            oss << tree->end_token->value;
+    }
+    if (this->closing_newline)
+        oss << '\n';
+    oss << "}" ;
+    return oss.str();
 }
 
 Object* Block::accept(Visitor* visitor) {

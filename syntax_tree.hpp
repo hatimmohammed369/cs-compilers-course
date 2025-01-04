@@ -26,7 +26,7 @@ public:
 
 class Statement: public TreeBase {
 public:
-    Token* end_semicolon = nullptr;
+    Token* end_token = nullptr;
     ~Statement() = default;
 };
 
@@ -37,7 +37,9 @@ public:
 
 class Block: public Expression {
 public:
-    std::vector<TreeBase*> statements;
+    std::vector<Statement*> statements;
+    Token* opening_newline = nullptr;
+    Token* closing_newline = nullptr;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };

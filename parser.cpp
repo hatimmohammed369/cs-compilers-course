@@ -49,11 +49,11 @@ ParseResult Parser::parse_source() {
 ParseResult Parser::parse_statement() {
     ParseResult result = parse_expression();
     if (result.error.empty()) {
-        if (check({TOKEN_SEMI_COLON})) {
-            Expression* expr =
-                reinterpret_cast<Expression*>(result.parsed_hunk);
-            expr->end_semicolon = new Token;
-            *expr->end_semicolon = consume();
+        if (check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
+            Statement* stmt =
+                reinterpret_cast<Statement*>(result.parsed_hunk);
+            stmt->end_token = new Token;
+            *stmt->end_token = consume();
         }
     }
     return result;
@@ -444,12 +444,22 @@ ParseResult Parser::parse_primary() {
             // Skip opening curly brace
             read_next_token();
             Block* block = new Block;
+            if (check({TOKEN_NEWLINE})) {
+                block->opening_newline = new Token;
+                *block->opening_newline = consume();
+            }
             ParseResult result;
             while (!check({TOKEN_END_OF_FILE})) {
                 result = parse_statement();
                 if (!result.error.empty() || !result.parsed_hunk)
                     break;
-                block->statements.push_back(result.parsed_hunk);
+                block->statements.push_back(
+                    reinterpret_cast<Statement*>(result.parsed_hunk)
+                );
+            }
+            if (check({TOKEN_NEWLINE})) {
+                block->closing_newline = new Token;
+                *block->closing_newline = consume();
             }
             if (!result.error.empty()) {
                 result.parsed_hunk = nullptr;
@@ -460,10 +470,6 @@ ParseResult Parser::parse_primary() {
             } else {
                 // Skip closing curly brace
                 read_next_token();
-                if (check({TOKEN_SEMI_COLON})) {
-                    block->end_semicolon = new Token;
-                    *block->end_semicolon = consume();
-                }
                 result.parsed_hunk =
                     reinterpret_cast<TreeBase*>(block);
             }
