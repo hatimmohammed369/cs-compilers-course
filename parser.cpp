@@ -418,9 +418,9 @@ ParseResult Parser::parse_unary() {
 }
 
 ParseResult Parser::parse_primary() {
-    std::string error;
-    TreeBase* parsed_hunk = nullptr;
     if (check({TOKEN_NEWLINE})) {
+        std::string error;
+        TreeBase* parsed_hunk = nullptr;
         read_next_token();
         if (check({TOKEN_NEWLINE}))
             error.append("Expected expression");
@@ -428,23 +428,32 @@ ParseResult Parser::parse_primary() {
     }
     switch (current.ttype) {
         case TOKEN_LEFT_ROUND_BRACE: {
-            ParseResult result = parse_cast();
-            if (!result.error.empty()) {
-                result.parsed_hunk = nullptr;
-                return result;
-            } else if (result.parsed_hunk) {
-                return result;
+            ParseResult result;
+            // Skip opening round brace around target type
+            read_next_token();
+            switch (current.ttype) {
+                case TOKEN_KEYWORD_INT:
+                case TOKEN_KEYWORD_FLOAT:
+                case TOKEN_KEYWORD_STRING:
+                case TOKEN_KEYWORD_BOOLEAN:
+                case TOKEN_KEYWORD_VOID: {
+                    result = parse_cast();
+                    break;
+                }
+                default: {
+                    result = parse_group();
+                }
             }
-            return parse_group();
+            if (!result.error.empty())
+                result.parsed_hunk = nullptr;
+            return result;
         }
         case TOKEN_LEFT_CURLY_BRACE: {
             return parse_block();
         }
-        default: {
-            return parse_literal();
-        }
+        default: {}
     }
-    return ParseResult{error, parsed_hunk};
+    return parse_literal();
 }
 
 ParseResult Parser::parse_literal() {
@@ -542,8 +551,6 @@ ParseResult Parser::parse_block() {
 }
 
 ParseResult Parser::parse_group() {
-    // Skip opening round brace
-    read_next_token();
     ParseResult result = parse_expression();
     if (!result.parsed_hunk) {
         // Expected expression after opening round brace
@@ -565,8 +572,6 @@ ParseResult Parser::parse_group() {
 }
 
 ParseResult Parser::parse_cast() {
-    // Skip opening round brace around target type
-    read_next_token();
     Token type_token = consume();
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);

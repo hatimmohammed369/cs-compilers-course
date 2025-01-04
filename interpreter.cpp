@@ -472,5 +472,7 @@ Object* Interpreter::visit_block(Block* tree) {
 }
 
 Object* Interpreter::visit_cast(Cast* tree) {
-    return nullptr;
+    return tree->target_type->cast(
+        tree->casted_expr->accept(this)
+    );
 }
