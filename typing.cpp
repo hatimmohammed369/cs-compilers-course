@@ -57,3 +57,41 @@ Type* Type::get_type_by_token(TokenType type_keyword) {
     }
     return nullptr;
 }
+
+ObjectInteger* TypeInt::cast(const Object* obj) const noexcept {
+    switch (obj->tag) {
+        case OBJECT_VOID: {
+            return new ObjectInteger{0};
+        }
+        case OBJECT_FLOAT: {
+            const ObjectFloat* _obj =
+                reinterpret_cast<const ObjectFloat*>(obj);
+            return new ObjectInteger{
+                static_cast<i64>(_obj->value)
+            };
+        }
+        case OBJECT_STRING: {
+            const ObjectString* _obj =
+                reinterpret_cast<const ObjectString*>(obj);
+            return new ObjectInteger{
+                std::stoll(std::string(_obj->get(), _obj->length()))
+            };
+        }
+        case OBJECT_BOOLEAN: {
+            const ObjectBoolean* _obj =
+                reinterpret_cast<const ObjectBoolean*>(obj);
+            return new ObjectInteger{
+                static_cast<i64>(_obj->get())
+            };
+        }
+        case OBJECT_TYPE: {
+            // unreachable
+            std::cerr << "Type object can't be created by user!\n";
+            exit(1);
+        }
+        default: {
+            // case OBJECT_INT
+        }
+    }
+    return reinterpret_cast<ObjectInteger*>(obj->copy());
+}

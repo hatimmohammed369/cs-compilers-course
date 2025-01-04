@@ -22,6 +22,7 @@ public:
     std::string to_string() const noexcept;
     ObjectBoolean* to_boolean() const noexcept;
     ObjectBoolean* equals(const Object* other) const noexcept;
+    virtual Object* cast(const Object* obj) const noexcept = 0;
     static Type* get_type_by_token(TokenType type_keyword);
 };
 
@@ -36,6 +37,7 @@ public:
     TypeInt* copy() const noexcept override {
         return get_int_type_object();
     }
+    ObjectInteger* cast(const Object* obj) const noexcept override;
 };
 
 class TypeFloat: public Type {
