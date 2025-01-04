@@ -441,40 +441,8 @@ ParseResult Parser::parse_primary() {
             return result;
         }
         case TOKEN_LEFT_CURLY_BRACE: {
-            // Skip opening curly brace
-            read_next_token();
-            Block* block = new Block;
-            if (check({TOKEN_NEWLINE})) {
-                block->opening_newline = new Token;
-                *block->opening_newline = consume();
-            }
-            ParseResult result;
-            while (!check({TOKEN_END_OF_FILE})) {
-                result = parse_statement();
-                if (!result.error.empty() || !result.parsed_hunk)
-                    break;
-                block->statements.push_back(
-                    reinterpret_cast<Statement*>(result.parsed_hunk)
-                );
-            }
-            if (check({TOKEN_NEWLINE})) {
-                block->closing_newline = new Token;
-                *block->closing_newline = consume();
-            }
-            if (!result.error.empty()) {
-                result.parsed_hunk = nullptr;
-            } else if (!check({TOKEN_RIGHT_CURLY_BRACE})) {
-                result.parsed_hunk = nullptr;
-                // Expected closing curly brace after statement
-                result.error = "Expected \x7d after statement";
-            } else {
-                // Skip closing curly brace
-                read_next_token();
-                result.parsed_hunk =
-                    reinterpret_cast<TreeBase*>(block);
-            }
-            return result;
-        } 
+            return parse_block();
+        }
         case TOKEN_KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
             Literal* void_literal =
@@ -523,4 +491,40 @@ ParseResult Parser::parse_primary() {
         default: {}
     }
     return ParseResult{error, parsed_hunk};
+}
+
+ParseResult Parser::parse_block() {
+    // Skip opening curly brace
+    read_next_token();
+    Block* block = new Block;
+    if (check({TOKEN_NEWLINE})) {
+        block->opening_newline = new Token;
+        *block->opening_newline = consume();
+    }
+    ParseResult result;
+    while (!check({TOKEN_END_OF_FILE})) {
+        result = parse_statement();
+        if (!result.error.empty() || !result.parsed_hunk)
+            break;
+        block->statements.push_back(
+            reinterpret_cast<Statement*>(result.parsed_hunk)
+        );
+    }
+    if (check({TOKEN_NEWLINE})) {
+        block->closing_newline = new Token;
+        *block->closing_newline = consume();
+    }
+    if (!result.error.empty()) {
+        result.parsed_hunk = nullptr;
+    } else if (!check({TOKEN_RIGHT_CURLY_BRACE})) {
+        result.parsed_hunk = nullptr;
+        // Expected closing curly brace after statement
+        result.error = "Expected \x7d after statement";
+    } else {
+        // Skip closing curly brace
+        read_next_token();
+        result.parsed_hunk =
+            reinterpret_cast<TreeBase*>(block);
+    }
+    return result;
 }
