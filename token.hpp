@@ -42,7 +42,7 @@ enum TokenType {
     TOKEN_IDENTIFIER = 34,
     TOKEN_KEYWORD_INT = 35,
     TOKEN_KEYWORD_FLOAT = 36,
-    TOKEN_KEYWORD_BOOL = 37,
+    TOKEN_KEYWORD_BOOLEAN = 37,
     TOKEN_KEYWORD_STRING = 38,
     TOKEN_COLON_EQUAL = 39,
     TOKEN_COMMA = 40,
@@ -138,7 +138,7 @@ static const char* token_type_name(const TokenType& ttype) {
         case 36:
             return "KEYWORD_FLOAT";
         case 37:
-            return "KEYWORD_BOOL";
+            return "KEYWORD_BOOLEAN";
         case 38:
             return "KEYWORD_STRING";
         case 39:

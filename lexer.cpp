@@ -179,7 +179,7 @@ Token Lexer::generate_identifier_token() {
     if (std::strcmp(value.c_str(), "and") == 0)
         ttype = TOKEN_KEYWORD_AND;
     else if (std::strcmp(value.c_str(), "boolean") == 0)
-        ttype = TOKEN_KEYWORD_BOOL;
+        ttype = TOKEN_KEYWORD_BOOLEAN;
     else if (std::strcmp(value.c_str(), "false") == 0)
         ttype = TOKEN_KEYWORD_FALSE;
     else if (std::strcmp(value.c_str(), "float") == 0)
