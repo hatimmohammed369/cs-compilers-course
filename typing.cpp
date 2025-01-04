@@ -171,3 +171,7 @@ ObjectString* TypeString::cast(const Object* obj) const noexcept {
 ObjectBoolean* TypeBoolean::cast(const Object* obj) const noexcept {
     return obj->to_boolean();
 }
+
+ObjectVoid* TypeVoid::cast(const Object* obj) const noexcept {
+    return ObjectVoid::get_void_object();
+}

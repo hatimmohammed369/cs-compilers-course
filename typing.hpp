@@ -93,6 +93,7 @@ public:
     TypeVoid* copy() const noexcept override {
         return get_void_type_object();
     }
+    ObjectVoid* cast(const Object* obj) const noexcept override;
 };
 
 #endif
