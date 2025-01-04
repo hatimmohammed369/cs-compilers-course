@@ -11,19 +11,30 @@ Object* Interpreter::interpret(TreeBase* tree) {
 Object* Interpreter::visit_program(Program* tree) {
     if (!tree || tree->statements.empty())
         return nullptr;
-    for (auto stmt_ptr = tree->statements.begin(); stmt_ptr != tree->statements.end()-1; stmt_ptr++)
+    for (
+        auto stmt_ptr = tree->statements.begin();
+        stmt_ptr != tree->statements.end()-1;
+        stmt_ptr++
+    ) {
         std::cout << (*stmt_ptr)->accept(this) << '\n' ;
+    }
     return tree->statements.back()->accept(this);
 }
 
 Object* Interpreter::visit_block(Block* tree) {
     if (!tree)
         return nullptr;
-    else if (tree->statements.empty())
+    else if (tree->statements.empty()) {
         return ObjectVoid::get_void_object();
-    else
-        for (auto stmt_ptr = tree->statements.begin(); stmt_ptr != tree->statements.end()-1; stmt_ptr++)
+    } else {
+        for (
+            auto stmt_ptr = tree->statements.begin();
+            stmt_ptr != tree->statements.end()-1;
+            stmt_ptr++
+        ) {
             (void)(*stmt_ptr)->accept(this);
+        }
+    }
     return (
         tree->end_semicolon ?
         ObjectVoid::get_void_object() :
