@@ -12,25 +12,6 @@ enum TypeName {
     TYPENAME_VOID,
 };
 
-static const char* type_name_string(const TypeName& name) {
-    switch (name) {
-        case TYPENAME_TYPE:
-            return "type";
-        case TYPENAME_INT:
-            return "int";
-        case TYPENAME_FLOAT:
-            return "float";
-        case TYPENAME_BOOL:
-            return "bool";
-        case TYPENAME_STRING:
-            return "string";
-        case TYPENAME_VOID:
-            return "void";
-        default: {}
-    }
-    return "MISSING_TYPE_NAME";
-}
-
 class Type: public Object {
 protected:
     Type() {tag = OBJECT_TYPE;}
@@ -39,6 +20,7 @@ public:
     virtual ~Type() = default;
     std::string to_string() const noexcept;
     ObjectBoolean* to_boolean() const noexcept;
+    ObjectBoolean* equals(const Object* other) const noexcept;
 };
 
 #endif
