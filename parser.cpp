@@ -37,12 +37,19 @@ ParseResult Parser::parse_source() {
     ParseResult result;
     while (!check({TOKEN_END_OF_FILE})) {
         result = parse_statement();
-        if (!result.error.empty() || !result.parsed_hunk)
+        if (!result.error.empty()) {
+            result.parsed_hunk = nullptr;
             break;
+        } else if (!result.parsed_hunk) {
+            break;
+        }
         source_tree->statements.push_back(result.parsed_hunk);
     }
-    if (result.error.empty())
-        result.parsed_hunk = source_tree;
+    result.parsed_hunk = (
+        result.error.empty() ?
+        source_tree :
+        nullptr
+    );
     return result;
 }
 
@@ -55,6 +62,8 @@ ParseResult Parser::parse_statement() {
             stmt->end_token = new Token;
             *stmt->end_token = consume();
         }
+    } else {
+        result.parsed_hunk = nullptr;
     }
     return result;
 }
@@ -420,8 +429,10 @@ ParseResult Parser::parse_primary() {
     switch (current.ttype) {
         case TOKEN_LEFT_ROUND_BRACE: {
             ParseResult result = parse_cast();
-            if (!result.error.empty() || !result.parsed_hunk)
+            if (!result.error.empty()) {
+                result.parsed_hunk = nullptr;
                 return result;
+            }
             return parse_group();
         }
         case TOKEN_LEFT_CURLY_BRACE: {
@@ -505,8 +516,12 @@ ParseResult Parser::parse_block() {
     ParseResult result;
     while (!check({TOKEN_END_OF_FILE})) {
         result = parse_statement();
-        if (!result.error.empty() || !result.parsed_hunk)
+        if (!result.error.empty()) {
+            result.parsed_hunk = nullptr;
             break;
+        } else if (!result.parsed_hunk) {
+            break;
+        }
         block->statements.push_back(
             reinterpret_cast<Statement*>(result.parsed_hunk)
         );
