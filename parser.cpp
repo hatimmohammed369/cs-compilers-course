@@ -424,6 +424,23 @@ ParseResult Parser::parse_primary() {
         case TOKEN_LEFT_CURLY_BRACE: {
             return parse_block();
         }
+        case TOKEN_KEYWORD_VOID:
+        case TOKEN_KEYWORD_TRUE:
+        case TOKEN_KEYWORD_FALSE:
+        case TOKEN_INTEGER:
+        case TOKEN_FLOAT:
+        case TOKEN_STRING: {
+            return parse_literal();
+        }
+        default: {}
+    }
+    return ParseResult{error, parsed_hunk};
+}
+
+ParseResult Parser::parse_literal() {
+    std::string error;
+    TreeBase* parsed_hunk = nullptr;
+    switch (current.ttype) {
         case TOKEN_KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
             Literal* void_literal =
