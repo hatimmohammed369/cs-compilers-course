@@ -22,7 +22,7 @@ std::string VariableDeclaration::to_string() const noexcept {
 }
 
 Object* VariableDeclaration::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_variable_declaration(this);
 }
 
 std::string Cast::to_string() const noexcept {

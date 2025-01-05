@@ -480,7 +480,7 @@ Object* Interpreter::visit_cast(Cast* tree) {
 Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
     for (
         auto stmt_ptr = tree->pairs.begin();
-        stmt_ptr != tree->pairs.end()-1;
+        stmt_ptr != tree->pairs.end();
         stmt_ptr++
     ) {
         std::pair<std::string, TreeBase*> p = *stmt_ptr;
