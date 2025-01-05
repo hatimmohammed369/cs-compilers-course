@@ -1,9 +1,11 @@
 #ifndef INTERPRETER_H_INCLUDED
 #define INTERPRETER_H_INCLUDED
 
+#include <unordered_map>
 #include "syntax_tree.hpp"
 
 class Interpreter: public Visitor {
+    std::unordered_map<std::string, Object*> defined_names{};
 public:
     Object* interpret(TreeBase* tree);
     Object* visit_program(Program* tree);
@@ -20,6 +22,7 @@ public:
     Object* visit_logical(Logical* tree);
     Object* visit_block(Block* tree);
     Object* visit_cast(Cast* tree);
+    Object* visit_variable_declaration(VariableDeclaration* tree);
 };
 
 #endif

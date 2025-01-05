@@ -16,6 +16,7 @@ class Logical;
 class Program;
 class Block;
 class Cast;
+class VariableDeclaration;
 
 class Visitor {
 public:
@@ -34,6 +35,7 @@ public:
     virtual Object* visit_logical(Logical* tree) = 0;
     virtual Object* visit_block(Block* tree) = 0;
     virtual Object* visit_cast(Cast* tree) = 0;
+    virtual Object* visit_variable_declaration(VariableDeclaration* tree) = 0;
 };
 
 #endif

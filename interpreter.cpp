@@ -476,3 +476,19 @@ Object* Interpreter::visit_cast(Cast* tree) {
         tree->casted_expr->accept(this)
     );
 }
+
+Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
+    for (
+        auto stmt_ptr = tree->pairs.begin();
+        stmt_ptr != tree->pairs.end()-1;
+        stmt_ptr++
+    ) {
+        std::pair<std::string, TreeBase*> p = *stmt_ptr;
+        std::string name = p.first;
+        Object* value = (
+            p.second ? p.second->accept(this) : ObjectVoid::get_void_object()
+        );
+        defined_names[name] = value;
+    }
+    return nullptr;
+}
