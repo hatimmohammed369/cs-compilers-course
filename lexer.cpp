@@ -31,7 +31,7 @@ Token Lexer::generate_number_token() {
     ttype = TOKEN_INTEGER;
 
     // Read digits before decimal point before end of input
-    while (this->has_next() && isdigit(*current)) {
+    while (this->has_next() && std::isdigit(*current)) {
         value.push_back(*current);
         current++;
     }
@@ -46,7 +46,7 @@ Token Lexer::generate_number_token() {
     // Move over decimal point
     current++;
 
-    if (!this->has_next() || !isdigit(*current)) {
+    if (!this->has_next() || !std::isdigit(*current)) {
         // Invalid numeric literal: no digits after decimal point
         ttype = TOKEN_INVALID;
         goto RETURN_TOKEN;
@@ -54,7 +54,7 @@ Token Lexer::generate_number_token() {
 
     ttype = TOKEN_FLOAT;
     // Read digits after decimal point before end of input
-    while (this->has_next() && isdigit(*current)) {
+    while (this->has_next() && std::isdigit(*current)) {
         value.push_back(*current);
         current++;
     }
@@ -69,7 +69,7 @@ Token Lexer::generate_number_token() {
     // Move over e
     current++;
 
-    if (!this->has_next() || !(isdigit(*current) || *current == '+' || *current == '-')) {
+    if (!this->has_next() || !(std::isdigit(*current) || *current == '+' || *current == '-')) {
         // Invalid numeric literal: Missing exponent value
         ttype = TOKEN_INVALID;
         goto RETURN_TOKEN;
@@ -81,7 +81,7 @@ Token Lexer::generate_number_token() {
     current++;
 
     // Read digits after exponent sign
-    while (this->has_next() && isdigit(*current)) {
+    while (this->has_next() && std::isdigit(*current)) {
         value.push_back(*current);
         current++;
     }
@@ -100,69 +100,55 @@ inline void Lexer::skip_whitespaces() {
 Token Lexer::generate_string_token() {
     TokenType ttype;
     std::string value;
+    // Skip opening "
     current++;
     ttype = TOKEN_STRING;
-    while (this->has_next()) {
-        current++;
-        switch (*current) {
-            case '"': goto RETURN_TOKEN;
-            case '\\': {
-                if (!this->has_next()) {
-                    ttype = TOKEN_INVALID;
-                    goto RETURN_TOKEN;
-                }
-                switch (*current) {
-                    case '\\': {
-                        // Quoted slash
-                        value.push_back('\\');
-                        break;
-                    }
-                    case '"': {
-                        // Quoted "
-                        value.push_back('"');
-                        break;
-                    }
-                    case '0': {
-                        // Null character
-                        value.push_back('\0');
-                        break;
-                    }
-                    case 'a': {
-                        value.push_back('\a');
-                        break;
-                    }
-                    case 'b': {
-                        value.push_back('\b');
-                        break;
-                    }
-                    case 'f': {
-                        value.push_back('\f');
-                        break;
-                    }
-                    case 'n': {
-                        value.push_back('\n');
-                        break;
-                    }
-                    case 'r': {
-                        value.push_back('\r');
-                        break;
-                    }
-                    case 't': {
-                        value.push_back('\t');
-                        break;
-                    }
-                    case 'v': {
-                        value.push_back('\v');
-                        break;
-                    }
-                    default: {
-                        ttype = TOKEN_INVALID;
-                        goto RETURN_TOKEN;
-                    }
-                }
-                break;
+    if (!has_next()) {
+        ttype = TOKEN_INVALID;
+        goto RETURN_TOKEN;
+    }
+    for (;this->has_next();current++) {
+        if (*current == '"') {
+            // Skip closing "
+            current++;
+            break;
+        }
+        if (*current == '\\') {
+            // Move to escaped character
+            current++;
+            if (!this->has_next()) {
+                ttype = TOKEN_INVALID;
+                goto RETURN_TOKEN;
             }
-            default: value.push_back(*current);
+            if (*current == '\\') {
+                // Quoted slash
+                value.push_back('\\');
+            } else if (*current == '"') {
+                // Quoted "
+                value.push_back('"');
+            } else if (*current == '0') {
+                // Null character
+                value.push_back('\0');
+            } else if (*current == 'a') {
+                value.push_back('\a');
+            } else if (*current == 'b') {
+                value.push_back('\b');
+            } else if (*current == 'f') {
+                value.push_back('\f');
+            } else if (*current == 'n') {
+                value.push_back('\n');
+            } else if (*current == 'r') {
+                value.push_back('\r');
+            } else if (*current == 't') {
+                value.push_back('\t');
+            } else if (*current == 'v') {
+                value.push_back('\v');
+            } else {
+                ttype = TOKEN_INVALID;
+                goto RETURN_TOKEN;
+            }
+        } else {
+            value.push_back(*current);
         }
     }
 RETURN_TOKEN:
@@ -382,7 +368,7 @@ Token Lexer::get_next_token() {
             value = "~";
             break;
         default: {
-            if (isdigit(*current))
+            if (std::isdigit(*current))
                 return generate_number_token();
             else if (*current == '"')
                 return generate_string_token();
