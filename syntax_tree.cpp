@@ -3,7 +3,7 @@
 std::string VariableDeclaration::to_string() const noexcept {
     std::ostringstream oss;
     oss << target_type->to_string() ;
-    for (auto p : initializers) {
+    for (auto p : pairs) {
         oss << p.first ;
         if (p.second)
             oss << " = " << p.second->to_string() ;

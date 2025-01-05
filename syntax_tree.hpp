@@ -38,8 +38,12 @@ public:
 
 class VariableDeclaration: public Statement {
 public:
+    using initializer = std::pair<std::string, TreeBase*>;
+    using var_value_pairs = std::vector<initializer>;
     Type* target_type;
-    std::vector<std::pair<std::string, TreeBase*>> initializers;
+    var_value_pairs pairs;
+    VariableDeclaration(Type* _type, var_value_pairs list):
+        target_type{_type}, pairs{list} {}
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };

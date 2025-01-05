@@ -1,4 +1,5 @@
 #include <vector>
+#include <utility>
 #include "parser.hpp"
 #include "object.hpp"
 #include "syntax_tree.hpp"
@@ -54,9 +55,17 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_statement() {
-    ParseResult result = parse_expression();
+    bool use_semicolon = true;
+    ParseResult result = parse_variable_declaration();
+    if (!result.parsed_hunk) {
+        use_semicolon = false;
+        result = parse_expression();
+    }
     if (result.error.empty()) {
-        if (check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
+        if (result.error.empty() && use_semicolon && !check({TOKEN_SEMI_COLON})) {
+            result.parsed_hunk = nullptr;
+            result.error = "Expected ; after variable declaration";
+        } else if (check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
             Statement* stmt =
                 reinterpret_cast<Statement*>(result.parsed_hunk);
             stmt->end_token = new Token;
@@ -64,6 +73,69 @@ ParseResult Parser::parse_statement() {
         }
     } else {
         result.parsed_hunk = nullptr;
+    }
+    return result;
+}
+
+ParseResult Parser::parse_variable_declaration() {
+    ParseResult result;
+    Token type_token = consume();
+    Type* target_type =
+        Type::get_type_by_token(type_token.ttype);
+    if (!target_type) {
+        std::cerr << "Undefined type '" << type_token.value << "'\n" ;
+        exit(1);
+    } else if (!check({TOKEN_IDENTIFIER})) {
+        result.parsed_hunk = nullptr;
+        result.error = "Expected identifier after type";
+        result.error.append(type_token.value);
+        return result;
+    }
+    VariableDeclaration::var_value_pairs initial_values;
+    ParseResult initializer;
+    while (true) {
+        switch (current.ttype) {
+            case TOKEN_IDENTIFIER: {
+                initial_values.push_back(
+                    std::make_pair(
+                        std::move(consume().value),
+                        nullptr
+                    )
+                );
+                break;
+            }
+            case TOKEN_COLON_EQUAL: {
+                read_next_token();
+                initializer = parse_expression();
+                if (!initializer.error.empty()) {
+                    result.parsed_hunk = nullptr;
+                    result.error = initializer.error;
+                    goto END;
+                }
+                initial_values.back().second =
+                    initializer.parsed_hunk;
+                break;
+            }
+            case TOKEN_COMMA: {
+                read_next_token();
+                break;
+            }
+            case TOKEN_SEMI_COLON: {
+                goto END;
+            }
+            default: {
+                result.parsed_hunk = nullptr;
+                result.error = "Unexpected item";
+                goto END;
+            }
+        }
+    }
+END:
+    if (result.error.empty()) {
+        VariableDeclaration* declarations_list =
+            new VariableDeclaration {target_type, initial_values};
+        result.parsed_hunk =
+            reinterpret_cast<TreeBase*>(declarations_list);
     }
     return result;
 }
