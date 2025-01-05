@@ -24,6 +24,12 @@ public:
     Token generate_next_token();
     bool has_next();
     void backtrack();
+
+    static size_t errors = 0;
+    static void report_lexing_error(const std::string& error_msg) {
+        errors += 1;
+        std::cerr << error_msg << '\n';
+    }
 };
 
 #endif
