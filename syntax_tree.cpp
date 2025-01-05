@@ -27,7 +27,7 @@ Object* VariableDeclaration::accept(Visitor* visitor) {
 
 std::string Cast::to_string() const noexcept {
     std::ostringstream oss;
-    oss << '(' << this->target_type << ')' ;
+    oss << '(' << this->target_type->to_string() << ')' ;
     oss << casted_expr->to_string() ;
     return oss.str();
 }

@@ -205,10 +205,14 @@ Token Lexer::generate_next_token() {
 
     skip_whitespaces();
 
-    if (!has_next())
+    if (!has_next()) {
+        last_step = 0;
         return Token{TOKEN_END_OF_FILE, string()};
-    else if (old_line < line)
+    } else if (old_line < line) {
+        last_step = static_cast<size_t>(current - old_current);
+        last_line = old_line;
         return Token{TOKEN_NEWLINE, std::string("\n")};
+    }
     switch (*current) {
         case '\n':
             current++;
@@ -234,6 +238,8 @@ Token Lexer::generate_next_token() {
                 break;
             } else {
                 current--;
+                last_step = static_cast<size_t>(current - old_current);
+                last_line = old_line;
                 return generate_invalid_token();
             }
         case '{':
@@ -276,6 +282,8 @@ Token Lexer::generate_next_token() {
                 break;
             } else {
                 current--;
+                last_step = static_cast<size_t>(current - old_current);
+                last_line = old_line;
                 return generate_invalid_token();
             }
         case '&':
@@ -372,17 +380,23 @@ Token Lexer::generate_next_token() {
             value = "~";
             break;
         default: {
+            Token tok;
             if (std::isdigit(*current))
-                return generate_number_token();
+                tok = generate_number_token();
             else if (*current == '"')
-                return generate_string_token();
+                tok = generate_string_token();
+            else if (*current == '_' || std::isalpha(*current))
+                tok = generate_identifier_token();
             else
-                return generate_identifier_token();
+                tok = generate_invalid_token();
+            last_step = static_cast<size_t>(current - old_current);
+            last_line = old_line;
+            return tok;
         }
     }
 RETURN_TOKEN:
     last_step = static_cast<size_t>(current - old_current);
-    last_line =  old_line;
+    last_line = old_line;
     return Token{ttype, value};
 }
 
