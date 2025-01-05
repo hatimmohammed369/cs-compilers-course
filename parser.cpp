@@ -56,10 +56,20 @@ ParseResult Parser::parse_source() {
 
 ParseResult Parser::parse_statement() {
     bool use_semicolon = true;
-    ParseResult result = parse_variable_declaration();
-    if (!result.parsed_hunk) {
-        use_semicolon = false;
-        result = parse_expression();
+    ParseResult result;
+    switch (current.ttype) {
+        case TOKEN_KEYWORD_INT:
+        case TOKEN_KEYWORD_FLOAT:
+        case TOKEN_KEYWORD_STRING:
+        case TOKEN_KEYWORD_BOOLEAN:
+        case TOKEN_KEYWORD_VOID: {
+            result = parse_variable_declaration();
+            break;
+        }
+        default: {
+            use_semicolon = false;
+            result = parse_expression();
+        }
     }
     if (result.error.empty()) {
         if (result.error.empty() && use_semicolon && !check({TOKEN_SEMI_COLON})) {
@@ -82,11 +92,7 @@ ParseResult Parser::parse_variable_declaration() {
     Token type_token = consume();
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
-    if (!target_type) {
-        this->lexer.backtrack();
-        read_next_token();
-        return ParseResult::empty_parse_result();
-    } else if (!check({TOKEN_IDENTIFIER})) {
+    if (!check({TOKEN_IDENTIFIER})) {
         result.parsed_hunk = nullptr;
         result.error = "Expected identifier after type";
         result.error.append(type_token.value);
@@ -659,11 +665,14 @@ ParseResult Parser::parse_cast() {
     }
     // Skip closing round brace around target type
     read_next_token();
-    ParseResult result = (
-        check({TOKEN_LEFT_ROUND_BRACE}) ?
-        parse_group() :
-        parse_literal()
-    );
+    ParseResult result;
+    if (check({TOKEN_LEFT_ROUND_BRACE})) {
+        // Skip (
+        read_next_token();
+        result = parse_group();
+    } else {
+        result = parse_literal();
+    }
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
         return result;
