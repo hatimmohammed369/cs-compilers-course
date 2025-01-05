@@ -39,7 +39,7 @@ Exponential => Unary ( '**' Unary )*
 
 Unary => ( ( '!' | '-' | '+' | '~' ) Unary ) | Primary
 
-Primary => Cast | Block | Group | Literal
+Primary => Cast | Block | Group | NAME | Literal
 
 Cast => '(' type ')' ( Group | Literal )
 
@@ -47,7 +47,7 @@ Block => '{' Statement* '}'
 
 Group => '(' Expression ')'
 
-Literal => NAME | Void | Boolean | Number | STRING
+Literal => Void | Boolean | Number | STRING
 
 Void => 'void'
 
