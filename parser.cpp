@@ -523,6 +523,14 @@ ParseResult Parser::parse_primary() {
         case TOKEN_LEFT_CURLY_BRACE: {
             return parse_block();
         }
+        case TOKEN_IDENTIFIER: {
+            Name* name_expr =
+                new Name{consume().value};
+            TreeBase* parsed_hunk =
+                reinterpret_cast<TreeBase*>(name_expr);
+            const std::string error;
+            return ParseResult{error, parsed_hunk};
+        }
         default: {}
     }
     return parse_literal();
