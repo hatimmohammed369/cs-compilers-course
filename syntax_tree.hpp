@@ -143,6 +143,14 @@ public:
     Object* accept(Visitor* visitor) override;
 };
 
+class Name: public Expression {
+public:
+    std::string name_str;
+    Name(std::string _str): name_str{_str} {}
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
+};
+
 class GroupedExpression: public Expression {
 public:
     TreeBase* grouped_expr;

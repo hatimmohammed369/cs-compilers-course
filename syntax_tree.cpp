@@ -1,5 +1,13 @@
 #include "syntax_tree.hpp"
 
+std::string Name::to_string() const noexcept {
+    return name_str;
+}
+
+Object* Name::accept(Visitor* visitor) {
+    return value_object;
+}
+
 std::string VariableDeclaration::to_string() const noexcept {
     std::ostringstream oss;
     oss << target_type->to_string() ;
