@@ -4,6 +4,8 @@
 
 using namespace std;
 
+size_t Lexer::errors = 0;
+
 void Lexer::init(char* in, size_t source_len) {
     this->current = this->source = in;
     this->source_length = source_len;
