@@ -185,11 +185,26 @@ Token Lexer::generate_identifier_token() {
     return Token{ttype, value};
 }
 
+static bool is_valid_first_char(char c) {
+    return (
+        std::isalpha(c) || c == '\n' ||
+        c == '{' || c == '}' || c == '(' || c == ')' ||
+        c == '!' || c == '=' || c == '-' || c == '+' ||
+        c == '*' || c == '/' || c == '%' || c == '<' ||
+        c == '>' || c == '~' || c == '|' || c == '&' ||
+        c == '^' || c == ':' || c == ',' || c == ';' ||
+        c == '_' || c == '"'
+    );
+}
+
 Token Lexer::generate_invalid_token() {
     // Any other non-whitespace character
     const TokenType ttype = TOKEN_INVALID;
     string value;
-    while (this->has_next() && !isspace(*current)) {
+    while (
+        this->has_next() &&
+        !is_valid_first_char(*current)
+    ) {
         value.push_back(*current);
         current++;
     }
