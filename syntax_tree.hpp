@@ -131,16 +131,16 @@ public:
     TreeBase* expr;
     Unary(Token op, TreeBase* node):
         unary_op{op}, expr{node} {}
-    virtual std::string to_string() const noexcept override;
-    virtual Object* accept(Visitor* visitor) override;
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
 };
 
 class Literal: public Expression {
 public:
     Object* value_object;
     Literal(Object* val): value_object{val} {}
-    virtual std::string to_string() const noexcept override;
-    virtual Object* accept(Visitor* visitor) override;
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
 };
 
 class GroupedExpression: public Expression {
@@ -148,8 +148,8 @@ public:
     TreeBase* grouped_expr;
     GroupedExpression(TreeBase* expr):
         grouped_expr{expr} {}
-    virtual std::string to_string() const noexcept override;
-    virtual Object* accept(Visitor* visitor) override;
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
 };
 
 #endif
