@@ -36,6 +36,14 @@ public:
     ~Expression() = default;
 };
 
+class VariableDeclaration: public Statement {
+public:
+    Type* target_type;
+    std::vector<std::pair<std::string, TreeBase*>> initializers;
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
+};
+
 class Cast: public Expression {
 public:
     Type* target_type;

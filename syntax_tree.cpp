@@ -1,5 +1,22 @@
 #include "syntax_tree.hpp"
 
+std::string VariableDeclaration::to_string() const noexcept {
+    std::ostringstream oss;
+    oss << target_type->to_string() ;
+    for (auto p : initializers) {
+        oss << p.first ;
+        if (p.second)
+            oss << " = " << p.second->to_string() ;
+        oss << ',' ;
+    }
+    oss << ';' ;
+    return oss.str();
+}
+
+Object* VariableDeclaration::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 std::string Cast::to_string() const noexcept {
     std::ostringstream oss;
     oss << '(' << this->target_type << ')' ;
