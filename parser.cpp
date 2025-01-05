@@ -83,8 +83,9 @@ ParseResult Parser::parse_variable_declaration() {
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
     if (!target_type) {
-        std::cerr << "Undefined type '" << type_token.value << "'\n" ;
-        exit(1);
+        this->lexer.backtrack();
+        read_next_token();
+        return ParseResult::empty_parse_result();
     } else if (!check({TOKEN_IDENTIFIER})) {
         result.parsed_hunk = nullptr;
         result.error = "Expected identifier after type";
@@ -490,17 +491,15 @@ ParseResult Parser::parse_unary() {
 }
 
 ParseResult Parser::parse_primary() {
+    ParseResult result;
     if (check({TOKEN_NEWLINE})) {
-        std::string error;
-        TreeBase* parsed_hunk = nullptr;
         read_next_token();
         if (check({TOKEN_NEWLINE}))
-            error.append("Expected expression");
-        return ParseResult{error, parsed_hunk};
+            result.error.append("Expected expression");
+        return result;
     }
     switch (current.ttype) {
         case TOKEN_LEFT_ROUND_BRACE: {
-            ParseResult result;
             // Skip opening round brace around target type
             read_next_token();
             switch (current.ttype) {
@@ -526,10 +525,9 @@ ParseResult Parser::parse_primary() {
         case TOKEN_IDENTIFIER: {
             Name* name_expr =
                 new Name{consume().value};
-            TreeBase* parsed_hunk =
+            result.parsed_hunk =
                 reinterpret_cast<TreeBase*>(name_expr);
-            const std::string error;
-            return ParseResult{error, parsed_hunk};
+            return result;
         }
         default: {}
     }

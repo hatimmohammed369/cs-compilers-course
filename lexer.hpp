@@ -6,7 +6,7 @@
 class Lexer {
     char* source;
     char* current;
-    char* last_current;
+    size_t last_step = 0;
 
     size_t source_length;
 

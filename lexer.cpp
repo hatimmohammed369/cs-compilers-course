@@ -381,12 +381,12 @@ Token Lexer::generate_next_token() {
         }
     }
 RETURN_TOKEN:
-    last_current =  old_current;
+    last_step = static_cast<size_t>(current - old_current);
     last_line =  old_line;
     return Token{ttype, value};
 }
 
 void Lexer::backtrack() {
-    current = last_current;
+    current -= last_step;
     line = last_line;
 }
