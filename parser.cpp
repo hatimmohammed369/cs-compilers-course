@@ -15,7 +15,7 @@ Lexer Parser::get_lexer() {
 }
 
 inline void Parser::read_next_token() {
-    current = lexer.get_next_token();
+    current = lexer.generate_next_token();
 }
 
 Token Parser::consume() {

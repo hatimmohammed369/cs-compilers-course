@@ -6,8 +6,12 @@
 class Lexer {
     char* source;
     char* current;
+    char* last_current;
+
     size_t source_length;
+
     size_t line = 1;
+    size_t last_line = 1;
 
     Token generate_number_token();
     inline void skip_whitespaces();
@@ -17,8 +21,9 @@ class Lexer {
 public:
     void init(char* in, size_t source_len);
     void reset();
-    Token get_next_token();
+    Token generate_next_token();
     bool has_next();
+    void backtrack();
 };
 
 #endif

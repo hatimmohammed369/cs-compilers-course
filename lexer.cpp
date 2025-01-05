@@ -196,11 +196,15 @@ Token Lexer::generate_invalid_token() {
     return Token{ttype, value};
 }
 
-Token Lexer::get_next_token() {
+Token Lexer::generate_next_token() {
+    char* old_current = current;
+    size_t old_line = line;
+
     TokenType ttype;
     string value;
-    size_t old_line = line;
+
     skip_whitespaces();
+
     if (!has_next())
         return Token{TOKEN_END_OF_FILE, string()};
     else if (old_line < line)
@@ -377,5 +381,12 @@ Token Lexer::get_next_token() {
         }
     }
 RETURN_TOKEN:
+    last_current =  old_current;
+    last_line =  old_line;
     return Token{ttype, value};
+}
+
+void Lexer::backtrack() {
+    current = last_current;
+    line = last_line;
 }
