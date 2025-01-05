@@ -492,3 +492,12 @@ Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
     }
     return nullptr;
 }
+
+Object* Interpreter::visit_name(Name* tree) {
+    Object* name_val = defined_names[tree->name_str];
+    if (!name_val) {
+        std::cerr << "Undefined name '" << tree->name_str << "'\n";
+        exit(1);
+    }
+    return name_val;
+}

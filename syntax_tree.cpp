@@ -5,7 +5,7 @@ std::string Name::to_string() const noexcept {
 }
 
 Object* Name::accept(Visitor* visitor) {
-    return value_object;
+    return visitor->visit_name(this);
 }
 
 std::string VariableDeclaration::to_string() const noexcept {
