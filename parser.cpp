@@ -32,11 +32,11 @@ bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcep
 
 ParseResult Parser::parse_source() {
     // Skip empty lines
-    while (check({TOKEN_NEWLINE}))
+    while (current.ttype == TOKEN_NEWLINE)
         read_next_token();
     Program *source_tree = new Program;
     ParseResult result;
-    while (!check({TOKEN_END_OF_FILE})) {
+    while (current.ttype != TOKEN_END_OF_FILE) {
         result = parse_statement();
         if (!result.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -72,7 +72,7 @@ ParseResult Parser::parse_statement() {
         }
     }
     if (result.error.empty()) {
-        if (result.error.empty() && use_semicolon && !check({TOKEN_SEMI_COLON})) {
+        if (result.error.empty() && use_semicolon && current.ttype != TOKEN_SEMI_COLON) {
             result.parsed_hunk = nullptr;
             result.error = "Expected ; after variable declaration";
         } else if (check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
@@ -92,7 +92,7 @@ ParseResult Parser::parse_variable_declaration() {
     Token type_token = consume();
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
-    if (!check({TOKEN_IDENTIFIER})) {
+    if (current.ttype != TOKEN_IDENTIFIER) {
         result.parsed_hunk = nullptr;
         result.error = "Expected identifier after type";
         result.error.append(type_token.value);
@@ -153,7 +153,7 @@ ParseResult Parser::parse_expression() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_KEYWORD_XOR})
+        current.ttype == TOKEN_KEYWORD_XOR
     ) {
         Token op = consume();
         ParseResult right = parse_logical_or();
@@ -179,7 +179,7 @@ ParseResult Parser::parse_logical_or() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_KEYWORD_OR})
+        current.ttype == TOKEN_KEYWORD_OR
     ) {
         Token op = consume();
         ParseResult right = parse_logical_and();
@@ -205,7 +205,7 @@ ParseResult Parser::parse_logical_and() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_KEYWORD_AND})
+        current.ttype == TOKEN_KEYWORD_AND
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_xor();
@@ -231,7 +231,7 @@ ParseResult Parser::parse_bitwise_xor() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_BITWISE_XOR})
+        current.ttype == TOKEN_BITWISE_XOR
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_or();
@@ -257,7 +257,7 @@ ParseResult Parser::parse_bitwise_or() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_BITWISE_OR})
+        current.ttype == TOKEN_BITWISE_OR
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_and();
@@ -283,7 +283,7 @@ ParseResult Parser::parse_bitwise_and() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_BITWISE_AND})
+        current.ttype == TOKEN_BITWISE_AND
     ) {
         Token op = consume();
         ParseResult right = parse_equality();
@@ -442,7 +442,7 @@ ParseResult Parser::parse_exponential() {
     items.push_back(result.parsed_hunk);
     while (
         result.error.empty() &&
-        check({TOKEN_EXPONENT})
+        current.ttype == TOKEN_EXPONENT
     ) {
         Token op = consume();
         ParseResult exponent = parse_unary();
@@ -498,9 +498,9 @@ ParseResult Parser::parse_unary() {
 
 ParseResult Parser::parse_primary() {
     ParseResult result;
-    if (check({TOKEN_NEWLINE})) {
+    if (current.ttype == TOKEN_NEWLINE) {
         read_next_token();
-        if (check({TOKEN_NEWLINE}))
+        if (current.ttype == TOKEN_NEWLINE)
             result.error.append("Expected expression");
         return result;
     }
@@ -598,12 +598,12 @@ ParseResult Parser::parse_block() {
     // Skip opening curly brace
     read_next_token();
     Block* block = new Block;
-    if (check({TOKEN_NEWLINE})) {
+    if (current.ttype == TOKEN_NEWLINE) {
         block->opening_newline = new Token;
         *block->opening_newline = consume();
     }
     ParseResult result;
-    while (!check({TOKEN_END_OF_FILE})) {
+    while (current.ttype != TOKEN_END_OF_FILE) {
         result = parse_statement();
         if (!result.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -615,13 +615,13 @@ ParseResult Parser::parse_block() {
             reinterpret_cast<Statement*>(result.parsed_hunk)
         );
     }
-    if (check({TOKEN_NEWLINE})) {
+    if (current.ttype == TOKEN_NEWLINE) {
         block->closing_newline = new Token;
         *block->closing_newline = consume();
     }
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
-    } else if (!check({TOKEN_RIGHT_CURLY_BRACE})) {
+    } else if (current.ttype != TOKEN_RIGHT_CURLY_BRACE) {
         result.parsed_hunk = nullptr;
         // Expected closing curly brace after statement
         result.error = "Expected \x7d after statement";
@@ -640,7 +640,7 @@ ParseResult Parser::parse_group() {
         // Expected expression after opening round brace
         result.error = "Expected expression after \x28";
         return result;
-    } else if (!check({TOKEN_RIGHT_ROUND_BRACE})) {
+    } else if (current.ttype != TOKEN_RIGHT_ROUND_BRACE) {
         result.parsed_hunk = nullptr;
         // Expected closing round brace after statement
         result.error = "Expected \x29 after statement";
@@ -666,7 +666,7 @@ ParseResult Parser::parse_cast() {
     // Skip closing round brace around target type
     read_next_token();
     ParseResult result;
-    if (check({TOKEN_LEFT_ROUND_BRACE})) {
+    if (current.ttype == TOKEN_LEFT_ROUND_BRACE) {
         // Skip (
         read_next_token();
         result = parse_group();
