@@ -21,11 +21,12 @@ static const char* type_name_string(const TypeName& name) {
 }
 
 std::string Type::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << "<type '" ;
-    oss << type_name_string(name);
-    oss << "'>" ;
-    return oss.str();
+    fmt << "<type '" ;
+    fmt << type_name_string(name);
+    fmt << "'>" ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 ObjectBoolean* Type::to_boolean() const noexcept {

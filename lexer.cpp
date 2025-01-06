@@ -1,5 +1,4 @@
 #include "lexer.hpp"
-#include "token.hpp"
 #include <cctype>
 
 using namespace std;

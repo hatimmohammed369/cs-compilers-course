@@ -79,12 +79,13 @@ ObjectInteger* ObjectInteger::copy() const noexcept {
 // ------------------------- ObjectFloat -------------------------
 
 std::string ObjectFloat::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << std::setprecision(16) ;
-    oss << value ;
+    fmt << std::setprecision(16) ;
+    fmt << value ;
     if (std::floorl(value) == std::ceill(value))
-        oss << ".0" ;
-    return oss.str();
+        fmt << ".0" ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 ObjectFloat* ObjectFloat::operator-() const noexcept {
@@ -183,11 +184,12 @@ ObjectBoolean* ObjectString::equals(const Object* other) const noexcept {
 }
 
 std::string ObjectString::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << '"' ;
-    oss << std::string(chars, _length) ;
-    oss << '"' ;
-    return oss.str();
+    fmt << '"' ;
+    fmt << std::string(chars, _length) ;
+    fmt << '"' ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 const char* ObjectString::get() const noexcept {

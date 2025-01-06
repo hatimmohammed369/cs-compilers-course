@@ -9,16 +9,17 @@ Object* Name::accept(Visitor* visitor) {
 }
 
 std::string VariableDeclaration::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << target_type->to_string() ;
+    fmt << target_type->to_string() ;
     for (auto p : pairs) {
-        oss << p.first ;
+        fmt << p.first ;
         if (p.second)
-            oss << " = " << p.second->to_string() ;
-        oss << ',' ;
+            fmt << " = " << p.second->to_string() ;
+        fmt << ',' ;
     }
-    oss << ';' ;
-    return oss.str();
+    fmt << ';' ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 Object* VariableDeclaration::accept(Visitor* visitor) {
@@ -26,10 +27,11 @@ Object* VariableDeclaration::accept(Visitor* visitor) {
 }
 
 std::string Cast::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << '(' << this->target_type->to_string() << ')' ;
-    oss << casted_expr->to_string() ;
-    return oss.str();
+    fmt << '(' << this->target_type->to_string() << ')' ;
+    fmt << casted_expr->to_string() ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 Object* Cast::accept(Visitor* visitor) {
@@ -37,24 +39,25 @@ Object* Cast::accept(Visitor* visitor) {
 }
 
 std::string Block::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << "{" ;
+    fmt << "{" ;
     if (this->closing_newline)
-        oss << '\n';
+        fmt << '\n';
     for (
         auto stmt_ptr = this->statements.begin();
         stmt_ptr != this->statements.end()-1;
         stmt_ptr++
     ) {
         auto tree = *stmt_ptr;
-        oss << tree->to_string() ;
+        fmt << tree->to_string() ;
         if (tree->end_token)
-            oss << tree->end_token->value;
+            fmt << tree->end_token->value;
     }
     if (this->closing_newline)
-        oss << '\n';
-    oss << "}" ;
-    return oss.str();
+        fmt << '\n';
+    fmt << "}" ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 Object* Block::accept(Visitor* visitor) {
@@ -62,10 +65,11 @@ Object* Block::accept(Visitor* visitor) {
 }
 
 std::string Program::to_string() const noexcept {
-    std::ostringstream oss;
     for (TreeBase* stmt : statements)
-        oss << stmt->to_string() << '\n' ;
-    return oss.str();
+        fmt << stmt->to_string() << '\n' ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 Object* Program::accept(Visitor* visitor) {
@@ -73,11 +77,12 @@ Object* Program::accept(Visitor* visitor) {
 }
 
 std::string Binary::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << left->to_string() ;
-    oss << ' ' << op.value << ' ' ;
-    oss << right->to_string() ;
-    return oss.str();
+    fmt << left->to_string() ;
+    fmt << ' ' << op.value << ' ' ;
+    fmt << right->to_string() ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 Object* Logical::accept(Visitor* visitor) {
@@ -113,10 +118,11 @@ Object* Exponential::accept(Visitor* visitor) {
 }
 
 std::string Unary::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << unary_op.value ;
-    oss << expr->to_string() ;
-    return oss.str();
+    fmt << unary_op.value ;
+    fmt << expr->to_string() ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 Object* Unary::accept(Visitor* visitor) {
@@ -132,11 +138,12 @@ Object* Literal::accept(Visitor* visitor) {
 }
 
 std::string GroupedExpression::to_string() const noexcept {
-    std::ostringstream oss;
-    oss << '(' ;
-    oss << grouped_expr->to_string() ;
-    oss << ')' ;
-    return oss.str();
+    fmt << '(' ;
+    fmt << grouped_expr->to_string() ;
+    fmt << ')' ;
+    std::string str = fmt.str();
+    reset_fmt();
+    return str;
 }
 
 Object* GroupedExpression::accept(Visitor* visitor) {
