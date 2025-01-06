@@ -25,7 +25,7 @@ std::string Type::to_string() const noexcept {
     oss << "<type '" ;
     oss << type_name_string(name);
     oss << "'>" ;
-    return std::string();
+    return oss.str();
 }
 
 ObjectBoolean* Type::to_boolean() const noexcept {
