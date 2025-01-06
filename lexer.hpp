@@ -7,10 +7,7 @@ class Lexer {
     char* source;
     size_t source_length;
     char* current;
-    size_t last_step = 0;
     size_t line = 1;
-    size_t last_line = 1;
-    char* last_line_break;
     Token generate_number_token();
     inline void skip_whitespaces();
     Token generate_string_token();
@@ -21,7 +18,6 @@ public:
     void reset();
     Token generate_next_token();
     bool has_next();
-    void backtrack();
 
     static size_t errors;
     static void report_lexing_error(const std::string& error_msg) {

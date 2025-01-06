@@ -8,8 +8,9 @@
 #include <cstdint>
 
 static std::ostringstream fmt;
+static std::string read_fmt() __attribute__((unused));
 static std::string read_fmt() {
-    std::string str = std::move(fmt.str());
+    std::string str = fmt.str();
     fmt.str("");
     fmt.clear();
     return str;

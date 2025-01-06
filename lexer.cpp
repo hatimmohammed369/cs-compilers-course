@@ -7,26 +7,11 @@ void Lexer::init(char* in, const size_t& source_len) {
     source = in;
     current = source;
     source_length = source_len;
-    last_line_break = source;
 }
 
 void Lexer::reset() {
     current = source;
-    last_step = 0;
     line = 1;
-    last_line = 1;
-    last_line_break = source;
-}
-
-void Lexer::backtrack() {
-    current -= last_step;
-    last_step = 0;
-    line = last_line;
-    last_line_break = current;
-    while (
-        last_line_break >= source &&
-        *last_line_break != '\n'
-    ) last_line_break--;
 }
 
 bool Lexer::has_next() {
@@ -40,19 +25,10 @@ bool Lexer::has_next() {
 }
 
 inline void Lexer::skip_whitespaces() {
-    char* old_current = current;
-    size_t old_line = line;
-    char* old_last_line_break = current;
     while (has_next() && std::isspace(*current)) {
-        if (*current == '\n') {
-            line++;
-            last_line_break = current;
-        }
+        if (*current == '\n') line++;
         current++;
     }
-    last_line_break = old_last_line_break;
-    last_step = static_cast<size_t>(current - old_current);
-    last_line = old_line;
 }
 
 static bool is_valid_first_char(char c) {
@@ -237,7 +213,6 @@ Token Lexer::generate_invalid_token() {
 }
 
 Token Lexer::generate_next_token() {
-    char* old_current = current;
     size_t old_line = line;
 
     TokenType ttype;
@@ -246,7 +221,6 @@ Token Lexer::generate_next_token() {
     skip_whitespaces();
 
     if (!has_next()) {
-        last_step = 0;
         return Token{TOKEN_END_OF_FILE, std::string()};
     } else if (old_line < line) {
         return Token{TOKEN_NEWLINE, std::string("\n")};
@@ -277,8 +251,6 @@ Token Lexer::generate_next_token() {
                 break;
             } else {
                 current--;
-                last_step = static_cast<size_t>(current - old_current);
-                last_line = old_line;
                 return generate_invalid_token();
             }
         case '{':
@@ -321,8 +293,6 @@ Token Lexer::generate_next_token() {
                 break;
             } else {
                 current--;
-                last_step = static_cast<size_t>(current - old_current);
-                last_line = old_line;
                 return generate_invalid_token();
             }
         case '&':
@@ -429,13 +399,9 @@ Token Lexer::generate_next_token() {
                 tok = generate_identifier_token();
             else
                 tok = generate_invalid_token();
-            last_step = static_cast<size_t>(current - old_current);
-            last_line = old_line;
             return tok;
         }
     }
 RETURN_TOKEN:
-    last_step = static_cast<size_t>(current - old_current);
-    last_line = old_line;
     return Token{ttype, value};
 }
