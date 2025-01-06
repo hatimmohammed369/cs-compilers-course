@@ -1,27 +1,70 @@
 #include "lexer.hpp"
 #include <cctype>
 
-using namespace std;
-
 size_t Lexer::errors = 0;
 
-void Lexer::init(char* in, size_t source_len) {
-    this->current = this->source = in;
-    this->source_length = source_len;
+void Lexer::init(char* in, const size_t& source_len) {
+    source = in;
+    current = source;
+    source_length = source_len;
+    last_line_break = source;
 }
 
 void Lexer::reset() {
     current = source;
+    last_step = 0;
+    line = 1;
+    last_line = 1;
+    last_line_break = source;
+}
+
+void Lexer::backtrack() {
+    current -= last_step;
+    last_step = 0;
+    line = last_line;
+    last_line_break = current;
+    while (
+        last_line_break >= source &&
+        *last_line_break != '\n'
+    ) last_line_break--;
 }
 
 bool Lexer::has_next() {
     ptrdiff_t diff = current - source;
     if (diff < 0) {
-        cerr << "Error in lexer in line " << __LINE__ << "\n";
-        cerr << "Current pointer before source pointer\n";
+        std::cerr << "Error in lexer in line " << __LINE__ << '\n';
+        std::cerr << "Current pointer before source pointer\n" ;
         exit(1);
     }
     return static_cast<size_t>(diff) < source_length;
+}
+
+inline void Lexer::skip_whitespaces() {
+    char* old_current = current;
+    size_t old_line = line;
+    char* old_last_line_break = current;
+    while (has_next() && std::isspace(*current)) {
+        if (*current == '\n') {
+            line++;
+            last_line_break = current;
+        }
+        current++;
+    }
+    last_line_break = old_last_line_break;
+    last_step = static_cast<size_t>(current - old_current);
+    last_line = old_line;
+}
+
+static bool is_valid_first_char(char c) {
+    return (
+        std::isalpha(c) || c == '\n' ||
+        c == '{' || c == '}' || c == '(' || c == ')' ||
+        c == '!' || c == '=' || c == '-' || c == '+' ||
+        c == '*' || c == '/' || c == '%' || c == '<' ||
+        c == '>' || c == '~' || c == '|' || c == '&' ||
+        c == '^' || c == ':' || c == ',' || c == ';' ||
+        c == '_' || c == '"'
+    );
 }
 
 Token Lexer::generate_number_token() {
@@ -89,13 +132,6 @@ Token Lexer::generate_number_token() {
 
 RETURN_TOKEN:
     return Token{ttype, value};
-}
-
-inline void Lexer::skip_whitespaces() {
-    while (has_next() && std::isspace(*current)) {
-        current++;
-        if (has_next() && *current == '\n') line++;
-    }
 }
 
 Token Lexer::generate_string_token() {
@@ -186,22 +222,10 @@ Token Lexer::generate_identifier_token() {
     return Token{ttype, value};
 }
 
-static bool is_valid_first_char(char c) {
-    return (
-        std::isalpha(c) || c == '\n' ||
-        c == '{' || c == '}' || c == '(' || c == ')' ||
-        c == '!' || c == '=' || c == '-' || c == '+' ||
-        c == '*' || c == '/' || c == '%' || c == '<' ||
-        c == '>' || c == '~' || c == '|' || c == '&' ||
-        c == '^' || c == ':' || c == ',' || c == ';' ||
-        c == '_' || c == '"'
-    );
-}
-
 Token Lexer::generate_invalid_token() {
     // Any other non-whitespace character
     const TokenType ttype = TOKEN_INVALID;
-    string value;
+    std::string value;
     while (
         this->has_next() &&
         !is_valid_first_char(*current)
@@ -217,18 +241,17 @@ Token Lexer::generate_next_token() {
     size_t old_line = line;
 
     TokenType ttype;
-    string value;
+    std::string value;
 
     skip_whitespaces();
 
     if (!has_next()) {
         last_step = 0;
-        return Token{TOKEN_END_OF_FILE, string()};
+        return Token{TOKEN_END_OF_FILE, std::string()};
     } else if (old_line < line) {
-        last_step = static_cast<size_t>(current - old_current);
-        last_line = old_line;
         return Token{TOKEN_NEWLINE, std::string("\n")};
     }
+
     switch (*current) {
         case '\n':
             current++;
@@ -396,6 +419,7 @@ Token Lexer::generate_next_token() {
             value = "~";
             break;
         default: {
+            skip_whitespaces();
             Token tok;
             if (std::isdigit(*current))
                 tok = generate_number_token();
@@ -414,9 +438,4 @@ RETURN_TOKEN:
     last_step = static_cast<size_t>(current - old_current);
     last_line = old_line;
     return Token{ttype, value};
-}
-
-void Lexer::backtrack() {
-    current -= last_step;
-    line = last_line;
 }

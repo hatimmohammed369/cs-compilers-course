@@ -5,21 +5,19 @@
 
 class Lexer {
     char* source;
+    size_t source_length;
     char* current;
     size_t last_step = 0;
-
-    size_t source_length;
-
     size_t line = 1;
     size_t last_line = 1;
-
+    char* last_line_break;
     Token generate_number_token();
     inline void skip_whitespaces();
     Token generate_string_token();
     Token generate_identifier_token();
     Token generate_invalid_token();
 public:
-    void init(char* in, size_t source_len);
+    void init(char* in, const size_t& source_len);
     void reset();
     Token generate_next_token();
     bool has_next();
