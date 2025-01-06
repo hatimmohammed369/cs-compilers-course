@@ -83,9 +83,7 @@ std::string ObjectFloat::to_string() const noexcept {
     fmt << value ;
     if (std::floorl(value) == std::ceill(value))
         fmt << ".0" ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 ObjectFloat* ObjectFloat::operator-() const noexcept {
@@ -187,9 +185,7 @@ std::string ObjectString::to_string() const noexcept {
     fmt << '"' ;
     fmt << std::string(chars, _length) ;
     fmt << '"' ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 const char* ObjectString::get() const noexcept {

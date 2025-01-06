@@ -17,9 +17,7 @@ std::string VariableDeclaration::to_string() const noexcept {
         fmt << ',' ;
     }
     fmt << ';' ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 Object* VariableDeclaration::accept(Visitor* visitor) {
@@ -29,9 +27,7 @@ Object* VariableDeclaration::accept(Visitor* visitor) {
 std::string Cast::to_string() const noexcept {
     fmt << '(' << this->target_type->to_string() << ')' ;
     fmt << casted_expr->to_string() ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 Object* Cast::accept(Visitor* visitor) {
@@ -55,9 +51,7 @@ std::string Block::to_string() const noexcept {
     if (this->closing_newline)
         fmt << '\n';
     fmt << "}" ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 Object* Block::accept(Visitor* visitor) {
@@ -67,9 +61,7 @@ Object* Block::accept(Visitor* visitor) {
 std::string Program::to_string() const noexcept {
     for (TreeBase* stmt : statements)
         fmt << stmt->to_string() << '\n' ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 Object* Program::accept(Visitor* visitor) {
@@ -80,9 +72,7 @@ std::string Binary::to_string() const noexcept {
     fmt << left->to_string() ;
     fmt << ' ' << op.value << ' ' ;
     fmt << right->to_string() ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 Object* Logical::accept(Visitor* visitor) {
@@ -120,9 +110,7 @@ Object* Exponential::accept(Visitor* visitor) {
 std::string Unary::to_string() const noexcept {
     fmt << unary_op.value ;
     fmt << expr->to_string() ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 Object* Unary::accept(Visitor* visitor) {
@@ -141,9 +129,7 @@ std::string GroupedExpression::to_string() const noexcept {
     fmt << '(' ;
     fmt << grouped_expr->to_string() ;
     fmt << ')' ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 Object* GroupedExpression::accept(Visitor* visitor) {

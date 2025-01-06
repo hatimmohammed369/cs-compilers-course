@@ -8,9 +8,11 @@
 #include <cstdint>
 
 static std::ostringstream fmt;
-static void reset_fmt() {
+static std::string read_fmt() {
+    std::string str = std::move(fmt.str());
     fmt.str("");
     fmt.clear();
+    return str;
 }
 
 using i8 = int8_t;

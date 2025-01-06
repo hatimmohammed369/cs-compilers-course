@@ -24,9 +24,7 @@ std::string Type::to_string() const noexcept {
     fmt << "<type '" ;
     fmt << type_name_string(name);
     fmt << "'>" ;
-    std::string str = fmt.str();
-    reset_fmt();
-    return str;
+    return read_fmt();
 }
 
 ObjectBoolean* Type::to_boolean() const noexcept {
