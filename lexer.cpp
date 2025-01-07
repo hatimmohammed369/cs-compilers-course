@@ -227,11 +227,6 @@ Token Lexer::generate_next_token() {
     }
 
     switch (*current) {
-        case '\n':
-            current++;
-            ttype = TOKEN_NEWLINE;
-            value = "\n";
-            break;
         case ';':
             current++;
             ttype = TOKEN_SEMI_COLON;
@@ -389,7 +384,6 @@ Token Lexer::generate_next_token() {
             value = "~";
             break;
         default: {
-            skip_whitespaces();
             Token tok;
             if (std::isdigit(*current))
                 tok = generate_number_token();
