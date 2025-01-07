@@ -57,6 +57,7 @@ static bool is_valid_first_char(char c) {
 }
 
 Token Lexer::generate_number_token() {
+    char* token_start = current;
     TokenType ttype;
     std::string value;
     // Generate a INTEGER/FLOAT token
@@ -81,6 +82,15 @@ Token Lexer::generate_number_token() {
 
     if (!this->has_next() || !std::isdigit(*current)) {
         // Invalid numeric literal: no digits after decimal point
+        fmt << "Error in line " << line << ":\n" ;
+        fmt << "Invalid numeric literal: no digits after decimal point\n";
+        fmt << std::string(current_line, current_line_length) << '\n';
+        char* p = current_line;
+        for (;p < token_start ;p++)
+            fmt << ' ' ;
+        for (size_t i = 1;i <= value.length();i++, p++)
+            fmt << '^' ;
+        Lexer::report_lexing_error(read_fmt());
         ttype = TOKEN_INVALID;
         goto RETURN_TOKEN;
     }
