@@ -6,28 +6,41 @@ size_t Lexer::errors = 0;
 void Lexer::init(char* in, const size_t& source_len) {
     source = in;
     current = source;
+    current_line = source;
+    current_line_length = 1;
     source_length = source_len;
 }
 
 void Lexer::reset() {
     current = source;
     line = 1;
+    current_line = source;
+    current_line_length = 1;
 }
 
 bool Lexer::has_next() {
-    ptrdiff_t diff = current - source;
-    if (diff < 0) {
-        std::cerr << "Error in lexer in line " << __LINE__ << '\n';
-        std::cerr << "Current pointer before source pointer\n" ;
-        exit(1);
-    }
-    return static_cast<size_t>(diff) < source_length;
+    return (current + 1) < (source + source_length);
 }
 
 inline void Lexer::skip_whitespaces() {
     while (has_next() && std::isspace(*current)) {
-        if (*current == '\n') line++;
+        if (current > source && *(current-1) == '\n') {
+            line++;
+            computed_current_line_length = false;
+            current_line_length = 1;
+        }
         current++;
+    }
+    if (!computed_current_line_length) {
+        computed_current_line_length = true;
+        current_line = current;
+        while (current_line > source && *current_line != '\n') {
+            current_line--;
+        }
+        const char* end = source + source_length;
+        for (char* p = current_line;p < end && *p != '\n';p++) {
+            current_line_length++;
+        }
     }
 }
 
