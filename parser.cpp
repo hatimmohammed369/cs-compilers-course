@@ -552,7 +552,7 @@ ParseResult Parser::parse_literal() {
             break;
         }
         case TokenType::KEYWORD_TRUE: {
-            ObjectBoolean* obj = ObjectBoolean::get_true_object();
+            ObjectBoolean* obj = ObjectBoolean::TRUE;
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
@@ -560,7 +560,7 @@ ParseResult Parser::parse_literal() {
             break;
         }
         case TokenType::KEYWORD_FALSE: {
-            ObjectBoolean* obj = ObjectBoolean::get_false_object();
+            ObjectBoolean* obj = ObjectBoolean::FALSE;
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();

@@ -81,7 +81,7 @@ std::string Type::to_string() const noexcept {
 }
 
 ObjectBoolean* Type::to_boolean() const noexcept {
-    return ObjectBoolean::get_true_object();
+    return ObjectBoolean::TRUE;
 }
 
 Object* Type::cast(const Object* obj) const noexcept {

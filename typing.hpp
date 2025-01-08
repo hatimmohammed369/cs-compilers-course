@@ -93,7 +93,7 @@ ObjectBoolean* Number<T>::equals(const Object* other) const noexcept {
         other->type_info != TypeInteger::int_type_object &&
         other->type_info != TypeFloat::float_type_object
     )
-        return ObjectBoolean::get_false_object();
+        return ObjectBoolean::FALSE;
 
     const ObjectInteger* other_int =
         dynamic_cast<const ObjectInteger*>(other);

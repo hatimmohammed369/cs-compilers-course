@@ -96,7 +96,6 @@ private:
     ObjectVoid& operator=(const ObjectVoid&) = delete; // No copy assignment
     ObjectVoid(const ObjectVoid&&) = delete; // No move constructor
     ObjectVoid& operator=(const ObjectVoid&&) = delete; // No move assignment
-
 public:
     static const std::string NAME;
     static ObjectVoid* VOID_OBJECT;
@@ -118,24 +117,22 @@ public:
 };
 
 class ObjectBoolean: public Object {
+private:
+    ObjectBoolean(); // Only a single object availaible
+    ObjectBoolean(const ObjectBoolean&) = delete; // No copy constructor
+    ObjectBoolean& operator=(const ObjectBoolean&) = delete; // No copy assignment
+    ObjectBoolean(const ObjectBoolean&&) = delete; // No move constructor
+    ObjectBoolean& operator=(const ObjectBoolean&&) = delete; // No move assignment
+
     bool value;
     std::string str;
     ObjectBoolean(bool val);
 public:
-    static ObjectBoolean* get_true_object() {
-        static ObjectBoolean* true_obj =
-            new ObjectBoolean{true};
-        return true_obj;
-    }
-
-    static ObjectBoolean* get_false_object() {
-        static ObjectBoolean* false_obj =
-            new ObjectBoolean{false};
-        return false_obj;
-    }
+    static ObjectBoolean* TRUE;
+    static ObjectBoolean* FALSE;
 
     static ObjectBoolean* as_object(bool value) {
-        return (value ? get_true_object() : get_false_object());
+        return (value ? TRUE : FALSE);
     }
 
     ObjectBoolean* equals(const Object* other) const noexcept override;

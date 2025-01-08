@@ -135,7 +135,7 @@ std::string ObjectVoid::to_string() const noexcept {
 
 ObjectBoolean* ObjectVoid::to_boolean() const noexcept {
     // Void is always false
-    return ObjectBoolean::get_false_object();
+    return ObjectBoolean::FALSE;
 }
 
 ObjectVoid* ObjectVoid::copy() const noexcept {
@@ -163,6 +163,8 @@ ObjectString* ObjectString::copy() const noexcept {
 // ------------------------- ObjectString -------------------------
 
 // ------------------------- ObjectBoolean -------------------------
+ObjectBoolean* ObjectBoolean::TRUE = new ObjectBoolean{true};
+ObjectBoolean* ObjectBoolean::FALSE = new ObjectBoolean{false};
 
 std::string ObjectBoolean::to_string() const noexcept {
     return str;
