@@ -82,7 +82,7 @@ ObjectBoolean* Type::equals(const Object* other) const noexcept {
     const Type* type_obj =
         dynamic_cast<const Type*>(other);
     return ObjectBoolean::as_object(
-        type_obj && type_obj->type_info == this->type_info
+        type_obj && type_obj->type_name == this->type_name
     );
 }
 
