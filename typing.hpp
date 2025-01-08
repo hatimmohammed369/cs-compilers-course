@@ -8,7 +8,8 @@ class Type: public Object {
 protected:
     Type() {type_info = type_type_object; }
 public:
-    std::string type_name{"type"};
+    const static std::string NAME;
+    std::string type_name = NAME;
 
     Object* copy() const noexcept override;
     ObjectBoolean* equals(const Object* other) const noexcept override;
@@ -23,9 +24,10 @@ public:
 
 class TypeInteger: public Type {
     TypeInteger(): Type() {
-        this->type_name = "int";
+        this->type_name = NAME;
     }
 public:
+    const static std::string NAME;
     static TypeInteger* int_type_object;
     TypeInteger* copy() const noexcept override {
         return int_type_object;
@@ -35,9 +37,10 @@ public:
 
 class TypeFloat: public Type {
     TypeFloat(): Type() {
-        this->type_name = "float";
+        this->type_name = NAME;
     } 
 public:
+    const static std::string NAME;
     static TypeFloat* float_type_object;
     TypeFloat* copy() const noexcept override {
         return float_type_object;
@@ -47,9 +50,10 @@ public:
 
 class TypeString: public Type {
     TypeString(): Type() {
-        this->type_name = "string";
+        this->type_name = NAME;
     } 
 public:
+    const static std::string NAME;
     static TypeString* string_type_object;
     TypeString* copy() const noexcept override {
         return string_type_object;
@@ -59,9 +63,10 @@ public:
 
 class TypeBoolean: public Type {
     TypeBoolean(): Type() {
-        this->type_name = "boolean";
+        this->type_name = NAME;
     } 
 public:
+    const static std::string NAME;
     static TypeBoolean* boolean_type_object;
     TypeBoolean* copy() const noexcept override {
         return boolean_type_object;
@@ -71,9 +76,10 @@ public:
 
 class TypeVoid: public Type {
     TypeVoid(): Type() {
-        this->type_name = "void";
+        this->type_name = NAME;
     } 
 public:
+    const static std::string NAME;
     static TypeVoid* void_type_object;
     TypeVoid* copy() const noexcept override {
         return void_type_object;

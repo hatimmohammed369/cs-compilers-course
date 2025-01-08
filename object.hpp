@@ -3,27 +3,18 @@
 
 #include "common.hpp"
 
-enum ObjectType {
-    OBJECT_VOID,
-    OBJECT_BOOLEAN,
-    OBJECT_INTEGER,
-    OBJECT_FLOAT,
-    OBJECT_STRING,
-    OBJECT_TYPE,
-};
-
+class Type;
 class ObjectBoolean;
 class ObjectFloat;
 
 class Object {
 public:
-    ObjectType tag;
+    Type* type_info;
     virtual ~Object() = default;
-    virtual std::string to_string() const noexcept = 0;
-    virtual ObjectBoolean* equals(const Object* other) const noexcept = 0;
-    inline ObjectType get_tag() const noexcept {return tag;}
-    virtual ObjectBoolean* to_boolean() const noexcept = 0;
     virtual Object* copy() const noexcept = 0;
+    virtual ObjectBoolean* equals(const Object* other) const noexcept = 0;
+    virtual std::string to_string() const noexcept = 0;
+    virtual ObjectBoolean* to_boolean() const noexcept = 0;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
@@ -63,8 +54,7 @@ template class Number<float64>;
 
 class ObjectInteger: public Number<i64> {
 public:
-    ObjectInteger(const i64& val):
-        Number(val) {tag = OBJECT_INTEGER;}
+    ObjectInteger(const i64& val);
     std::string to_string() const noexcept override;
     ObjectInteger* operator-() const noexcept override;
     ObjectInteger* operator*(const ObjectInteger* other) const noexcept;
@@ -86,8 +76,7 @@ public:
 
 class ObjectFloat: public Number<float64> {
 public:
-    ObjectFloat(const float64& val):
-        Number(val) {tag = OBJECT_FLOAT;}
+    ObjectFloat(const float64& val);
     std::string to_string() const noexcept override;
     ObjectFloat* operator-() const noexcept override;
     ObjectFloat* operator*(const ObjectInteger* other) const noexcept;
@@ -102,7 +91,7 @@ public:
 
 class ObjectVoid: public Object {
 private:
-    ObjectVoid() {tag = OBJECT_VOID;} // Only a single object availaible
+    ObjectVoid(); // Only a single object availaible
     ObjectVoid(const ObjectVoid&) = delete; // No copy constructor
     ObjectVoid& operator=(const ObjectVoid&) = delete; // No copy assignment
 
@@ -145,11 +134,7 @@ public:
 class ObjectBoolean: public Object {
     bool value;
     std::string str;
-    ObjectBoolean(bool val) {
-        tag = OBJECT_BOOLEAN;
-        value = val;
-        str = std::string(val ? "true" : "false");
-    }
+    ObjectBoolean(bool val);
 public:
     static ObjectBoolean* get_true_object() {
         static ObjectBoolean* true_obj =
@@ -237,28 +222,6 @@ template <typename T>
 template <typename U>
 ObjectBoolean* Number<T>::operator<=(const Number<U>* other) const noexcept {
     return ObjectBoolean::as_object(value <= other->get());
-}
-
-template <typename T>
-ObjectBoolean* Number<T>::equals(const Object* other) const noexcept {
-    if (
-        other->get_tag() != OBJECT_INTEGER &&
-        other->get_tag() != OBJECT_FLOAT
-    )
-        return ObjectBoolean::get_false_object();
-
-    const ObjectInteger* other_int =
-        dynamic_cast<const ObjectInteger*>(other);
-    if (other_int)
-        return ObjectBoolean::as_object(
-            this->value == other_int->get()
-        );
-
-    const ObjectFloat* other_float =
-        dynamic_cast<const ObjectFloat*>(other);
-    return ObjectBoolean::as_object(
-        this->value == other_float->get()
-    );
 }
 
 // ------------------------- Number -------------------------
