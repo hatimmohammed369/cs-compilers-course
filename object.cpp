@@ -143,26 +143,16 @@ ObjectVoid* ObjectVoid::copy() const noexcept {
 
 // ------------------------- ObjectString -------------------------
 
-ObjectString::ObjectString(const char* s): ObjectString(s, strlen(s)) {}
-
-ObjectString::ObjectString(const std::string& s):
-    ObjectString(s.c_str(), s.length()) {}
-
-ObjectString::~ObjectString() {delete chars;}
-
 std::string ObjectString::to_string() const noexcept {
-    char* chars_copy = new char[_length+1];
-    chars_copy[_length] = '\0';
-    std::strncpy(chars_copy, chars, _length);
-    return std::string(chars_copy, _length);
+    return value;
 }
 
 const char* ObjectString::get() const noexcept {
-    return chars;
+    return value.c_str();
 }
 
 size_t ObjectString::length() const noexcept {
-    return _length;
+    return value.size();
 }
 
 ObjectBoolean* ObjectString::to_boolean() const noexcept {

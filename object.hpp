@@ -112,14 +112,13 @@ public:
 };
 
 class ObjectString: public Object {
-    char* chars;
-    size_t _length;
+    std::string value;
 public:
     ObjectString();
     ObjectString(const char* s, size_t len);
     ObjectString(const char* s);
     ObjectString(const std::string& s);
-    ~ObjectString();
+    ObjectString(const std::string&& s);
 
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;
