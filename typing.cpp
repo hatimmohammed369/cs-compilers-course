@@ -19,7 +19,6 @@ const std::string TypeFloat::NAME = "float";
 TypeInteger* TypeInteger::int_type_object = new TypeInteger;
 const std::string TypeInteger::NAME = "int";
 
-
 ObjectInteger::ObjectInteger(const i64& value): 
     Number::Number(value) {type_info = TypeInteger::int_type_object;}
 
@@ -70,7 +69,7 @@ ObjectBoolean* ObjectBoolean::equals(const Object* other) const noexcept {
 ObjectBoolean* ObjectVoid::equals(const Object* other) const noexcept {
     // There is only one (void)
     return ObjectBoolean::as_object(
-        other->type_info == TypeBoolean::boolean_type_object
+        other->type_info == TypeVoid::void_type_object
     );
 }
 
