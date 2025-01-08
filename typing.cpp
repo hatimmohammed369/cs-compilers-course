@@ -21,6 +21,19 @@ const std::string TypeInteger::NAME = "int";
 
 Type::Type() {type_info = type_type_object;}
 
+ObjectString::ObjectString(): std::string() {
+    type_info = TypeString::string_type_object;
+}
+ObjectString::ObjectString(const char* s): std::string(s) {
+    type_info = TypeString::string_type_object;
+}
+ObjectString::ObjectString(const char* s, size_t len):
+    std::string(s, len) {type_info = TypeString::string_type_object;}
+ObjectString::ObjectString(const std::string& s):
+    std::string(s) {type_info = TypeString::string_type_object;}
+ObjectString::ObjectString(const std::string&& s):
+    std::string(s) {type_info = TypeString::string_type_object;}
+
 ObjectInteger::ObjectInteger(const i64& value): 
     Number::Number(value) {type_info = TypeInteger::int_type_object;}
 
@@ -119,7 +132,7 @@ ObjectInteger* TypeInteger::cast(const Object* obj) const noexcept {
         const ObjectString* _obj =
             reinterpret_cast<const ObjectString*>(obj);
         return new ObjectInteger{
-            std::stoll(std::string(_obj->get(), _obj->length()))
+            std::stoll(std::string(_obj->c_str(), _obj->size()))
         };
     } else if (obj_type_name == TypeBoolean::NAME) {
         const ObjectBoolean* _obj =
@@ -149,7 +162,7 @@ ObjectFloat* TypeFloat::cast(const Object* obj) const noexcept {
         const ObjectString* _obj =
             reinterpret_cast<const ObjectString*>(obj);
         return new ObjectFloat{
-            std::stold(std::string(_obj->get(), _obj->length()), nullptr)
+            std::stold(std::string(_obj->c_str(), _obj->size()), nullptr)
         };
     } else if (obj_type_name == TypeBoolean::NAME) {
         const ObjectBoolean* _obj =
@@ -166,7 +179,7 @@ ObjectFloat* TypeFloat::cast(const Object* obj) const noexcept {
 }
 
 ObjectString* TypeString::cast(const Object* obj) const noexcept {
-    return new ObjectString{obj->to_string()};
+    return new ObjectString(obj->to_string());
 }
 
 ObjectBoolean* TypeBoolean::cast(const Object* obj) const noexcept {
