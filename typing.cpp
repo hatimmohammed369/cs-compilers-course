@@ -35,32 +35,12 @@ ObjectBoolean::ObjectBoolean(bool val) {
     str = std::string(val ? "true" : "false");
 }
 
-ObjectString::ObjectString() {
-    type_info = TypeString::string_type_object;
-}
-
-ObjectString::ObjectString(const char* s, size_t length) {
-    type_info = TypeString::string_type_object;
-    value.resize(length);
-    value.append(s);
-}
-
-ObjectString::ObjectString(const char* s):
-    ObjectString(s, strlen(s)) {type_info = TypeString::string_type_object;}
-
-ObjectString::ObjectString(const std::string& s):
-    value{s} {type_info = TypeString::string_type_object;} 
-
-ObjectString::ObjectString(const std::string&& s):
-    value{std::move(s)} {type_info = TypeString::string_type_object;} 
-
-
 ObjectBoolean* ObjectString::equals(const Object* other) const noexcept {
     const ObjectString* str =
         dynamic_cast<const ObjectString*>(other);
     return ObjectBoolean::as_object(
         (str && other->type_info == TypeString::string_type_object) &&
-        this->value == str->value
+        std::strncmp(this->c_str(), str->c_str(), this->size()) == 0
     );
 }
 

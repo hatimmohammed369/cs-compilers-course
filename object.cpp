@@ -147,25 +147,17 @@ ObjectVoid* ObjectVoid::copy() const noexcept {
 // ------------------------- ObjectString -------------------------
 
 std::string ObjectString::to_string() const noexcept {
-    return value;
-}
-
-const char* ObjectString::get() const noexcept {
-    return value.c_str();
-}
-
-size_t ObjectString::length() const noexcept {
-    return value.size();
+    return *this;
 }
 
 ObjectBoolean* ObjectString::to_boolean() const noexcept {
     // Empty string is false
     // Non-empty string is true
-    return ObjectBoolean::as_object(this->_length != 0);
+    return ObjectBoolean::as_object(size() != 0);
 }
 
 ObjectString* ObjectString::copy() const noexcept {
-    return new ObjectString{this->chars, this->_length};
+    return new ObjectString{this->c_str(), this->size()};
 }
 
 // ------------------------- ObjectString -------------------------

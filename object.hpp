@@ -107,19 +107,10 @@ public:
     ObjectVoid* copy() const noexcept override;
 };
 
-class ObjectString: public Object {
-    std::string value;
+class ObjectString: public Object, public std::string {
 public:
-    ObjectString();
-    ObjectString(const char* s, size_t len);
-    ObjectString(const char* s);
-    ObjectString(const std::string& s);
-    ObjectString(const std::string&& s);
-
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;
-    const char* get() const noexcept;
-    size_t length() const noexcept;
 
     ObjectBoolean* to_boolean() const noexcept override;
     ObjectString* copy() const noexcept override;
