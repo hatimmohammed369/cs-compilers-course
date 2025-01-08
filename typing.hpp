@@ -6,7 +6,7 @@
 
 class Type: public Object {
 protected:
-    Type() {type_info = type_type_object; }
+    Type();
 public:
     const static std::string NAME;
     std::string type_name = NAME;

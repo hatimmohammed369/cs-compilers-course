@@ -151,10 +151,10 @@ ObjectString::ObjectString(const std::string& s):
 ObjectString::~ObjectString() {delete chars;}
 
 std::string ObjectString::to_string() const noexcept {
-    fmt << '"' ;
-    fmt << std::string(chars, _length) ;
-    fmt << '"' ;
-    return read_fmt();
+    char* chars_copy = new char[_length+1];
+    chars_copy[_length] = '\0';
+    std::strncpy(chars_copy, chars, _length);
+    return std::string(chars_copy, _length);
 }
 
 const char* ObjectString::get() const noexcept {
