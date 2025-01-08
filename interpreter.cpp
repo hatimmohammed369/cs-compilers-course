@@ -31,7 +31,7 @@ Object* Interpreter::visit_grouped_expression(GroupedExpression* tree) {
 
 Object* Interpreter::visit_unary(Unary* tree) {
     switch (tree->unary_op.ttype) {
-        case TOKEN_BANG: {
+        case TokenType::BANG: {
             ObjectBoolean* obj =
                 dynamic_cast<ObjectBoolean*>(tree->expr->accept(this));
             if (!obj) {
@@ -40,7 +40,7 @@ Object* Interpreter::visit_unary(Unary* tree) {
             }
             return obj->negated();
         }
-        case TOKEN_MINUS: {
+        case TokenType::MINUS: {
             Object* expr_value = tree->expr->accept(this);
             ObjectInteger* int_obj =
                 dynamic_cast<ObjectInteger*>(expr_value);
@@ -55,7 +55,7 @@ Object* Interpreter::visit_unary(Unary* tree) {
             std::cerr << "Unary logical operator - applied to non-numeric" ;
             exit(1);
         }
-        case TOKEN_PLUS: {
+        case TokenType::PLUS: {
             Object* expr_value = tree->expr->accept(this);
             ObjectInteger* int_obj =
                 dynamic_cast<ObjectInteger*>(expr_value);
@@ -70,7 +70,7 @@ Object* Interpreter::visit_unary(Unary* tree) {
             std::cerr << "Unary logical operator + applied to non-numeric" ;
             exit(1);
         }
-        case TOKEN_TILDE: {
+        case TokenType::TILDE: {
             ObjectInteger* int_obj =
                 dynamic_cast<ObjectInteger*>(tree->expr->accept(this));
             if (!int_obj) {
@@ -167,7 +167,7 @@ FIND_RIGHT:
     }
 EVALUATE:
     switch (tree->op.ttype) {
-        case TOKEN_STAR: {
+        case TokenType::STAR: {
             if (left_int && right_int)
                 return (*left_int) * right_int;
             else if (left_int && right_float)
@@ -176,7 +176,7 @@ EVALUATE:
                 return (*left_float) * right_int;
             return (*left_float) * right_float;
         }
-        case TOKEN_SLASH: {
+        case TokenType::SLASH: {
             if (left_int && right_int)
                 return (*left_int) / right_int;
             else if (left_int && right_float)
@@ -185,7 +185,7 @@ EVALUATE:
                 return (*left_float) / right_int;
             return (*left_float) / right_float;
         }
-        case TOKEN_DOUBLE_SLASH: {
+        case TokenType::DOUBLE_SLASH: {
             if (left_int && right_int)
                 return left_int->integer_div(right_int);
             else if (left_int && right_float)
@@ -194,7 +194,7 @@ EVALUATE:
                 return left_float->integer_div(right_int);
             return left_float->integer_div(right_float);
         }
-        case TOKEN_PERCENT: {
+        case TokenType::PERCENT: {
             if (!(left_int && right_int)) {
                 std::cerr << "Applying mod operator % with a non-integer operand\n";
                 exit(1);
@@ -247,7 +247,7 @@ FIND_RIGHT:
     }
 EVALUATE:
     switch (tree->op.ttype) {
-        case TOKEN_PLUS: {
+        case TokenType::PLUS: {
             if (left_int && right_int)
                 return (*left_int) + right_int;
             else if (left_int && right_float)
@@ -256,7 +256,7 @@ EVALUATE:
                 return (*left_float) + right_int;
             return (*left_float) + right_float;
         }
-        case TOKEN_MINUS: {
+        case TokenType::MINUS: {
             if (left_int && right_int)
                 return (*left_int) - right_int;
             else if (left_int && right_float)
@@ -311,7 +311,7 @@ FIND_RIGHT:
     }
 EVALUATE:
     switch (tree->op.ttype) {
-        case TOKEN_GREATER: {
+        case TokenType::GREATER: {
             if (left_int && right_int)
                 return (*left_int) > right_int;
             else if (left_int && right_float)
@@ -320,7 +320,7 @@ EVALUATE:
                 return (*left_float) > right_int;
             return (*left_float) > right_float;
         }
-        case TOKEN_GREATER_EQUAL: {
+        case TokenType::GREATER_EQUAL: {
             if (left_int && right_int)
                 return (*left_int) >= right_int;
             else if (left_int && right_float)
@@ -329,7 +329,7 @@ EVALUATE:
                 return (*left_float) >= right_int;
             return (*left_float) >= right_float;
         }
-        case TOKEN_LESS: {
+        case TokenType::LESS: {
             if (left_int && right_int)
                 return (*left_int) < right_int;
             else if (left_int && right_float)
@@ -338,7 +338,7 @@ EVALUATE:
                 return (*left_float) < right_int;
             return (*left_float) < right_float;
         }
-        case TOKEN_LESS_EQUAL: {
+        case TokenType::LESS_EQUAL: {
             if (left_int && right_int)
                 return (*left_int) <= right_int;
             else if (left_int && right_float)
@@ -370,9 +370,9 @@ Object* Interpreter::visit_shift(Shift* tree) {
     }
 
     switch (tree->op.ttype) {
-        case TOKEN_RIGHT_SHIFT:
+        case TokenType::RIGHT_SHIFT:
             return (*value) >> count;
-        case TOKEN_LEFT_SHIFT:
+        case TokenType::LEFT_SHIFT:
             return (*value) << count;
         default: {
             std::cerr << "Invalid shift operator " << tree->op.value << " for numeric operands\n";
@@ -388,9 +388,9 @@ Object* Interpreter::visit_equality(Equality* tree) {
     const Object* right =
         tree->right->accept(this);
     switch (tree->op.ttype) {
-        case TOKEN_LOGICAL_EQUAL:
+        case TokenType::LOGICAL_EQUAL:
             return left->equals(right);
-        case TOKEN_LOGICAL_NOT_EQUAL:
+        case TokenType::LOGICAL_NOT_EQUAL:
             return left->equals(right)->negated();
         default: {
             std::cerr << "Invalid equality operator " << tree->op.value << '\n' ;
@@ -416,11 +416,11 @@ Object* Interpreter::visit_bitwise(Bitwise* tree) {
         exit(1);
     }
     switch (tree->op.ttype) {
-        case TOKEN_BITWISE_XOR:
+        case TokenType::BITWISE_XOR:
             return *left ^ right;
-        case TOKEN_BITWISE_OR:
+        case TokenType::BITWISE_OR:
             return *left | right;
-        case TOKEN_BITWISE_AND:
+        case TokenType::BITWISE_AND:
             return *left & right;
         default: {
             std::cerr << "Invalid bitwise operator `" << tree->op.value << "`\n";
@@ -436,11 +436,11 @@ Object* Interpreter::visit_logical(Logical* tree) {
     const ObjectBoolean* right =
         tree->right->accept(this)->to_boolean();
     switch (tree->op.ttype) {
-        case TOKEN_KEYWORD_XOR:
+        case TokenType::KEYWORD_XOR:
             return left->xor_with(right);
-        case TOKEN_KEYWORD_OR:
+        case TokenType::KEYWORD_OR:
             return *left || right;
-        case TOKEN_KEYWORD_AND:
+        case TokenType::KEYWORD_AND:
             return *left && right;
         default: {
             std::cerr << "Invalid logical operator `" << tree->op.value << "`\n";
@@ -465,7 +465,7 @@ Object* Interpreter::visit_block(Block* tree) {
         }
     }
     return (
-        tree->end_token && tree->end_token->ttype == TOKEN_SEMI_COLON ?
+        tree->end_token && tree->end_token->ttype == TokenType::SEMI_COLON ?
         ObjectVoid::get_void_object() :
         tree->statements.back()->accept(this)
     );

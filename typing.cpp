@@ -42,15 +42,15 @@ ObjectBoolean* Type::equals(const Object* other) const noexcept {
 
 Type* Type::get_type_by_token(TokenType type_keyword) {
     switch (type_keyword) {
-        case TOKEN_KEYWORD_INT:
+        case TokenType::KEYWORD_INT:
             return TypeInt::get_int_type_object();
-        case TOKEN_KEYWORD_FLOAT:
+        case TokenType::KEYWORD_FLOAT:
             return TypeFloat::get_float_type_object();
-        case TOKEN_KEYWORD_STRING:
+        case TokenType::KEYWORD_STRING:
             return TypeString::get_string_type_object();
-        case TOKEN_KEYWORD_BOOLEAN:
+        case TokenType::KEYWORD_BOOLEAN:
             return TypeBoolean::get_boolean_type_object();
-        case TOKEN_KEYWORD_VOID:
+        case TokenType::KEYWORD_VOID:
             return TypeVoid::get_void_type_object();
         default: {}
     }

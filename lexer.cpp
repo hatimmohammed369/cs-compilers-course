@@ -62,7 +62,7 @@ Token Lexer::generate_number_token() {
     std::string value;
     // Generate a INTEGER/FLOAT token
     // Roughly it's: \d+([.]\d+((e|E)[+-]?\d+)?)?
-    ttype = TOKEN_INTEGER;
+    ttype = TokenType::INTEGER;
 
     // Read digits before decimal point before end of input
     while (this->has_next() && std::isdigit(*current)) {
@@ -91,11 +91,11 @@ Token Lexer::generate_number_token() {
         for (size_t i = 1;i <= value.length();i++, p++)
             fmt << '^' ;
         Lexer::report_lexing_error(read_fmt());
-        ttype = TOKEN_INVALID;
+        ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
     }
 
-    ttype = TOKEN_FLOAT;
+    ttype = TokenType::FLOAT;
     // Read digits after decimal point before end of input
     while (this->has_next() && std::isdigit(*current)) {
         value.push_back(*current);
@@ -114,7 +114,7 @@ Token Lexer::generate_number_token() {
 
     if (!this->has_next() || !(std::isdigit(*current) || *current == '+' || *current == '-')) {
         // Invalid numeric literal: Missing exponent value
-        ttype = TOKEN_INVALID;
+        ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
     }
 
@@ -138,9 +138,9 @@ Token Lexer::generate_string_token() {
     std::string value;
     // Skip opening "
     current++;
-    ttype = TOKEN_STRING;
+    ttype = TokenType::STRING;
     if (!has_next()) {
-        ttype = TOKEN_INVALID;
+        ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
     }
     for (;this->has_next();current++) {
@@ -153,7 +153,7 @@ Token Lexer::generate_string_token() {
             // Move to escaped character
             current++;
             if (!this->has_next()) {
-                ttype = TOKEN_INVALID;
+                ttype = TokenType::INVALID;
                 goto RETURN_TOKEN;
             }
             if (*current == '\\') {
@@ -180,7 +180,7 @@ Token Lexer::generate_string_token() {
             } else if (*current == 'v') {
                 value.push_back('\v');
             } else {
-                ttype = TOKEN_INVALID;
+                ttype = TokenType::INVALID;
                 goto RETURN_TOKEN;
             }
         } else {
@@ -192,38 +192,38 @@ RETURN_TOKEN:
 }
 
 Token Lexer::generate_identifier_token() {
-    TokenType ttype = TOKEN_IDENTIFIER;
+    TokenType ttype = TokenType::IDENTIFIER;
     std::string value;
     while (has_next() && std::isalnum(*current)) {
         value.push_back(*current);
         current++;
     }
     if (std::strcmp(value.c_str(), "and") == 0)
-        ttype = TOKEN_KEYWORD_AND;
+        ttype = TokenType::KEYWORD_AND;
     else if (std::strcmp(value.c_str(), "boolean") == 0)
-        ttype = TOKEN_KEYWORD_BOOLEAN;
+        ttype = TokenType::KEYWORD_BOOLEAN;
     else if (std::strcmp(value.c_str(), "false") == 0)
-        ttype = TOKEN_KEYWORD_FALSE;
+        ttype = TokenType::KEYWORD_FALSE;
     else if (std::strcmp(value.c_str(), "float") == 0)
-        ttype = TOKEN_KEYWORD_FLOAT;
+        ttype = TokenType::KEYWORD_FLOAT;
     else if (std::strcmp(value.c_str(), "int") == 0)
-        ttype = TOKEN_KEYWORD_INT;
+        ttype = TokenType::KEYWORD_INT;
     else if (std::strcmp(value.c_str(), "or") == 0)
-        ttype = TOKEN_KEYWORD_OR;
+        ttype = TokenType::KEYWORD_OR;
     else if (std::strcmp(value.c_str(), "string") == 0)
-        ttype = TOKEN_KEYWORD_STRING;
+        ttype = TokenType::KEYWORD_STRING;
     else if (std::strcmp(value.c_str(), "true") == 0)
-        ttype = TOKEN_KEYWORD_TRUE;
+        ttype = TokenType::KEYWORD_TRUE;
     else if (std::strcmp(value.c_str(), "void") == 0)
-        ttype = TOKEN_KEYWORD_VOID;
+        ttype = TokenType::KEYWORD_VOID;
     else if (std::strcmp(value.c_str(), "xor") == 0)
-        ttype = TOKEN_KEYWORD_XOR;
+        ttype = TokenType::KEYWORD_XOR;
     return Token{ttype, value};
 }
 
 Token Lexer::generate_invalid_token() {
     // Any other non-whitespace character
-    const TokenType ttype = TOKEN_INVALID;
+    const TokenType ttype = TokenType::INVALID;
     std::string value;
     while (
         this->has_next() &&
@@ -244,27 +244,27 @@ Token Lexer::generate_next_token() {
     skip_whitespaces();
 
     if (!has_next()) {
-        return Token{TOKEN_END_OF_FILE, std::string()};
+        return Token{TokenType::END_OF_FILE, std::string()};
     } else if (old_line < line) {
-        return Token{TOKEN_NEWLINE, std::string("\n")};
+        return Token{TokenType::LINEBREAK, std::string("\n")};
     }
 
     switch (*current) {
         case ';':
             current++;
-            ttype = TOKEN_SEMI_COLON;
+            ttype = TokenType::SEMI_COLON;
             value = ";";
             break;
         case ',':
             current++;
-            ttype = TOKEN_COMMA;
+            ttype = TokenType::COMMA;
             value = ",";
             break;
         case ':':
             current++;
             if (has_next() && *current == '=') {
                 current++;
-                ttype = TOKEN_COLON_EQUAL;
+                ttype = TokenType::COLON_EQUAL;
                 value = ":=";
                 break;
             } else {
@@ -273,32 +273,32 @@ Token Lexer::generate_next_token() {
             }
         case '{':
             current++;
-            ttype = TOKEN_LEFT_CURLY_BRACE;
+            ttype = TokenType::LEFT_CURLY_BRACE;
             value = "{";
             break;
         case '}':
             current++;
-            ttype = TOKEN_RIGHT_CURLY_BRACE;
+            ttype = TokenType::RIGHT_CURLY_BRACE;
             value = "}";
             break;
         case '(':
             current++;
-            ttype = TOKEN_LEFT_ROUND_BRACE;
+            ttype = TokenType::LEFT_ROUND_BRACE;
             value = "(";
             break;
         case ')':
             current++;
-            ttype = TOKEN_RIGHT_ROUND_BRACE;
+            ttype = TokenType::RIGHT_ROUND_BRACE;
             value = ")";
             break;
         case '!':
             current++;
             if (this->has_next() && *current == '=') {
                 current++;
-                ttype = TOKEN_LOGICAL_NOT_EQUAL;
+                ttype = TokenType::LOGICAL_NOT_EQUAL;
                 value = "!=";
             } else {
-                ttype = TOKEN_BANG;
+                ttype = TokenType::BANG;
                 value = "!";
             }
             break;
@@ -306,7 +306,7 @@ Token Lexer::generate_next_token() {
             current++;
             if (this->has_next() && *current == '=') {
                 current++;
-                ttype = TOKEN_LOGICAL_EQUAL;
+                ttype = TokenType::LOGICAL_EQUAL;
                 value = "==";
                 break;
             } else {
@@ -315,32 +315,32 @@ Token Lexer::generate_next_token() {
             }
         case '&':
             current++;
-            ttype = TOKEN_BITWISE_AND;
+            ttype = TokenType::BITWISE_AND;
             value = "&";
             break;
         case '|':
             current++;
-            ttype = TOKEN_BITWISE_OR;
+            ttype = TokenType::BITWISE_OR;
             value = "|";
             break;
         case '^':
             current++;
-            ttype = TOKEN_BITWISE_XOR;
+            ttype = TokenType::BITWISE_XOR;
             value = "^";
             break;
         case '-':
             current++;
-            ttype = TOKEN_MINUS;
+            ttype = TokenType::MINUS;
             value = "-";
             break;
         case '*':
             current++;
             if (has_next() && *current == '*') {
                 current++;
-                ttype = TOKEN_EXPONENT;
+                ttype = TokenType::EXPONENT;
                 value = "**";
             } else {
-                ttype = TOKEN_STAR;
+                ttype = TokenType::STAR;
                 value = "*";
             }
             break;
@@ -348,21 +348,21 @@ Token Lexer::generate_next_token() {
             current++;
             if (has_next() && *current == '/') {
                 current++;
-                ttype = TOKEN_DOUBLE_SLASH;
+                ttype = TokenType::DOUBLE_SLASH;
                 value = "//";
             } else {
-                ttype = TOKEN_SLASH;
+                ttype = TokenType::SLASH;
                 value = "/";
             }
             break;
         case '%':
             current++;
-            ttype = TOKEN_PERCENT;
+            ttype = TokenType::PERCENT;
             value = "%";
             break;
         case '+':
             current++;
-            ttype = TOKEN_PLUS;
+            ttype = TokenType::PLUS;
             value = "+";
             break;
         case '>':
@@ -370,17 +370,17 @@ Token Lexer::generate_next_token() {
             if (has_next()) {
                 if (*current == '=') {
                     current++;
-                    ttype = TOKEN_GREATER_EQUAL;
+                    ttype = TokenType::GREATER_EQUAL;
                     value = ">=";
                     goto RETURN_TOKEN;
                 } else if (*current == '>') {
                     current++;
-                    ttype = TOKEN_RIGHT_SHIFT;
+                    ttype = TokenType::RIGHT_SHIFT;
                     value = ">>";
                     goto RETURN_TOKEN;
                 }
             }
-            ttype = TOKEN_GREATER;
+            ttype = TokenType::GREATER;
             value = ">";
             break;
         case '<':
@@ -388,22 +388,22 @@ Token Lexer::generate_next_token() {
             if (has_next()) {
                 if (*current == '=') {
                     current++;
-                    ttype = TOKEN_LESS_EQUAL;
+                    ttype = TokenType::LESS_EQUAL;
                     value = "<=";
                     goto RETURN_TOKEN;
                 } else if (*current == '<') {
                     current++;
-                    ttype = TOKEN_LEFT_SHIFT;
+                    ttype = TokenType::LEFT_SHIFT;
                     value = "<<";
                     goto RETURN_TOKEN;
                 }
             }
-            ttype = TOKEN_LESS;
+            ttype = TokenType::LESS;
             value = "<";
             break;
         case '~':
             current++;
-            ttype = TOKEN_TILDE;
+            ttype = TokenType::TILDE;
             value = "~";
             break;
         default: {

@@ -32,11 +32,11 @@ bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcep
 
 ParseResult Parser::parse_source() {
     // Skip empty lines
-    while (current.ttype == TOKEN_NEWLINE)
+    while (current.ttype == TokenType::LINEBREAK)
         read_next_token();
     Program *source_tree = new Program;
     ParseResult result;
-    while (current.ttype != TOKEN_END_OF_FILE) {
+    while (current.ttype != TokenType::END_OF_FILE) {
         result = parse_statement();
         if (!result.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -58,11 +58,11 @@ ParseResult Parser::parse_statement() {
     bool use_semicolon = true;
     ParseResult result;
     switch (current.ttype) {
-        case TOKEN_KEYWORD_INT:
-        case TOKEN_KEYWORD_FLOAT:
-        case TOKEN_KEYWORD_STRING:
-        case TOKEN_KEYWORD_BOOLEAN:
-        case TOKEN_KEYWORD_VOID: {
+        case TokenType::KEYWORD_INT:
+        case TokenType::KEYWORD_FLOAT:
+        case TokenType::KEYWORD_STRING:
+        case TokenType::KEYWORD_BOOLEAN:
+        case TokenType::KEYWORD_VOID: {
             result = parse_variable_declaration();
             break;
         }
@@ -72,10 +72,10 @@ ParseResult Parser::parse_statement() {
         }
     }
     if (result.error.empty()) {
-        if (result.error.empty() && use_semicolon && current.ttype != TOKEN_SEMI_COLON) {
+        if (result.error.empty() && use_semicolon && current.ttype != TokenType::SEMI_COLON) {
             result.parsed_hunk = nullptr;
             result.error = "Expected ; after variable declaration";
-        } else if (check({TOKEN_SEMI_COLON, TOKEN_NEWLINE})) {
+        } else if (check({TokenType::SEMI_COLON, TokenType::LINEBREAK})) {
             Statement* stmt =
                 reinterpret_cast<Statement*>(result.parsed_hunk);
             stmt->end_token = new Token;
@@ -92,7 +92,7 @@ ParseResult Parser::parse_variable_declaration() {
     Token type_token = consume();
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
-    if (current.ttype != TOKEN_IDENTIFIER) {
+    if (current.ttype != TokenType::IDENTIFIER) {
         result.parsed_hunk = nullptr;
         result.error = "Expected identifier after type";
         result.error.append(type_token.value);
@@ -102,7 +102,7 @@ ParseResult Parser::parse_variable_declaration() {
     ParseResult initializer;
     while (true) {
         switch (current.ttype) {
-            case TOKEN_IDENTIFIER: {
+            case TokenType::IDENTIFIER: {
                 initial_values.push_back(
                     std::make_pair(
                         std::move(consume().value),
@@ -111,7 +111,7 @@ ParseResult Parser::parse_variable_declaration() {
                 );
                 break;
             }
-            case TOKEN_COLON_EQUAL: {
+            case TokenType::COLON_EQUAL: {
                 read_next_token();
                 initializer = parse_expression();
                 if (!initializer.error.empty()) {
@@ -123,11 +123,11 @@ ParseResult Parser::parse_variable_declaration() {
                     initializer.parsed_hunk;
                 break;
             }
-            case TOKEN_COMMA: {
+            case TokenType::COMMA: {
                 read_next_token();
                 break;
             }
-            case TOKEN_SEMI_COLON: {
+            case TokenType::SEMI_COLON: {
                 goto END;
             }
             default: {
@@ -153,7 +153,7 @@ ParseResult Parser::parse_expression() {
         return result;
     while (
         result.error.empty() &&
-        current.ttype == TOKEN_KEYWORD_XOR
+        current.ttype == TokenType::KEYWORD_XOR
     ) {
         Token op = consume();
         ParseResult right = parse_logical_or();
@@ -179,7 +179,7 @@ ParseResult Parser::parse_logical_or() {
         return result;
     while (
         result.error.empty() &&
-        current.ttype == TOKEN_KEYWORD_OR
+        current.ttype == TokenType::KEYWORD_OR
     ) {
         Token op = consume();
         ParseResult right = parse_logical_and();
@@ -205,7 +205,7 @@ ParseResult Parser::parse_logical_and() {
         return result;
     while (
         result.error.empty() &&
-        current.ttype == TOKEN_KEYWORD_AND
+        current.ttype == TokenType::KEYWORD_AND
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_xor();
@@ -231,7 +231,7 @@ ParseResult Parser::parse_bitwise_xor() {
         return result;
     while (
         result.error.empty() &&
-        current.ttype == TOKEN_BITWISE_XOR
+        current.ttype == TokenType::BITWISE_XOR
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_or();
@@ -257,7 +257,7 @@ ParseResult Parser::parse_bitwise_or() {
         return result;
     while (
         result.error.empty() &&
-        current.ttype == TOKEN_BITWISE_OR
+        current.ttype == TokenType::BITWISE_OR
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_and();
@@ -283,7 +283,7 @@ ParseResult Parser::parse_bitwise_and() {
         return result;
     while (
         result.error.empty() &&
-        current.ttype == TOKEN_BITWISE_AND
+        current.ttype == TokenType::BITWISE_AND
     ) {
         Token op = consume();
         ParseResult right = parse_equality();
@@ -309,7 +309,7 @@ ParseResult Parser::parse_equality() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_LOGICAL_EQUAL, TOKEN_LOGICAL_NOT_EQUAL})
+        check({TokenType::LOGICAL_EQUAL, TokenType::LOGICAL_NOT_EQUAL})
     ) {
         Token op = consume();
         ParseResult right = parse_comparison();
@@ -335,7 +335,7 @@ ParseResult Parser::parse_comparison() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_GREATER, TOKEN_GREATER_EQUAL, TOKEN_LESS, TOKEN_LESS_EQUAL})
+        check({TokenType::GREATER, TokenType::GREATER_EQUAL, TokenType::LESS, TokenType::LESS_EQUAL})
     ) {
         Token op = consume();
         ParseResult right = parse_shift();
@@ -361,7 +361,7 @@ ParseResult Parser::parse_shift() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_RIGHT_SHIFT, TOKEN_LEFT_SHIFT})
+        check({TokenType::RIGHT_SHIFT, TokenType::LEFT_SHIFT})
     ) {
         Token op = consume();
         ParseResult right = parse_term();
@@ -387,7 +387,7 @@ ParseResult Parser::parse_term() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_PLUS, TOKEN_MINUS})
+        check({TokenType::PLUS, TokenType::MINUS})
     ) {
         Token op = consume();
         ParseResult right = parse_factor();
@@ -413,7 +413,7 @@ ParseResult Parser::parse_factor() {
         return result;
     while (
         result.error.empty() &&
-        check({TOKEN_STAR, TOKEN_SLASH, TOKEN_DOUBLE_SLASH, TOKEN_PERCENT})
+        check({TokenType::STAR, TokenType::SLASH, TokenType::DOUBLE_SLASH, TokenType::PERCENT})
     ) {
         Token op = consume();
         ParseResult right = parse_exponential();
@@ -442,7 +442,7 @@ ParseResult Parser::parse_exponential() {
     items.push_back(result.parsed_hunk);
     while (
         result.error.empty() &&
-        current.ttype == TOKEN_EXPONENT
+        current.ttype == TokenType::EXPONENT
     ) {
         Token op = consume();
         ParseResult exponent = parse_unary();
@@ -477,7 +477,7 @@ ParseResult Parser::parse_exponential() {
 }
 
 ParseResult Parser::parse_unary() {
-    if (!check({TOKEN_BANG, TOKEN_MINUS, TOKEN_PLUS, TOKEN_TILDE}))
+    if (!check({TokenType::BANG, TokenType::MINUS, TokenType::PLUS, TokenType::TILDE}))
         return parse_primary();
     ParseResult result;
     Token op = consume();
@@ -498,22 +498,22 @@ ParseResult Parser::parse_unary() {
 
 ParseResult Parser::parse_primary() {
     ParseResult result;
-    if (current.ttype == TOKEN_NEWLINE) {
+    if (current.ttype == TokenType::LINEBREAK) {
         read_next_token();
-        if (current.ttype == TOKEN_NEWLINE)
+        if (current.ttype == TokenType::LINEBREAK)
             result.error.append("Expected expression");
         return result;
     }
     switch (current.ttype) {
-        case TOKEN_LEFT_ROUND_BRACE: {
+        case TokenType::LEFT_ROUND_BRACE: {
             // Skip opening round brace around target type
             read_next_token();
             switch (current.ttype) {
-                case TOKEN_KEYWORD_INT:
-                case TOKEN_KEYWORD_FLOAT:
-                case TOKEN_KEYWORD_STRING:
-                case TOKEN_KEYWORD_BOOLEAN:
-                case TOKEN_KEYWORD_VOID: {
+                case TokenType::KEYWORD_INT:
+                case TokenType::KEYWORD_FLOAT:
+                case TokenType::KEYWORD_STRING:
+                case TokenType::KEYWORD_BOOLEAN:
+                case TokenType::KEYWORD_VOID: {
                     result = parse_cast();
                     break;
                 }
@@ -525,10 +525,10 @@ ParseResult Parser::parse_primary() {
                 result.parsed_hunk = nullptr;
             return result;
         }
-        case TOKEN_LEFT_CURLY_BRACE: {
+        case TokenType::LEFT_CURLY_BRACE: {
             return parse_block();
         }
-        case TOKEN_IDENTIFIER: {
+        case TokenType::IDENTIFIER: {
             Name* name_expr =
                 new Name{consume().value};
             result.parsed_hunk =
@@ -543,7 +543,7 @@ ParseResult Parser::parse_primary() {
 ParseResult Parser::parse_literal() {
     TreeBase* parsed_hunk = nullptr;
     switch (current.ttype) {
-        case TOKEN_KEYWORD_VOID: {
+        case TokenType::KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::get_void_object();
             Literal* void_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -551,7 +551,7 @@ ParseResult Parser::parse_literal() {
             parsed_hunk = reinterpret_cast<TreeBase*>(void_literal);
             break;
         }
-        case TOKEN_KEYWORD_TRUE: {
+        case TokenType::KEYWORD_TRUE: {
             ObjectBoolean* obj = ObjectBoolean::get_true_object();
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -559,7 +559,7 @@ ParseResult Parser::parse_literal() {
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
-        case TOKEN_KEYWORD_FALSE: {
+        case TokenType::KEYWORD_FALSE: {
             ObjectBoolean* obj = ObjectBoolean::get_false_object();
             Literal* bool_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -567,21 +567,21 @@ ParseResult Parser::parse_literal() {
             parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
-        case TOKEN_INTEGER: {
+        case TokenType::INTEGER: {
             ObjectInteger* obj = new ObjectInteger{std::stoll(consume().value)};
             Literal* int_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
             parsed_hunk = reinterpret_cast<TreeBase*>(int_literal);
             break;
         }
-        case TOKEN_FLOAT: {
+        case TokenType::FLOAT: {
             ObjectFloat* obj = new ObjectFloat{std::stold(consume().value, nullptr)};
             Literal* float_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
             parsed_hunk = reinterpret_cast<TreeBase*>(float_literal);
             break;
         }
-        case TOKEN_STRING: {
+        case TokenType::STRING: {
             ObjectString* obj = new ObjectString{consume().value};
             Literal* string_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
@@ -598,12 +598,12 @@ ParseResult Parser::parse_block() {
     // Skip opening curly brace
     read_next_token();
     Block* block = new Block;
-    if (current.ttype == TOKEN_NEWLINE) {
+    if (current.ttype == TokenType::LINEBREAK) {
         block->opening_newline = new Token;
         *block->opening_newline = consume();
     }
     ParseResult result;
-    while (current.ttype != TOKEN_END_OF_FILE) {
+    while (current.ttype != TokenType::END_OF_FILE) {
         result = parse_statement();
         if (!result.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -615,13 +615,13 @@ ParseResult Parser::parse_block() {
             reinterpret_cast<Statement*>(result.parsed_hunk)
         );
     }
-    if (current.ttype == TOKEN_NEWLINE) {
+    if (current.ttype == TokenType::LINEBREAK) {
         block->closing_newline = new Token;
         *block->closing_newline = consume();
     }
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
-    } else if (current.ttype != TOKEN_RIGHT_CURLY_BRACE) {
+    } else if (current.ttype != TokenType::RIGHT_CURLY_BRACE) {
         result.parsed_hunk = nullptr;
         // Expected closing curly brace after statement
         result.error = "Expected \x7d after statement";
@@ -640,7 +640,7 @@ ParseResult Parser::parse_group() {
         // Expected expression after opening round brace
         result.error = "Expected expression after \x28";
         return result;
-    } else if (current.ttype != TOKEN_RIGHT_ROUND_BRACE) {
+    } else if (current.ttype != TokenType::RIGHT_ROUND_BRACE) {
         result.parsed_hunk = nullptr;
         // Expected closing round brace after statement
         result.error = "Expected \x29 after statement";
@@ -666,7 +666,7 @@ ParseResult Parser::parse_cast() {
     // Skip closing round brace around target type
     read_next_token();
     ParseResult result;
-    if (current.ttype == TOKEN_LEFT_ROUND_BRACE) {
+    if (current.ttype == TokenType::LEFT_ROUND_BRACE) {
         // Skip (
         read_next_token();
         result = parse_group();

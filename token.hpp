@@ -3,51 +3,51 @@
 
 #include "common.hpp"
 
-enum TokenType {
-    TOKEN_INVALID = -1,
-    TOKEN_END_OF_FILE = 0,
-    TOKEN_INTEGER = 1,
-    TOKEN_FLOAT = 2,
-    TOKEN_LEFT_CURLY_BRACE = 3,
-    TOKEN_RIGHT_CURLY_BRACE = 4,
-    TOKEN_KEYWORD_VOID = 5,
-    TOKEN_KEYWORD_TRUE = 6,
-    TOKEN_KEYWORD_FALSE = 7,
-    TOKEN_STRING = 8,
-    TOKEN_LEFT_ROUND_BRACE = 9,
-    TOKEN_RIGHT_ROUND_BRACE = 10,
-    TOKEN_BANG = 11,
-    TOKEN_LOGICAL_EQUAL = 12, // ==
-    TOKEN_LOGICAL_NOT_EQUAL = 13, // !=
-    TOKEN_KEYWORD_AND = 14, // and
-    TOKEN_KEYWORD_OR = 15, // or
-    TOKEN_KEYWORD_XOR = 16, // xor
-    TOKEN_MINUS = 17,
-    TOKEN_EXPONENT = 18,
-    TOKEN_STAR = 19,
-    TOKEN_SLASH = 20,
-    TOKEN_DOUBLE_SLASH = 21,
-    TOKEN_PERCENT = 22,
-    TOKEN_PLUS = 23,
-    TOKEN_GREATER = 24,
-    TOKEN_GREATER_EQUAL = 25,
-    TOKEN_LESS = 26,
-    TOKEN_LESS_EQUAL = 27,
-    TOKEN_TILDE = 28,
-    TOKEN_RIGHT_SHIFT = 29,
-    TOKEN_LEFT_SHIFT = 30,
-    TOKEN_BITWISE_OR = 31, // |
-    TOKEN_BITWISE_XOR = 32, // ^
-    TOKEN_BITWISE_AND = 33, // &
-    TOKEN_IDENTIFIER = 34,
-    TOKEN_KEYWORD_INT = 35,
-    TOKEN_KEYWORD_FLOAT = 36,
-    TOKEN_KEYWORD_BOOLEAN = 37,
-    TOKEN_KEYWORD_STRING = 38,
-    TOKEN_COLON_EQUAL = 39,
-    TOKEN_COMMA = 40,
-    TOKEN_SEMI_COLON = 41,
-    TOKEN_NEWLINE = 42,
+enum class TokenType : int {
+    INVALID = -1,
+    END_OF_FILE = 0,
+    INTEGER = 1,
+    FLOAT = 2,
+    LEFT_CURLY_BRACE = 3,
+    RIGHT_CURLY_BRACE = 4,
+    KEYWORD_VOID = 5,
+    KEYWORD_TRUE = 6,
+    KEYWORD_FALSE = 7,
+    STRING = 8,
+    LEFT_ROUND_BRACE = 9,
+    RIGHT_ROUND_BRACE = 10,
+    BANG = 11,
+    LOGICAL_EQUAL = 12, // ==
+    LOGICAL_NOT_EQUAL = 13, // !=
+    KEYWORD_AND = 14, // and
+    KEYWORD_OR = 15, // or
+    KEYWORD_XOR = 16, // xor
+    MINUS = 17,
+    EXPONENT = 18,
+    STAR = 19,
+    SLASH = 20,
+    DOUBLE_SLASH = 21,
+    PERCENT = 22,
+    PLUS = 23,
+    GREATER = 24,
+    GREATER_EQUAL = 25,
+    LESS = 26,
+    LESS_EQUAL = 27,
+    TILDE = 28,
+    RIGHT_SHIFT = 29,
+    LEFT_SHIFT = 30,
+    BITWISE_OR = 31, // |
+    BITWISE_XOR = 32, // ^
+    BITWISE_AND = 33, // &
+    IDENTIFIER = 34,
+    KEYWORD_INT = 35,
+    KEYWORD_FLOAT = 36,
+    KEYWORD_BOOLEAN = 37,
+    KEYWORD_STRING = 38,
+    COLON_EQUAL = 39,
+    COMMA = 40,
+    SEMI_COLON = 41,
+    LINEBREAK = 42
 };
 
 class Token {
@@ -55,12 +55,13 @@ public:
     TokenType ttype;
     std::string value;
     bool is_end_marker() const {
-        return this->ttype == TOKEN_END_OF_FILE;
+        return this->ttype == TokenType::END_OF_FILE;
     }
 };
 
 static const char* token_type_name(const TokenType& ttype) {
-    switch (ttype) {
+    int int_ttype = static_cast<int>(ttype);
+    switch (int_ttype) {
         case -1:
             return "INVALID" ;
         case 0:
@@ -148,7 +149,7 @@ static const char* token_type_name(const TokenType& ttype) {
         case 41:
             return "SEMI_COLON";
         case 42:
-            return "NEWLINE";
+            return "LINEBREAK";
     }
     return "MISSING_CATEGORY" ;
 }
