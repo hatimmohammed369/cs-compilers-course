@@ -6,79 +6,101 @@
 
 class Type: public Object {
 protected:
-    Type() {tag = OBJECT_TYPE;}
+    Type() {type_info = type_type_object; }
 public:
-    virtual ~Type() = default;
-    std::string to_string() const noexcept;
-    ObjectBoolean* to_boolean() const noexcept;
-    ObjectBoolean* equals(const Object* other) const noexcept;
-    virtual Object* cast(const Object* obj) const noexcept = 0;
+    std::string type_name{"type"};
+
+    Object* copy() const noexcept override;
+    ObjectBoolean* equals(const Object* other) const noexcept override;
+    std::string to_string() const noexcept override;
+    ObjectBoolean* to_boolean() const noexcept override;
+
+    virtual Object* cast(const Object* obj) const noexcept;
+
+    static Type* type_type_object;
     static Type* get_type_by_token(TokenType type_keyword);
 };
 
-class TypeInt: public Type {
-public:
-    static TypeInt* get_int_type_object() {
-        static TypeInt* int_type_obj =
-            new TypeInt;
-        return int_type_obj;
+class TypeInteger: public Type {
+    TypeInteger(): Type() {
+        this->type_name = "int";
     }
-    TypeInt* copy() const noexcept override {
-        return get_int_type_object();
+public:
+    static TypeInteger* int_type_object;
+    TypeInteger* copy() const noexcept override {
+        return int_type_object;
     }
     ObjectInteger* cast(const Object* obj) const noexcept override;
 };
 
 class TypeFloat: public Type {
+    TypeFloat(): Type() {
+        this->type_name = "float";
+    } 
 public:
-    static TypeFloat* get_float_type_object() {
-        static TypeFloat* float_type_obj =
-            new TypeFloat;
-        return float_type_obj;
-    }
+    static TypeFloat* float_type_object;
     TypeFloat* copy() const noexcept override {
-        return get_float_type_object();
+        return float_type_object;
     }
     ObjectFloat* cast(const Object* obj) const noexcept override;
 };
 
 class TypeString: public Type {
+    TypeString(): Type() {
+        this->type_name = "string";
+    } 
 public:
-    static TypeString* get_string_type_object() {
-        static TypeString* string_type_obj =
-            new TypeString;
-        return string_type_obj;
-    }
+    static TypeString* string_type_object;
     TypeString* copy() const noexcept override {
-        return get_string_type_object();
+        return string_type_object;
     }
     ObjectString* cast(const Object* obj) const noexcept override;
 };
 
 class TypeBoolean: public Type {
+    TypeBoolean(): Type() {
+        this->type_name = "boolean";
+    } 
 public:
-    static TypeBoolean* get_boolean_type_object() {
-        static TypeBoolean* boolean_type_obj =
-            new TypeBoolean;
-        return boolean_type_obj;
-    }
+    static TypeBoolean* boolean_type_object;
     TypeBoolean* copy() const noexcept override {
-        return get_boolean_type_object();
+        return boolean_type_object;
     }
     ObjectBoolean* cast(const Object* obj) const noexcept override;
 };
 
 class TypeVoid: public Type {
+    TypeVoid(): Type() {
+        this->type_name = "void";
+    } 
 public:
-    static TypeVoid* get_void_type_object() {
-        static TypeVoid* void_type_obj =
-            new TypeVoid;
-        return void_type_obj;
-    }
+    static TypeVoid* void_type_object;
     TypeVoid* copy() const noexcept override {
-        return get_void_type_object();
+        return void_type_object;
     }
     ObjectVoid* cast(const Object* obj) const noexcept override;
 };
+
+template <typename T>
+ObjectBoolean* Number<T>::equals(const Object* other) const noexcept {
+    if (
+        other->type_info != TypeInteger::int_type_object &&
+        other->type_info != TypeFloat::float_type_object
+    )
+        return ObjectBoolean::get_false_object();
+
+    const ObjectInteger* other_int =
+        dynamic_cast<const ObjectInteger*>(other);
+    if (other_int)
+        return ObjectBoolean::as_object(
+            this->value == other_int->get()
+        );
+
+    const ObjectFloat* other_float =
+        dynamic_cast<const ObjectFloat*>(other);
+    return ObjectBoolean::as_object(
+        this->value == other_float->get()
+    );
+}
 
 #endif
