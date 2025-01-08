@@ -4,20 +4,10 @@
 #include "object.hpp"
 #include "token.hpp"
 
-enum TypeName {
-    TYPENAME_TYPE,
-    TYPENAME_INT,
-    TYPENAME_FLOAT,
-    TYPENAME_BOOLEAN,
-    TYPENAME_STRING,
-    TYPENAME_VOID,
-};
-
 class Type: public Object {
 protected:
     Type() {tag = OBJECT_TYPE;}
 public:
-    TypeName name;
     virtual ~Type() = default;
     std::string to_string() const noexcept;
     ObjectBoolean* to_boolean() const noexcept;
@@ -27,7 +17,6 @@ public:
 };
 
 class TypeInt: public Type {
-    TypeInt() {name = TYPENAME_INT;}
 public:
     static TypeInt* get_int_type_object() {
         static TypeInt* int_type_obj =
@@ -41,7 +30,6 @@ public:
 };
 
 class TypeFloat: public Type {
-    TypeFloat() {name = TYPENAME_FLOAT;}
 public:
     static TypeFloat* get_float_type_object() {
         static TypeFloat* float_type_obj =
@@ -55,7 +43,6 @@ public:
 };
 
 class TypeString: public Type {
-    TypeString() {name = TYPENAME_STRING;}
 public:
     static TypeString* get_string_type_object() {
         static TypeString* string_type_obj =
@@ -69,7 +56,6 @@ public:
 };
 
 class TypeBoolean: public Type {
-    TypeBoolean() {name = TYPENAME_BOOLEAN;}
 public:
     static TypeBoolean* get_boolean_type_object() {
         static TypeBoolean* boolean_type_obj =
@@ -83,7 +69,6 @@ public:
 };
 
 class TypeVoid: public Type {
-    TypeVoid() {name = TYPENAME_VOID;}
 public:
     static TypeVoid* get_void_type_object() {
         static TypeVoid* void_type_obj =
