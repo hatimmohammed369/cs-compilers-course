@@ -454,7 +454,7 @@ Object* Interpreter::visit_block(Block* tree) {
     if (!tree)
         return nullptr;
     else if (tree->statements.empty()) {
-        return ObjectVoid::get_void_object();
+        return ObjectVoid::VOID_OBJECT;
     } else {
         for (
             auto stmt_ptr = tree->statements.begin();
@@ -466,7 +466,7 @@ Object* Interpreter::visit_block(Block* tree) {
     }
     return (
         tree->end_token && tree->end_token->ttype == TokenType::SEMI_COLON ?
-        ObjectVoid::get_void_object() :
+        ObjectVoid::VOID_OBJECT :
         tree->statements.back()->accept(this)
     );
 }
@@ -486,7 +486,7 @@ Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
         std::pair<std::string, TreeBase*> p = *stmt_ptr;
         std::string name = p.first;
         Object* value = (
-            p.second ? p.second->accept(this) : ObjectVoid::get_void_object()
+            p.second ? p.second->accept(this) : ObjectVoid::VOID_OBJECT
         );
         defined_names[name] = value;
     }

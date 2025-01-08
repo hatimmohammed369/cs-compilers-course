@@ -194,5 +194,5 @@ ObjectBoolean* TypeBoolean::cast(const Object* obj) const noexcept {
 }
 
 ObjectVoid* TypeVoid::cast(const Object* obj) const noexcept {
-    return ObjectVoid::get_void_object();
+    return ObjectVoid::VOID_OBJECT;
 }

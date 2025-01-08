@@ -94,16 +94,12 @@ private:
     ObjectVoid(); // Only a single object availaible
     ObjectVoid(const ObjectVoid&) = delete; // No copy constructor
     ObjectVoid& operator=(const ObjectVoid&) = delete; // No copy assignment
+    ObjectVoid(const ObjectVoid&&) = delete; // No move constructor
+    ObjectVoid& operator=(const ObjectVoid&&) = delete; // No move assignment
 
-    static const std::string& get_string_value() {
-        static std::string value = std::string("void");
-        return value;
-    }
 public:
-    static ObjectVoid* get_void_object() {
-        static ObjectVoid* void_object = new ObjectVoid{};
-        return void_object;
-    }
+    static const std::string NAME;
+    static ObjectVoid* VOID_OBJECT;
 
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;

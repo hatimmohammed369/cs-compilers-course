@@ -544,7 +544,7 @@ ParseResult Parser::parse_literal() {
     TreeBase* parsed_hunk = nullptr;
     switch (current.ttype) {
         case TokenType::KEYWORD_VOID: {
-            ObjectVoid* obj = ObjectVoid::get_void_object();
+            ObjectVoid* obj = ObjectVoid::VOID_OBJECT;
             Literal* void_literal =
                 new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
