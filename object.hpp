@@ -124,7 +124,6 @@ public:
 
 class ObjectBoolean: public Object {
 private:
-    ObjectBoolean(); // Only a single object availaible
     ObjectBoolean(const ObjectBoolean&) = delete; // No copy constructor
     ObjectBoolean& operator=(const ObjectBoolean&) = delete; // No copy assignment
     ObjectBoolean(const ObjectBoolean&&) = delete; // No move constructor

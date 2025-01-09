@@ -1,49 +1,40 @@
 #include "typing.hpp"
 #include "token.hpp"
 
-Type* Type::type_type_object = new Type;
 const std::string Type::NAME = "type";
-
-TypeVoid* TypeVoid::void_type_object = new TypeVoid;
 const std::string TypeVoid::NAME = "void";
-
-TypeBoolean* TypeBoolean::boolean_type_object = new TypeBoolean;
 const std::string TypeBoolean::NAME = "boolean";
-
-TypeString* TypeString::string_type_object = new TypeString;
 const std::string TypeString::NAME = "string";
-
-TypeFloat* TypeFloat::float_type_object = new TypeFloat;
 const std::string TypeFloat::NAME = "float";
-
-TypeInteger* TypeInteger::int_type_object = new TypeInteger;
 const std::string TypeInteger::NAME = "int";
 
-Type::Type() {type_info = type_type_object;}
-
 ObjectString::ObjectString(): std::string() {
-    type_info = TypeString::string_type_object;
+    type_info = TypeString::get_type_object();
 }
+
 ObjectString::ObjectString(const char* s): std::string(s) {
-    type_info = TypeString::string_type_object;
+    type_info = TypeString::get_type_object();
 }
+
 ObjectString::ObjectString(const char* s, size_t len):
-    std::string(s, len) {type_info = TypeString::string_type_object;}
+    std::string(s, len) {type_info = TypeString::get_type_object();}
+
 ObjectString::ObjectString(const std::string& s):
-    std::string(s) {type_info = TypeString::string_type_object;}
+    std::string(s) {type_info = TypeString::get_type_object();}
+
 ObjectString::ObjectString(const std::string&& s):
-    std::string(s) {type_info = TypeString::string_type_object;}
+    std::string(s) {type_info = TypeString::get_type_object();}
 
 ObjectInteger::ObjectInteger(const i64& value): 
-    Number::Number(value) {type_info = TypeInteger::int_type_object;}
+    Number::Number(value) {type_info = TypeInteger::get_type_object();}
 
 ObjectFloat::ObjectFloat(const float64& value): 
-    Number::Number(value) {type_info = TypeFloat::float_type_object;}
+    Number::Number(value) {type_info = TypeFloat::get_type_object();}
 
-ObjectVoid::ObjectVoid() {type_info = TypeVoid::void_type_object;}
+ObjectVoid::ObjectVoid() {type_info = TypeVoid::get_type_object();}
 
 ObjectBoolean::ObjectBoolean(bool val) {
-    type_info = TypeBoolean::boolean_type_object;
+    type_info = TypeBoolean::get_type_object();
     value = val;
     str = std::string(val ? "true" : "false");
 }
@@ -52,7 +43,7 @@ ObjectBoolean* ObjectString::equals(const Object* other) const noexcept {
     const ObjectString* str =
         dynamic_cast<const ObjectString*>(other);
     return ObjectBoolean::as_object(
-        (str && other->type_info == TypeString::string_type_object) &&
+        (str && other->type_info == TypeString::get_type_object()) &&
         *this == *str
     );
 }
@@ -61,7 +52,7 @@ ObjectBoolean* ObjectBoolean::equals(const Object* other) const noexcept {
     const ObjectBoolean* boolean =
         dynamic_cast<const ObjectBoolean*>(other);
     return ObjectBoolean::as_object(
-        (boolean && other->type_info == TypeBoolean::boolean_type_object) &&
+        (boolean && other->type_info == TypeBoolean::get_type_object()) &&
         this->value == boolean->value
     );
 }
@@ -69,7 +60,7 @@ ObjectBoolean* ObjectBoolean::equals(const Object* other) const noexcept {
 ObjectBoolean* ObjectVoid::equals(const Object* other) const noexcept {
     // There is only one (void)
     return ObjectBoolean::as_object(
-        other->type_info == TypeVoid::void_type_object
+        other->type_info == TypeVoid::get_type_object()
     );
 }
 
@@ -81,7 +72,7 @@ ObjectBoolean* Type::equals(const Object* other) const noexcept {
     const Type* type_obj =
         dynamic_cast<const Type*>(other);
     return ObjectBoolean::as_object(
-        (type_obj && type_obj->type_info == Type::type_type_object) &&
+        (type_obj && type_obj->type_info == Type::get_type_object()) &&
         type_obj->type_name == this->type_name
     );
 }
@@ -104,15 +95,15 @@ Object* Type::cast(const Object* obj) const noexcept {
 Type* Type::get_type_by_token(TokenType type_keyword) {
     switch (type_keyword) {
         case TokenType::KEYWORD_INT:
-            return TypeInteger::int_type_object;
+            return TypeInteger::get_type_object();
         case TokenType::KEYWORD_FLOAT:
-            return TypeFloat::float_type_object;
+            return TypeFloat::get_type_object();
         case TokenType::KEYWORD_STRING:
-            return TypeString::string_type_object;
+            return TypeString::get_type_object();
         case TokenType::KEYWORD_BOOLEAN:
-            return TypeBoolean::boolean_type_object;
+            return TypeBoolean::get_type_object();
         case TokenType::KEYWORD_VOID:
-            return TypeVoid::void_type_object;
+            return TypeVoid::get_type_object();
         default: {}
     }
     return nullptr;
