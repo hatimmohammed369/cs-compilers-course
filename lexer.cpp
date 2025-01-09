@@ -1,5 +1,6 @@
-#include "lexer.hpp"
 #include <cctype>
+#include <vector>
+#include "lexer.hpp"
 
 size_t Lexer::errors = 0;
 
@@ -89,12 +90,12 @@ Token Lexer::generate_number_token() {
 
     if (!this->has_next() || !std::isdigit(*current)) {
         // Invalid numeric literal: no digits after decimal point
-        fmt << "Error in line " << line << ":\n" ;
-        fmt << "Invalid numeric literal: no digits after decimal point\n";
-        fmt << current_line << '\n';
         fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
         fmt << std::string(value.size(), '^') ;
-        Lexer::report_lexing_error(read_fmt());
+        Lexer::report_lexing_error(
+            "Invalid numeric literal: no digits after decimal point",
+            read_fmt()
+        );
         ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
     }
@@ -118,12 +119,12 @@ Token Lexer::generate_number_token() {
 
     if (!this->has_next() || !(std::isdigit(*current) || *current == '+' || *current == '-')) {
         // Invalid numeric literal: Missing exponent value
-        fmt << "Error in line " << line << ":\n" ;
-        fmt << "Invalid numeric literal: Missing exponent value\n";
-        fmt << current_line << '\n';
         fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
         fmt << std::string(value.size(), '^') ;
-        Lexer::report_lexing_error(read_fmt());
+        Lexer::report_lexing_error(
+            "Invalid numeric literal: Missing exponent value",
+            read_fmt()
+        );
         ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
     }
