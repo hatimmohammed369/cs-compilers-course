@@ -53,7 +53,7 @@ ObjectBoolean* ObjectString::equals(const Object* other) const noexcept {
         dynamic_cast<const ObjectString*>(other);
     return ObjectBoolean::as_object(
         (str && other->type_info == TypeString::string_type_object) &&
-        std::strncmp(this->c_str(), str->c_str(), this->size()) == 0
+        *this == *str
     );
 }
 

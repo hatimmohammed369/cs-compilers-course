@@ -198,25 +198,25 @@ Token Lexer::generate_identifier_token() {
         value.push_back(*current);
         current++;
     }
-    if (std::strcmp(value.c_str(), "and") == 0)
+    if (value == "and")
         ttype = TokenType::KEYWORD_AND;
-    else if (std::strcmp(value.c_str(), "boolean") == 0)
+    else if (value == "boolean")
         ttype = TokenType::KEYWORD_BOOLEAN;
-    else if (std::strcmp(value.c_str(), "false") == 0)
+    else if (value == "false")
         ttype = TokenType::KEYWORD_FALSE;
-    else if (std::strcmp(value.c_str(), "float") == 0)
+    else if (value == "float")
         ttype = TokenType::KEYWORD_FLOAT;
-    else if (std::strcmp(value.c_str(), "int") == 0)
+    else if (value == "int")
         ttype = TokenType::KEYWORD_INT;
-    else if (std::strcmp(value.c_str(), "or") == 0)
+    else if (value == "or")
         ttype = TokenType::KEYWORD_OR;
-    else if (std::strcmp(value.c_str(), "string") == 0)
+    else if (value == "string")
         ttype = TokenType::KEYWORD_STRING;
-    else if (std::strcmp(value.c_str(), "true") == 0)
+    else if (value == "true")
         ttype = TokenType::KEYWORD_TRUE;
-    else if (std::strcmp(value.c_str(), "void") == 0)
+    else if (value == "void")
         ttype = TokenType::KEYWORD_VOID;
-    else if (std::strcmp(value.c_str(), "xor") == 0)
+    else if (value == "xor")
         ttype = TokenType::KEYWORD_XOR;
     return Token{ttype, value};
 }
