@@ -144,29 +144,28 @@ RETURN_TOKEN:
 }
 
 Token Lexer::generate_string_token() {
+    std::string::const_iterator token_start = current;
     TokenType ttype;
     std::string value;
+    bool terminated = false;
     // Skip opening "
     current++;
     ttype = TokenType::STRING;
-    if (!has_next()) {
-        ttype = TokenType::INVALID;
-        goto RETURN_TOKEN;
-    }
-    for (;this->has_next();current++) {
-        if (*current == '"') {
+    std::vector<size_t> invalid_escapes;
+    for (;;current++) {
+        if (!has_next()) {
+            break;
+        } else if (*current == '"') {
             // Skip closing "
             current++;
+            terminated = true;
             break;
-        }
-        if (*current == '\\') {
+        } else if (*current == '\\') {
             // Move to escaped character
             current++;
             if (!this->has_next()) {
-                ttype = TokenType::INVALID;
-                goto RETURN_TOKEN;
-            }
-            if (*current == '\\') {
+                break;
+            } else if (*current == '\\') {
                 // Quoted slash
                 value.push_back('\\');
             } else if (*current == '"') {
@@ -190,14 +189,46 @@ Token Lexer::generate_string_token() {
             } else if (*current == 'v') {
                 value.push_back('\v');
             } else {
-                ttype = TokenType::INVALID;
-                goto RETURN_TOKEN;
+                if (!std::isspace(*current)) {
+                    size_t pos =
+                        static_cast<size_t>(std::distance(source.cbegin(), current));
+                    if (pos > 0) pos--;
+                    invalid_escapes.push_back(pos);
+                }
+                value.push_back('\\');
+                value.push_back(*current);
             }
         } else {
+            // Any other character
+            // just append it
             value.push_back(*current);
         }
     }
-RETURN_TOKEN:
+    if (!invalid_escapes.empty()) {
+        ttype = TokenType::INVALID;
+        size_t i = 0;
+        for (auto pos : invalid_escapes) {
+            while (i < pos) {
+                fmt << ' ' ;
+                i++;
+            }
+            fmt << "^^" ;
+            i = pos + 2;
+        }
+        Lexer::report_lexing_error(
+            "Invalid escape sequence",
+            read_fmt()
+        );
+    }
+    if (!terminated) {
+        ttype = TokenType::INVALID;
+        fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
+        fmt << std::string(value.size(), '^') ;
+        Lexer::report_lexing_error(
+            "Unterminated string literal",
+            read_fmt()
+        );
+    }
     return Token{ttype, value};
 }
 
