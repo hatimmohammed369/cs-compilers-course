@@ -41,7 +41,7 @@ Unary => ( ( '!' | '-' | '+' | '~' ) Unary ) | Primary
 
 Primary => Cast | Block | Group | NAME | Literal
 
-Cast => '(' type ')' ( Group | Literal )
+Cast => '(' type ')' Primary
 
 Block => '{' Statement* '}'
 

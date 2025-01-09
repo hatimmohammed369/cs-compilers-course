@@ -675,7 +675,7 @@ ParseResult Parser::parse_cast() {
         read_next_token();
         result = parse_group();
     } else {
-        result = parse_literal();
+        result = parse_primary();
     }
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
