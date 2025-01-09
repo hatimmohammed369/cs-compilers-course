@@ -47,13 +47,24 @@ enum class TokenType : int {
     COLON_EQUAL = 39,
     COMMA = 40,
     SEMI_COLON = 41,
-    LINEBREAK = 42
+    LINEBREAK = 42,
+    KEYWORD_TYPE = 43,
 };
 
 class Token {
 public:
     TokenType ttype;
     std::string value;
+    inline bool is_type_keyword() const noexcept {
+        return (
+            ttype == TokenType::KEYWORD_INT ||
+            ttype == TokenType::KEYWORD_FLOAT ||
+            ttype == TokenType::KEYWORD_STRING ||
+            ttype == TokenType::KEYWORD_BOOLEAN ||
+            ttype == TokenType::KEYWORD_VOID ||
+            ttype == TokenType::KEYWORD_TYPE
+        );
+    }
 };
 
 static const char* token_type_name(const TokenType& ttype) {
@@ -147,6 +158,8 @@ static const char* token_type_name(const TokenType& ttype) {
             return "SEMI_COLON";
         case 42:
             return "LINEBREAK";
+        case 43:
+            return "KEYWORD_TYPE";
     }
     return "MISSING_CATEGORY" ;
 }

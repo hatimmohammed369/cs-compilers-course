@@ -94,6 +94,8 @@ Object* Type::cast(const Object* obj) const noexcept {
 
 Type* Type::get_type_by_token(TokenType type_keyword) {
     switch (type_keyword) {
+        case TokenType::KEYWORD_TYPE:
+            return Type::get_type_object();
         case TokenType::KEYWORD_INT:
             return TypeInteger::get_type_object();
         case TokenType::KEYWORD_FLOAT:

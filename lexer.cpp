@@ -260,6 +260,8 @@ Token Lexer::generate_identifier_token() {
         ttype = TokenType::KEYWORD_VOID;
     else if (value == "xor")
         ttype = TokenType::KEYWORD_XOR;
+    else if (value == "type")
+        ttype = TokenType::KEYWORD_TYPE;
     return Token{ttype, value};
 }
 
