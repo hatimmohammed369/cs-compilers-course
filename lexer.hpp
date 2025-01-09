@@ -4,13 +4,10 @@
 #include "token.hpp"
 
 class Lexer {
-    char* source;
-    size_t source_length;
-    char* current;
-    size_t line = 1;
-    char* current_line;
-    bool computed_current_line_length = false;
-    size_t current_line_length = 1;
+    std::string source;
+    std::string::const_iterator current;
+    size_t line;
+    std::string current_line;
     Token generate_number_token();
     inline void skip_whitespaces();
     Token generate_string_token();

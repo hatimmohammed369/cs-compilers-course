@@ -4,43 +4,49 @@
 size_t Lexer::errors = 0;
 
 void Lexer::init(char* in, const size_t& source_len) {
-    source = in;
-    current = source;
-    current_line = source;
-    current_line_length = 1;
-    source_length = source_len;
+    source.assign(in, source_len);
+    if (source.back() != '\n')
+        source.push_back('\n');
+    current = source.begin();
+    line = 1;
 }
 
 void Lexer::reset() {
-    current = source;
+    current = source.begin();
     line = 1;
-    current_line = source;
-    current_line_length = 1;
+    current_line.clear();
 }
 
 bool Lexer::has_next() {
-    return (current + 1) < (source + source_length);
+    return current != source.end();
 }
 
 inline void Lexer::skip_whitespaces() {
     while (has_next() && std::isspace(*current)) {
-        if (current > source && *(current-1) == '\n') {
+        if (current != source.begin() && *(current-1) == '\n') {
             line++;
-            computed_current_line_length = false;
-            current_line_length = 1;
+            current_line.clear();
         }
         current++;
     }
-    if (!computed_current_line_length) {
-        computed_current_line_length = true;
-        current_line = current;
-        while (current_line > source && *current_line != '\n') {
-            current_line--;
-        }
-        const char* end = source + source_length;
-        for (char* p = current_line;p < end && *p != '\n';p++) {
-            current_line_length++;
-        }
+    if (!has_next()) {
+        std::string::size_type last_line_break_in_input =
+            source.rfind('\n');
+        current_line.assign(
+            source.substr(last_line_break_in_input)
+        );
+    } else if (current_line.empty()) {
+        std::string::size_type cur_pos =
+            std::distance(source.cbegin(), current);
+        std::string::size_type last_line_break =
+            source.find_last_of('\n', cur_pos);
+        if (last_line_break == std::string::npos)
+            last_line_break = 0;
+        std::string::size_type next_line_break =
+            source.find_first_of('\n', cur_pos);
+        current_line.assign(
+            source.substr(last_line_break, next_line_break)
+        );
     }
 }
 
@@ -57,7 +63,7 @@ static bool is_valid_first_char(char c) {
 }
 
 Token Lexer::generate_number_token() {
-    char* token_start = current;
+    std::string::const_iterator token_start = current;
     TokenType ttype;
     std::string value;
     // Generate a INTEGER/FLOAT token
@@ -84,12 +90,9 @@ Token Lexer::generate_number_token() {
         // Invalid numeric literal: no digits after decimal point
         fmt << "Error in line " << line << ":\n" ;
         fmt << "Invalid numeric literal: no digits after decimal point\n";
-        fmt << std::string(current_line, current_line_length) << '\n';
-        char* p = current_line;
-        for (;p < token_start ;p++)
-            fmt << ' ' ;
-        for (size_t i = 1;i <= value.length();i++, p++)
-            fmt << '^' ;
+        fmt << current_line << '\n';
+        fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
+        fmt << std::string(value.size(), '^') ;
         Lexer::report_lexing_error(read_fmt());
         ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
@@ -237,18 +240,13 @@ Token Lexer::generate_invalid_token() {
 
 Token Lexer::generate_next_token() {
     size_t old_line = line;
-
     TokenType ttype;
     std::string value;
-
     skip_whitespaces();
-
-    if (!has_next()) {
+    if (!has_next())
         return Token{TokenType::END_OF_FILE, std::string()};
-    } else if (old_line < line) {
+    else if (old_line < line)
         return Token{TokenType::LINEBREAK, std::string("\n")};
-    }
-
     switch (*current) {
         case ';':
             current++;

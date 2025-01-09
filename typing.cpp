@@ -87,9 +87,9 @@ ObjectBoolean* Type::equals(const Object* other) const noexcept {
 }
 
 std::string Type::to_string() const noexcept {
-    fmt << "<type '"
-        << this->type_name
-        << "'>";
+    fmt << "<type '" ;
+    fmt << this->type_name ;
+    fmt << "'>" ;
     return read_fmt();
 }
 
