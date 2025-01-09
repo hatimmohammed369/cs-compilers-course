@@ -27,13 +27,13 @@ public:
 class TypeInteger: public Type {
     TypeInteger(): Type() {
         this->type_name = NAME;
+        this->type_info = Type::get_type_object();
     }
 public:
     const static std::string NAME;
     static inline TypeInteger* get_type_object() {
         static TypeInteger* int_type_object =
             new TypeInteger;
-        int_type_object->type_info = Type::get_type_object();
         return int_type_object;
     }
     TypeInteger* copy() const noexcept override {
@@ -45,13 +45,13 @@ public:
 class TypeFloat: public Type {
     TypeFloat(): Type() {
         this->type_name = NAME;
+        this->type_info = Type::get_type_object();
     } 
 public:
     const static std::string NAME;
     static inline TypeFloat* get_type_object() {
         static TypeFloat* float_type_object =
             new TypeFloat;
-        float_type_object->type_info = Type::get_type_object();
         return float_type_object;
     }
     TypeFloat* copy() const noexcept override {
@@ -63,13 +63,13 @@ public:
 class TypeString: public Type {
     TypeString(): Type() {
         this->type_name = NAME;
+        this->type_info = Type::get_type_object();
     } 
 public:
     const static std::string NAME;
     static inline TypeString* get_type_object() {
         static TypeString* string_type_object =
             new TypeString;
-        string_type_object->type_info = Type::get_type_object();
         return string_type_object;
     }
     TypeString* copy() const noexcept override {
@@ -81,13 +81,13 @@ public:
 class TypeBoolean: public Type {
     TypeBoolean(): Type() {
         this->type_name = NAME;
+        this->type_info = Type::get_type_object();
     } 
 public:
     const static std::string NAME;
     static inline TypeBoolean* get_type_object() {
         static TypeBoolean* boolean_type_object =
             new TypeBoolean;
-        boolean_type_object->type_info = Type::get_type_object();
         return boolean_type_object;
     }
     TypeBoolean* copy() const noexcept override {
@@ -99,13 +99,13 @@ public:
 class TypeVoid: public Type {
     TypeVoid(): Type() {
         this->type_name = NAME;
+        this->type_info = Type::get_type_object();
     } 
 public:
     const static std::string NAME;
     static inline TypeVoid* get_type_object() {
         static TypeVoid* void_type_object =
             new TypeVoid;
-        void_type_object->type_info = Type::get_type_object();
         return void_type_object;
     }
     TypeVoid* copy() const noexcept override {
