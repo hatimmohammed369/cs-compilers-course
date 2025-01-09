@@ -9,6 +9,7 @@ void Lexer::init(char* in, const size_t& source_len) {
         source.push_back('\n');
     current = source.begin();
     line = 1;
+    current_line.clear();
 }
 
 void Lexer::reset() {
