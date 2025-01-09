@@ -20,9 +20,15 @@ public:
     bool has_next();
 
     static size_t errors;
-    static void report_lexing_error(const std::string& error_msg) {
+    void report_lexing_error(
+        const std::string& error_msg,
+        const std::string& post_msg
+    ) {
         errors += 1;
+        std::cerr << "Error in line " << line << ":\n" ;
         std::cerr << error_msg << '\n';
+        std::cerr << current_line << '\n' ;
+        std::cerr << post_msg << '\n' ;
     }
 };
 
