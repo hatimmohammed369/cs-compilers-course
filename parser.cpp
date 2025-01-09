@@ -61,24 +61,16 @@ ParseResult Parser::parse_source() {
 ParseResult Parser::parse_statement() {
     bool use_semicolon = true;
     ParseResult result;
-    switch (current.ttype) {
-        case TokenType::KEYWORD_INT:
-        case TokenType::KEYWORD_FLOAT:
-        case TokenType::KEYWORD_STRING:
-        case TokenType::KEYWORD_BOOLEAN:
-        case TokenType::KEYWORD_VOID: {
-            result = parse_variable_declaration();
-            break;
-        }
-        default: {
-            use_semicolon = false;
-            result = parse_expression();
-        }
+    if (current.is_type_keyword()) {
+        result = parse_variable_declaration();
+    } else {
+        use_semicolon = false;
+        result = parse_expression();
     }
     if (result.error.empty()) {
         if (result.error.empty() && use_semicolon && current.ttype != TokenType::SEMI_COLON) {
             result.parsed_hunk = nullptr;
-            result.error = "Expected ; after variable declaration";
+            result.error = "Expected ; after statement";
         } else if (check({TokenType::SEMI_COLON, TokenType::LINEBREAK})) {
             Statement* stmt =
                 reinterpret_cast<Statement*>(result.parsed_hunk);
@@ -510,21 +502,12 @@ ParseResult Parser::parse_primary() {
     }
     switch (current.ttype) {
         case TokenType::LEFT_ROUND_BRACE: {
-            // Skip opening round brace around target type
+            // Skip (
             read_next_token();
-            switch (current.ttype) {
-                case TokenType::KEYWORD_INT:
-                case TokenType::KEYWORD_FLOAT:
-                case TokenType::KEYWORD_STRING:
-                case TokenType::KEYWORD_BOOLEAN:
-                case TokenType::KEYWORD_VOID: {
-                    result = parse_cast();
-                    break;
-                }
-                default: {
-                    result = parse_group();
-                }
-            }
+            if (current.is_type_keyword())
+                result = parse_cast();
+            else
+                result = parse_group();
             if (!result.error.empty())
                 result.parsed_hunk = nullptr;
             return result;
@@ -669,14 +652,7 @@ ParseResult Parser::parse_cast() {
     }
     // Skip closing round brace around target type
     read_next_token();
-    ParseResult result;
-    if (current.ttype == TokenType::LEFT_ROUND_BRACE) {
-        // Skip (
-        read_next_token();
-        result = parse_group();
-    } else {
-        result = parse_primary();
-    }
+    ParseResult result = parse_primary();
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
         return result;
