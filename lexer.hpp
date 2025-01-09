@@ -17,7 +17,7 @@ public:
     void init(char* in, const size_t& source_len);
     void reset();
     Token generate_next_token();
-    bool has_next();
+    inline bool has_next();
 
     static size_t errors;
     void report_lexing_error(

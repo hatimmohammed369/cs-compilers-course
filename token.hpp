@@ -54,9 +54,6 @@ class Token {
 public:
     TokenType ttype;
     std::string value;
-    bool is_end_marker() const {
-        return this->ttype == TokenType::END_OF_FILE;
-    }
 };
 
 static const char* token_type_name(const TokenType& ttype) {

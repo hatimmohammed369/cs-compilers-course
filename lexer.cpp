@@ -19,7 +19,7 @@ void Lexer::reset() {
     current_line.clear();
 }
 
-bool Lexer::has_next() {
+inline bool Lexer::has_next() {
     return current != source.end();
 }
 

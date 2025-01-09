@@ -5,20 +5,24 @@
 #include "syntax_tree.hpp"
 #include "token.hpp"
 
-void Parser::init(char* in, size_t source_len) {
+void Parser::init(char* in, size_t source_len) noexcept {
     lexer.init(in, source_len);
     read_next_token();
 }
 
-Lexer Parser::get_lexer() {
+Lexer Parser::get_lexer() noexcept {
     return lexer;
 }
 
-inline void Parser::read_next_token() {
+inline void Parser::read_next_token() noexcept {
     current = lexer.generate_next_token();
 }
 
-Token Parser::consume() {
+inline bool Parser::has_next() const noexcept {
+    return current.ttype != TokenType::END_OF_FILE;
+}
+
+Token Parser::consume() noexcept {
     Token copy = current;
     read_next_token();
     return copy;
@@ -36,7 +40,7 @@ ParseResult Parser::parse_source() {
         read_next_token();
     Program *source_tree = new Program;
     ParseResult result;
-    while (current.ttype != TokenType::END_OF_FILE) {
+    while (has_next()) {
         result = parse_statement();
         if (!result.error.empty()) {
             result.parsed_hunk = nullptr;
@@ -603,7 +607,7 @@ ParseResult Parser::parse_block() {
         *block->opening_newline = consume();
     }
     ParseResult result;
-    while (current.ttype != TokenType::END_OF_FILE) {
+    while (has_next()) {
         result = parse_statement();
         if (!result.error.empty()) {
             result.parsed_hunk = nullptr;
