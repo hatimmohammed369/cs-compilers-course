@@ -117,6 +117,12 @@ Token Lexer::generate_number_token() {
 
     if (!this->has_next() || !(std::isdigit(*current) || *current == '+' || *current == '-')) {
         // Invalid numeric literal: Missing exponent value
+        fmt << "Error in line " << line << ":\n" ;
+        fmt << "Invalid numeric literal: Missing exponent value\n";
+        fmt << current_line << '\n';
+        fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
+        fmt << std::string(value.size(), '^') ;
+        Lexer::report_lexing_error(read_fmt());
         ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
     }
