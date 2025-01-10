@@ -21,6 +21,9 @@ inline std::ostream& operator<<(std::ostream& os, const Object* obj) {
     return os << obj->to_string() ;
 }
 
+class ObjectInteger;
+class ObjectFloat;
+
 template <typename T>
 class Number: public Object {
 public:
@@ -33,9 +36,9 @@ public:
     virtual Number* operator-() const noexcept = 0;
 
     template <typename U>
-    Number<i64>* integer_div(const Number<U>* other) const noexcept;
+    ObjectInteger* integer_div(const Number<U>* other) const noexcept;
     template <typename U>
-    Number<float64>* operator/(const Number<U>* other) const noexcept;
+    ObjectFloat* operator/(const Number<U>* other) const noexcept;
 
     template <typename U>
     ObjectBoolean* operator>(const Number<U>* other) const noexcept;
@@ -164,7 +167,7 @@ ObjectBoolean* Number<T>::to_boolean() const noexcept {
 
 template <typename T>
 template <typename U>
-Number<i64>* Number<T>::integer_div(const Number<U>* other) const noexcept {
+ObjectInteger* Number<T>::integer_div(const Number<U>* other) const noexcept {
     if (!other->get()) {
         std::cerr << "Division by zero\n";
         exit(1);
@@ -176,7 +179,7 @@ Number<i64>* Number<T>::integer_div(const Number<U>* other) const noexcept {
 
 template <typename T>
 template <typename U>
-Number<float64>* Number<T>::operator/(const Number<U>* other) const noexcept {
+ObjectFloat* Number<T>::operator/(const Number<U>* other) const noexcept {
     if (!other->get()) {
         std::cerr << "Division by zero\n";
         exit(1);
