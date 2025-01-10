@@ -63,10 +63,6 @@ ObjectBoolean* ObjectVoid::equals(const Object* other) const noexcept {
     );
 }
 
-Object* Type::copy() const noexcept {
-    return this->type_info;
-}
-
 ObjectBoolean* Type::equals(const Object* other) const noexcept {
     const Type* type_obj =
         dynamic_cast<const Type*>(other);
@@ -133,7 +129,6 @@ ObjectInteger* TypeInteger::cast(const Object* obj) const noexcept {
             static_cast<i64>(_obj->value)
         };
     } else if (obj_type_name == Type::NAME) {
-        // unreachable
         std::cerr << "Type object can't be casted to `int`\n";
         exit(1);
     }
@@ -163,7 +158,6 @@ ObjectFloat* TypeFloat::cast(const Object* obj) const noexcept {
             static_cast<float64>(_obj->value)
         };
     } else if (obj_type_name == Type::NAME) {
-        // unreachable
         std::cerr << "Type object can't be casted to `float`\n";
         exit(1);
     }

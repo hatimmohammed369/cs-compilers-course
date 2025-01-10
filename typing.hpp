@@ -14,7 +14,9 @@ public:
         type_type_object->type_info = type_type_object;
         return type_type_object;
     }
-    Object* copy() const noexcept override;
+    Type* copy() const noexcept override {
+        return get_type_object();
+    }
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;
     ObjectBoolean* to_boolean() const noexcept override;
@@ -26,7 +28,7 @@ public:
 
 class TypeInteger: public Type {
     TypeInteger(): Type() {
-        this->type_name = NAME;
+        this->type_name = TypeInteger::NAME;
         this->type_info = Type::get_type_object();
     }
 public:
@@ -37,14 +39,14 @@ public:
         return int_type_object;
     }
     TypeInteger* copy() const noexcept override {
-        return get_type_object();
+        return TypeInteger::get_type_object();
     }
     ObjectInteger* cast(const Object* obj) const noexcept override;
 };
 
 class TypeFloat: public Type {
     TypeFloat(): Type() {
-        this->type_name = NAME;
+        this->type_name = TypeFloat::NAME;
         this->type_info = Type::get_type_object();
     } 
 public:
@@ -55,14 +57,14 @@ public:
         return float_type_object;
     }
     TypeFloat* copy() const noexcept override {
-        return get_type_object();
+        return TypeFloat::get_type_object();
     }
     ObjectFloat* cast(const Object* obj) const noexcept override;
 };
 
 class TypeString: public Type {
     TypeString(): Type() {
-        this->type_name = NAME;
+        this->type_name = TypeString::NAME;
         this->type_info = Type::get_type_object();
     } 
 public:
@@ -73,14 +75,14 @@ public:
         return string_type_object;
     }
     TypeString* copy() const noexcept override {
-        return get_type_object();
+        return TypeString::get_type_object();
     }
     ObjectString* cast(const Object* obj) const noexcept override;
 };
 
 class TypeBoolean: public Type {
     TypeBoolean(): Type() {
-        this->type_name = NAME;
+        this->type_name = TypeBoolean::NAME;
         this->type_info = Type::get_type_object();
     } 
 public:
@@ -91,14 +93,14 @@ public:
         return boolean_type_object;
     }
     TypeBoolean* copy() const noexcept override {
-        return get_type_object();
+        return TypeBoolean::get_type_object();
     }
     ObjectBoolean* cast(const Object* obj) const noexcept override;
 };
 
 class TypeVoid: public Type {
     TypeVoid(): Type() {
-        this->type_name = NAME;
+        this->type_name = TypeVoid::NAME;
         this->type_info = Type::get_type_object();
     } 
 public:
@@ -109,7 +111,7 @@ public:
         return void_type_object;
     }
     TypeVoid* copy() const noexcept override {
-        return get_type_object();
+        return TypeVoid::get_type_object();
     }
     ObjectVoid* cast(const Object* obj) const noexcept override;
 };
