@@ -62,6 +62,7 @@ public:
 class Block: public Expression {
 public:
     std::vector<Statement*> statements;
+    Expression* expr;
     Token* opening_newline = nullptr;
     Token* closing_newline = nullptr;
     std::string to_string() const noexcept override;

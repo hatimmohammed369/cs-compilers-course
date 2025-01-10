@@ -47,6 +47,7 @@ std::string Block::to_string() const noexcept {
         fmt << tree->to_string() ;
         fmt << ';' ;
     }
+    fmt << this->expr->to_string() ;
     if (this->closing_newline)
         fmt << '\n';
     fmt << "}" ;
