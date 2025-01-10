@@ -464,11 +464,7 @@ Object* Interpreter::visit_block(Block* tree) {
             (void)(*stmt_ptr)->accept(this);
         }
     }
-    return (
-        tree->end_token && tree->end_token->ttype == TokenType::SEMI_COLON ?
-        ObjectVoid::VOID_OBJECT :
-        tree->statements.back()->accept(this)
-    );
+    return tree->statements.back()->accept(this);
 }
 
 Object* Interpreter::visit_cast(Cast* tree) {

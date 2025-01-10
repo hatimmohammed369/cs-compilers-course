@@ -45,8 +45,7 @@ std::string Block::to_string() const noexcept {
     ) {
         auto tree = *stmt_ptr;
         fmt << tree->to_string() ;
-        if (tree->end_token)
-            fmt << tree->end_token->value;
+        fmt << ';' ;
     }
     if (this->closing_newline)
         fmt << '\n';

@@ -29,7 +29,6 @@ public:
 
 class Statement: public TreeBase {
 public:
-    Token* end_token = nullptr;
     ~Statement() = default;
 };
 

@@ -61,23 +61,17 @@ ParseResult Parser::parse_source() {
 }
 
 ParseResult Parser::parse_statement() {
-    bool use_semicolon = true;
     ParseResult result;
-    if (current.is_type_keyword()) {
+    if (current.is_type_keyword())
         result = parse_variable_declaration();
-    } else {
-        use_semicolon = false;
+    else
         result = parse_expression();
-    }
     if (result.error.empty()) {
-        if (result.error.empty() && use_semicolon && current.ttype != TokenType::SEMI_COLON) {
+        if (current.ttype == TokenType::SEMI_COLON) {
+            read_next_token();
+        } else {
             result.parsed_hunk = nullptr;
             result.error = "Expected ; after statement";
-        } else if (check({TokenType::SEMI_COLON, TokenType::LINEBREAK})) {
-            Statement* stmt =
-                reinterpret_cast<Statement*>(result.parsed_hunk);
-            stmt->end_token = new Token;
-            *stmt->end_token = consume();
         }
     } else {
         result.parsed_hunk = nullptr;
