@@ -16,6 +16,15 @@ static std::string read_fmt() {
     return str;
 }
 
+enum class Mode {
+    File,
+    Interactive
+};
+static Mode* get_mode() {
+    static Mode* mode = new Mode;
+    return mode;
+}
+
 using i8 = int8_t;
 using i16 = int16_t;
 using i32 = int32_t;
