@@ -48,7 +48,9 @@ ParseResult Parser::parse_source() {
         } else if (!result.parsed_hunk) {
             break;
         }
-        source_tree->statements.push_back(result.parsed_hunk);
+        source_tree->statements.push_back(
+            reinterpret_cast<Statement*>(result.parsed_hunk)
+        );
     }
     result.parsed_hunk = (
         result.error.empty() ?

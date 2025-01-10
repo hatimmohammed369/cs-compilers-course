@@ -18,9 +18,11 @@ inline std::ostream& operator<<(std::ostream& os, const TreeBase* tree_node) {
     return os << tree_node->to_string() ;
 }
 
+class Statement;
+
 class Program: public TreeBase {
 public:
-    std::vector<TreeBase*> statements;
+    std::vector<Statement*> statements;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };
