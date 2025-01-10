@@ -97,7 +97,6 @@ private:
     ObjectVoid(const ObjectVoid&&) = delete; // No move constructor
     ObjectVoid& operator=(const ObjectVoid&&) = delete; // No move assignment
 public:
-    static const std::string NAME;
     static ObjectVoid* VOID_OBJECT;
 
     ObjectBoolean* equals(const Object* other) const noexcept override;
@@ -130,7 +129,6 @@ private:
     ObjectBoolean& operator=(const ObjectBoolean&&) = delete; // No move assignment
 
     bool value;
-    std::string str;
     ObjectBoolean(bool val);
 public:
     static ObjectBoolean* TRUE;

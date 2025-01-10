@@ -52,7 +52,7 @@ Object* Interpreter::visit_unary(Unary* tree) {
             if (float_obj)
                 return -(*float_obj);
 
-            std::cerr << "Unary logical operator - applied to non-numeric" ;
+            std::cerr << "Unary arithmetic operator - applied to non-numeric" ;
             exit(1);
         }
         case TokenType::PLUS: {
@@ -67,14 +67,14 @@ Object* Interpreter::visit_unary(Unary* tree) {
             if (float_obj)
                 return float_obj;
 
-            std::cerr << "Unary logical operator + applied to non-numeric" ;
+            std::cerr << "Unary arithmetic operator + applied to non-numeric" ;
             exit(1);
         }
         case TokenType::TILDE: {
             ObjectInteger* int_obj =
                 dynamic_cast<ObjectInteger*>(tree->expr->accept(this));
             if (!int_obj) {
-                std::cerr << "Unary logical operator + applied to non-numeric" ;
+                std::cerr << "Unary bitwise operator ~ applied to non-integer" ;
                 exit(1);
             }
             return ~(*int_obj);

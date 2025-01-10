@@ -36,7 +36,6 @@ ObjectVoid::ObjectVoid() {type_info = TypeVoid::get_type_object();}
 ObjectBoolean::ObjectBoolean(bool val) {
     type_info = TypeBoolean::get_type_object();
     value = val;
-    str = std::string(val ? "true" : "false");
 }
 
 ObjectBoolean* ObjectString::equals(const Object* other) const noexcept {

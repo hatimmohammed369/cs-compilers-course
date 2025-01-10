@@ -126,11 +126,10 @@ ObjectFloat* ObjectFloat::copy() const noexcept {
 
 // ------------------------- ObjectVoid -------------------------
 
-const std::string ObjectVoid::NAME = "void";
 ObjectVoid* ObjectVoid::VOID_OBJECT = new ObjectVoid;
 
 std::string ObjectVoid::to_string() const noexcept {
-    return ObjectVoid::NAME;
+    return std::string("void");
 }
 
 ObjectBoolean* ObjectVoid::to_boolean() const noexcept {
@@ -167,7 +166,7 @@ ObjectBoolean* ObjectBoolean::TRUE = new ObjectBoolean{true};
 ObjectBoolean* ObjectBoolean::FALSE = new ObjectBoolean{false};
 
 std::string ObjectBoolean::to_string() const noexcept {
-    return str;
+    return std::string(value ? "true" : "false");
 }
 
 bool ObjectBoolean::get() const noexcept {
