@@ -4,9 +4,7 @@
 
 Program => Statement*
 
-Statement => VariableDeclaration StatmentEnd | Expression StatmentEnd?
-
-StatmentEnd => ';'
+Statement => ( VariableDeclaration | Expression ) ';'
 
 VariableDeclaration =>
 	type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )*
@@ -43,7 +41,7 @@ Primary => Cast | Block | Group | NAME | Literal
 
 Cast => '(' type ')' Primary
 
-Block => '{' Statement* '}'
+Block => '{' Statement* Expression '}'
 
 Group => '(' Expression ')'
 
