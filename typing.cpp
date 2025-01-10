@@ -130,7 +130,7 @@ ObjectInteger* TypeInteger::cast(const Object* obj) const noexcept {
         const ObjectBoolean* _obj =
             reinterpret_cast<const ObjectBoolean*>(obj);
         return new ObjectInteger{
-            static_cast<i64>(_obj->get())
+            static_cast<i64>(_obj->value)
         };
     } else if (obj_type_name == Type::NAME) {
         // unreachable
@@ -160,7 +160,7 @@ ObjectFloat* TypeFloat::cast(const Object* obj) const noexcept {
         const ObjectBoolean* _obj =
             reinterpret_cast<const ObjectBoolean*>(obj);
         return new ObjectFloat{
-            static_cast<float64>(_obj->get())
+            static_cast<float64>(_obj->value)
         };
     } else if (obj_type_name == Type::NAME) {
         // unreachable

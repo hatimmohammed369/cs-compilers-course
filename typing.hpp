@@ -126,13 +126,13 @@ ObjectBoolean* Number<T>::equals(const Object* other) const noexcept {
         dynamic_cast<const ObjectInteger*>(other);
     if (other_int)
         return ObjectBoolean::as_object(
-            this->value == other_int->get()
+            this->value == other_int->value
         );
 
     const ObjectFloat* other_float =
         dynamic_cast<const ObjectFloat*>(other);
     return ObjectBoolean::as_object(
-        this->value == other_float->get()
+        this->value == other_float->value
     );
 }
 

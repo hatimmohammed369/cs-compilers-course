@@ -31,7 +31,7 @@ public:
     Number(const T& val): value{val} {}
 
     ObjectBoolean* equals(const Object* other) const noexcept override;
-    inline T get() const noexcept {return value;}
+    ObjectBoolean* to_boolean() const noexcept override;
 
     virtual Number* operator-() const noexcept = 0;
 
@@ -48,8 +48,6 @@ public:
     ObjectBoolean* operator<(const Number<U>* other) const noexcept;
     template <typename U>
     ObjectBoolean* operator<=(const Number<U>* other) const noexcept;
-
-    ObjectBoolean* to_boolean() const noexcept override;
 };
 
 template class Number<i64>;
@@ -59,21 +57,24 @@ class ObjectInteger: public Number<i64> {
 public:
     ObjectInteger(const i64& val);
     std::string to_string() const noexcept override;
-    ObjectInteger* operator-() const noexcept override;
+    ObjectInteger* copy() const noexcept override;
+
     ObjectInteger* operator*(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator*(const ObjectFloat* other) const noexcept;
-    ObjectInteger* operator%(const ObjectInteger* other) const noexcept;
     ObjectInteger* operator+(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator+(const ObjectFloat* other) const noexcept;
     ObjectInteger* operator-(const ObjectInteger* other) const noexcept;
     ObjectFloat* operator-(const ObjectFloat* other) const noexcept;
+
+    ObjectInteger* operator-() const noexcept override;
+
     ObjectInteger* operator~() const noexcept;
+    ObjectInteger* operator%(const ObjectInteger* other) const noexcept;
     ObjectInteger* operator>>(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator<<(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator&(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator^(const ObjectInteger* count) const noexcept;
     ObjectInteger* operator|(const ObjectInteger* count) const noexcept;
-    ObjectInteger* copy() const noexcept override;
     // More integer specific code here later
 };
 
@@ -131,9 +132,9 @@ private:
     ObjectBoolean(const ObjectBoolean&&) = delete; // No move constructor
     ObjectBoolean& operator=(const ObjectBoolean&&) = delete; // No move assignment
 
-    bool value;
     ObjectBoolean(bool val);
 public:
+    bool value;
     static ObjectBoolean* TRUE;
     static ObjectBoolean* FALSE;
 
@@ -143,7 +144,6 @@ public:
 
     ObjectBoolean* equals(const Object* other) const noexcept override;
     std::string to_string() const noexcept override;
-    bool get() const noexcept;
 
     ObjectBoolean* negated() const noexcept;
     ObjectBoolean* operator!() const noexcept;
@@ -168,49 +168,49 @@ ObjectBoolean* Number<T>::to_boolean() const noexcept {
 template <typename T>
 template <typename U>
 ObjectInteger* Number<T>::integer_div(const Number<U>* other) const noexcept {
-    if (!other->get()) {
+    if (!other->value) {
         std::cerr << "Division by zero\n";
         exit(1);
     }
     return new ObjectInteger {
-        static_cast<i64>(get()) / static_cast<i64>(other->get())
+        static_cast<i64>(value) / static_cast<i64>(other->value)
     };
 }
 
 template <typename T>
 template <typename U>
 ObjectFloat* Number<T>::operator/(const Number<U>* other) const noexcept {
-    if (!other->get()) {
+    if (!other->value) {
         std::cerr << "Division by zero\n";
         exit(1);
     }
     return new ObjectFloat {
-        static_cast<float64>(get()) / static_cast<float64>(other->get())
+        static_cast<float64>(value) / static_cast<float64>(other->value)
     };
 }
 
 template <typename T>
 template <typename U>
 ObjectBoolean* Number<T>::operator>(const Number<U>* other) const noexcept {
-    return ObjectBoolean::as_object(value > other->get());
+    return ObjectBoolean::as_object(value > other->value);
 }
 
 template <typename T>
 template <typename U>
 ObjectBoolean* Number<T>::operator>=(const Number<U>* other) const noexcept {
-    return ObjectBoolean::as_object(value >= other->get());
+    return ObjectBoolean::as_object(value >= other->value);
 }
 
 template <typename T>
 template <typename U>
 ObjectBoolean* Number<T>::operator<(const Number<U>* other) const noexcept {
-    return ObjectBoolean::as_object(value < other->get());
+    return ObjectBoolean::as_object(value < other->value);
 }
 
 template <typename T>
 template <typename U>
 ObjectBoolean* Number<T>::operator<=(const Number<U>* other) const noexcept {
-    return ObjectBoolean::as_object(value <= other->get());
+    return ObjectBoolean::as_object(value <= other->value);
 }
 
 // ------------------------- Number -------------------------

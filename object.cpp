@@ -13,37 +13,37 @@ ObjectInteger* ObjectInteger::operator-() const noexcept {
 }
 
 ObjectInteger* ObjectInteger::operator*(const ObjectInteger* other) const noexcept {
-    return new ObjectInteger{value * other->get()};
+    return new ObjectInteger{value * other->value};
 }
 
 ObjectFloat* ObjectInteger::operator*(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{
-        static_cast<float64>(value) * other->get()
+        static_cast<float64>(value) * other->value
     };
 }
 
 ObjectInteger* ObjectInteger::operator%(const ObjectInteger* other) const noexcept {
-    if (!other->get()) {
+    if (!other->value) {
         std::cerr << "Zero modulus\n";
         exit(1);
     }
-    return new ObjectInteger {get() % other->get()};
+    return new ObjectInteger {value % other->value};
 }
 
 ObjectInteger* ObjectInteger::operator+(const ObjectInteger* other) const noexcept {
-    return new ObjectInteger {value + other->get()};
+    return new ObjectInteger {value + other->value};
 }
 
 ObjectFloat* ObjectInteger::operator+(const ObjectFloat* other) const noexcept {
-    return new ObjectFloat {static_cast<float64>(value) + other->get()};
+    return new ObjectFloat {static_cast<float64>(value) + other->value};
 }
 
 ObjectInteger* ObjectInteger::operator-(const ObjectInteger* other) const noexcept {
-    return new ObjectInteger {value - other->get()};
+    return new ObjectInteger {value - other->value};
 }
 
 ObjectFloat* ObjectInteger::operator-(const ObjectFloat* other) const noexcept {
-    return new ObjectFloat {static_cast<float64>(value) - other->get()};
+    return new ObjectFloat {static_cast<float64>(value) - other->value};
 }
 
 ObjectInteger* ObjectInteger::operator~() const noexcept {
@@ -92,30 +92,30 @@ ObjectFloat* ObjectFloat::operator-() const noexcept {
 
 ObjectFloat* ObjectFloat::operator*(const ObjectInteger* other) const noexcept {
     return new ObjectFloat{
-        static_cast<float64>(value * other->get())
+        static_cast<float64>(value * other->value)
     };
 }
 
 ObjectFloat* ObjectFloat::operator*(const ObjectFloat* other) const noexcept {
     return new ObjectFloat{
-        static_cast<float64>(value * other->get())
+        static_cast<float64>(value * other->value)
     };
 }
 
 ObjectFloat* ObjectFloat::operator+(const ObjectInteger* other) const noexcept {
-    return new ObjectFloat{value + static_cast<float64>(other->get())};
+    return new ObjectFloat{value + static_cast<float64>(other->value)};
 }
 
 ObjectFloat* ObjectFloat::operator+(const ObjectFloat* other) const noexcept {
-    return new ObjectFloat{value + other->get()};
+    return new ObjectFloat{value + other->value};
 }
 
 ObjectFloat* ObjectFloat::operator-(const ObjectInteger* other) const noexcept {
-    return new ObjectFloat{value - static_cast<float64>(other->get())};
+    return new ObjectFloat{value - static_cast<float64>(other->value)};
 }
 
 ObjectFloat* ObjectFloat::operator-(const ObjectFloat* other) const noexcept {
-    return new ObjectFloat{value - other->get()};
+    return new ObjectFloat{value - other->value};
 }
 
 ObjectFloat* ObjectFloat::copy() const noexcept {
@@ -167,10 +167,6 @@ ObjectBoolean* ObjectBoolean::FALSE = new ObjectBoolean{false};
 
 std::string ObjectBoolean::to_string() const noexcept {
     return std::string(value ? "true" : "false");
-}
-
-bool ObjectBoolean::get() const noexcept {
-    return value;
 }
 
 ObjectBoolean* ObjectBoolean::negated() const noexcept {
