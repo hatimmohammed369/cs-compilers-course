@@ -20,9 +20,17 @@ enum class Mode {
     File,
     Interactive
 };
-static Mode* get_mode() {
-    static Mode* mode = new Mode;
-    return mode;
+
+static Mode mode;
+
+static bool is_mode_interactive() __attribute__((unused));
+static bool is_mode_interactive() {
+    return mode == Mode::Interactive;
+}
+
+static bool is_mode_file() __attribute__((unused));
+static bool is_mode_file() {
+    return mode == Mode::File;
 }
 
 using i8 = int8_t;
