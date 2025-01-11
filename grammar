@@ -41,7 +41,7 @@ Primary => Cast | Block | Group | NAME | Literal
 
 Cast => '(' type ')' Primary
 
-Block => '{' Statement* Expression '}'
+Block => '{' Statement* Expression? '}'
 
 Group => '(' Expression ')'
 
