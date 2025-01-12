@@ -19,6 +19,7 @@ class Cast;
 class VariableDeclaration;
 class Name;
 class Print;
+class Return;
 
 class Visitor {
 public:
@@ -39,6 +40,7 @@ public:
     virtual Object* visit_cast(Cast* tree) = 0;
     virtual Object* visit_variable_declaration(VariableDeclaration* tree) = 0;
     virtual Object* visit_print(Print* tree) = 0;
+    virtual Object* visit_return(Return* tree) = 0;
     virtual Object* visit_name(Name* tree) = 0;
 };
 

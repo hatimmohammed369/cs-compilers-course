@@ -492,6 +492,10 @@ Object* Interpreter::visit_print(Print* tree) {
     return nullptr;
 }
 
+Object* visit_return(Return* tree) {
+    return tree->accept(this);
+}
+
 Object* Interpreter::visit_name(Name* tree) {
     Object* name_val = defined_names[tree->name_str];
     if (!name_val) {

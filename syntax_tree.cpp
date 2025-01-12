@@ -8,7 +8,7 @@ std::string Return::to_string() const noexcept {
 }
 
 Object* Return::accept(Visitor* visitor) {
-    return nullptr;
+    return visitor->visit_return(this);
 }
 
 std::string Print::to_string() const noexcept {
