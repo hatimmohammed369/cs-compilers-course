@@ -64,6 +64,8 @@ ParseResult Parser::parse_statement() {
     ParseResult result;
     if (current.is_type_keyword())
         result = parse_variable_declaration();
+    else if (check({TokenType::KEYWORD_PRINT, TokenType::KEYWORD_PRINTLN}))
+        result = parse_print();
     else
         result = parse_expression();
     if (result.error.empty()) {
@@ -75,6 +77,19 @@ ParseResult Parser::parse_statement() {
         }
     } else {
         result.parsed_hunk = nullptr;
+    }
+    return result;
+}
+
+ParseResult Parser::parse_print() {
+    // Skip keyword `print` or `println`
+    read_next_token();
+    ParseResult result = parse_expression();
+    if (!result.error.empty()) {
+        result.parsed_hunk = nullptr;
+    } else {
+        result.parsed_hunk =
+            reinterpret_cast<Expression*>(result.parsed_hunk);
     }
     return result;
 }
