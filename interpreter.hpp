@@ -23,6 +23,7 @@ public:
     Object* visit_block(Block* tree);
     Object* visit_cast(Cast* tree);
     Object* visit_variable_declaration(VariableDeclaration* tree);
+    Object* visit_print(Print* tree);
     Object* visit_name(Name* tree);
 };
 

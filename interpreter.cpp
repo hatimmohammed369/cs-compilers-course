@@ -483,6 +483,15 @@ Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
     return nullptr;
 }
 
+Object* Interpreter::visit_print(Print* tree) {
+    std::string expr_str =
+        tree->expr->accept(this)->to_string();
+    std::cout << expr_str ;
+    if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN)
+        std::cout << '\n' ;
+    return nullptr;
+}
+
 Object* Interpreter::visit_name(Name* tree) {
     Object* name_val = defined_names[tree->name_str];
     if (!name_val) {
