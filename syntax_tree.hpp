@@ -37,6 +37,15 @@ public:
     ~Expression() = default;
 };
 
+class Print: public Statement {
+public:
+    Token print_keyword;
+    Expression* expr;
+    Print(Expression* e): expr{e} {}
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
+};
+
 class VariableDeclaration: public Statement {
 public:
     using initializer = std::pair<std::string, TreeBase*>;
