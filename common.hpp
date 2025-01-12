@@ -21,16 +21,22 @@ enum class Mode {
     Interactive
 };
 
-static Mode mode;
+class Config {
+public:
+    static Mode* get_mode() {
+        static Mode* m = new Mode;
+        return m;
+    }
+};
 
 static bool is_mode_interactive() __attribute__((unused));
 static bool is_mode_interactive() {
-    return mode == Mode::Interactive;
+    return *Config::get_mode() == Mode::Interactive;
 }
 
 static bool is_mode_file() __attribute__((unused));
 static bool is_mode_file() {
-    return mode == Mode::File;
+    return *Config::get_mode() == Mode::File;
 }
 
 using i8 = int8_t;

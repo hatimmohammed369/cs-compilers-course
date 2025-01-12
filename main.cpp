@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     if (argc == 1) {
         // Interactive Mode
         // Read input from user directly
-        mode = Mode::Interactive;
+        *Config::get_mode() = Mode::Interactive;
         Object* eval;
         // Line characters store
         char* buffer;
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
     } else if (argc == 3 && (strcmp(argv[1], "--file") == 0 || strcmp(argv[1], "-f") == 0)) {
         // File Mode
         // Read input from file
-        mode = Mode::File;
+        *Config::get_mode() = Mode::File;
         // Open requested file for reading
         ifstream input_file {argv[2]};
         // Seek to fil end
