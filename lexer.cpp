@@ -258,6 +258,8 @@ Token Lexer::generate_identifier_token() {
         ttype = TokenType::KEYWORD_PRINTLN;
     else if (value == "string")
         ttype = TokenType::KEYWORD_STRING;
+    else if (value == "return")
+        ttype = TokenType::KEYWORD_RETURN;
     else if (value == "true")
         ttype = TokenType::KEYWORD_TRUE;
     else if (value == "void")
