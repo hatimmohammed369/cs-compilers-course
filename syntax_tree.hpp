@@ -37,6 +37,14 @@ public:
     ~Expression() = default;
 };
 
+class Return: public Statement {
+public:
+    Expression* expr;
+    Return(Expression* e): expr{e} {}
+    std::string to_string() const noexcept override;
+    Object* accept(Visitor* visitor) override;
+};
+
 class Print: public Statement {
 public:
     Token print_keyword;

@@ -1,5 +1,16 @@
 #include "syntax_tree.hpp"
 
+std::string Return::to_string() const noexcept {
+    fmt << "return "
+        << expr->to_string()
+        << " ;" ;
+    return read_fmt();
+}
+
+Object* Return::accept(Visitor* visitor) {
+    return nullptr;
+}
+
 std::string Print::to_string() const noexcept {
     fmt << print_keyword.value
         << ' ' << expr->to_string()
