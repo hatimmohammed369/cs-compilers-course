@@ -598,6 +598,13 @@ ParseResult Parser::parse_block() {
             reinterpret_cast<Statement*>(result.parsed_hunk)
         );
     }
+    result = parse_expression();
+    if (!result.error.empty()) {
+        result.parsed_hunk = nullptr;
+    } else if (result.parsed_hunk) {
+        block->expr =
+            reinterpret_cast<Expression*>(result.parsed_hunk);
+    }
     if (current.ttype == TokenType::LINEBREAK) {
         block->closing_newline = new Token;
         *block->closing_newline = consume();

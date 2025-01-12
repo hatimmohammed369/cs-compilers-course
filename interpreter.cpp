@@ -451,20 +451,14 @@ Object* Interpreter::visit_logical(Logical* tree) {
 }
 
 Object* Interpreter::visit_block(Block* tree) {
-    if (!tree)
-        return nullptr;
-    else if (tree->statements.empty()) {
-        return ObjectVoid::VOID_OBJECT;
-    } else {
-        for (
-            auto stmt_ptr = tree->statements.begin();
-            stmt_ptr != tree->statements.end()-1;
-            stmt_ptr++
-        ) {
-            (void)(*stmt_ptr)->accept(this);
-        }
+    for (Statement* stmt : tree->statements) {
+        (void)stmt->accept(this);
     }
-    return tree->statements.back()->accept(this);
+    return (
+        tree->expr ?
+        tree->expr->accept(this) :
+        ObjectVoid::VOID_OBJECT
+    );
 }
 
 Object* Interpreter::visit_cast(Cast* tree) {
