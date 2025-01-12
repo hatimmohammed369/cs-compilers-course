@@ -14,11 +14,11 @@ int main(int argc, char* argv[]) {
     Parser parser;
     Interpreter interpreter;
     ParseResult result;
-    Object* eval;
     if (argc == 1) {
         // Interactive Mode
         // Read input from user directly
         mode = Mode::Interactive;
+        Object* eval;
         // Line characters store
         char* buffer;
         while ((buffer = readline("> ")) != nullptr) {
@@ -54,12 +54,10 @@ int main(int argc, char* argv[]) {
         // Read all characters
         input_file.read(input, file_size);
         parser.init(input, file_size);
-        if (result.error.empty()) {
-            eval = interpreter.interpret(result.parsed_hunk);
-            if (eval) cout << eval << '\n' ;
-        } else {
+        if (result.error.empty())
+            interpreter.interpret(result.parsed_hunk);
+        else
             cerr << result.error << '\n' ;
-        }
         // Free input buffer
         delete[] input;
     } else {

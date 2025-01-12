@@ -16,7 +16,7 @@ Object* Interpreter::visit_program(Program* tree) {
         stmt_ptr != tree->statements.end()-1;
         stmt_ptr++
     ) {
-        std::cout << (*stmt_ptr)->accept(this) << '\n' ;
+        (void)(*stmt_ptr)->accept(this);
     }
     return tree->statements.back()->accept(this);
 }
