@@ -10,14 +10,6 @@ Object* Print::accept(Visitor* visitor) {
     return visitor->visit_print(this);
 }
 
-std::string Name::to_string() const noexcept {
-    return name_str;
-}
-
-Object* Name::accept(Visitor* visitor) {
-    return visitor->visit_name(this);
-}
-
 std::string VariableDeclaration::to_string() const noexcept {
     fmt << target_type->to_string() ;
     for (auto p : pairs) {
@@ -141,6 +133,14 @@ std::string GroupedExpression::to_string() const noexcept {
     fmt << grouped_expr->to_string() ;
     fmt << ')' ;
     return read_fmt();
+}
+
+std::string Name::to_string() const noexcept {
+    return name_str;
+}
+
+Object* Name::accept(Visitor* visitor) {
+    return visitor->visit_name(this);
 }
 
 Object* GroupedExpression::accept(Visitor* visitor) {
