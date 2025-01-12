@@ -49,6 +49,8 @@ enum class TokenType : int {
     SEMI_COLON = 41,
     LINEBREAK = 42,
     KEYWORD_TYPE = 43,
+    KEYWORD_PRINT = 44,
+    KEYWORD_PRINTLN = 45
 };
 
 class Token {
@@ -160,6 +162,10 @@ static const char* token_type_name(const TokenType& ttype) {
             return "LINEBREAK";
         case 43:
             return "KEYWORD_TYPE";
+        case 44:
+            return "KEYWORD_PRINT";
+        case 45:
+            return "KEYWORD_PRINTLN";
     }
     return "MISSING_CATEGORY" ;
 }
