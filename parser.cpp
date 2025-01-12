@@ -71,7 +71,7 @@ ParseResult Parser::parse_statement() {
     if (result.error.empty()) {
         if (current.ttype == TokenType::SEMI_COLON) {
             read_next_token();
-        } else {
+        } else if (is_mode_file() || current.ttype != TokenType::LINEBREAK) {
             result.parsed_hunk = nullptr;
             result.error = "Expected ; after statement";
         }
