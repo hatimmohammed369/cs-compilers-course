@@ -38,8 +38,6 @@ Object* Cast::accept(Visitor* visitor) {
 
 std::string Block::to_string() const noexcept {
     fmt << "{" ;
-    if (this->closing_newline)
-        fmt << '\n';
     for (
         auto stmt_ptr = this->statements.begin();
         stmt_ptr != this->statements.end()-1;
@@ -51,8 +49,6 @@ std::string Block::to_string() const noexcept {
     }
     if (this->expr)
         fmt << this->expr->to_string() ;
-    if (this->closing_newline)
-        fmt << '\n';
     fmt << "}" ;
     return read_fmt();
 }

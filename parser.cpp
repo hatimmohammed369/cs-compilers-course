@@ -596,10 +596,6 @@ ParseResult Parser::parse_block() {
     // Skip opening curly brace
     read_next_token();
     Block* block = new Block;
-    if (current.ttype == TokenType::LINEBREAK) {
-        block->opening_newline = new Token;
-        *block->opening_newline = consume();
-    }
     ParseResult result;
     while (has_next()) {
         result = parse_statement();
@@ -619,10 +615,6 @@ ParseResult Parser::parse_block() {
     } else if (result.parsed_hunk) {
         block->expr =
             reinterpret_cast<Expression*>(result.parsed_hunk);
-    }
-    if (current.ttype == TokenType::LINEBREAK) {
-        block->closing_newline = new Token;
-        *block->closing_newline = consume();
     }
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
