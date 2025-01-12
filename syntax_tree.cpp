@@ -2,7 +2,8 @@
 
 std::string Print::to_string() const noexcept {
     fmt << print_keyword.value
-        << ' ' << expr->to_string() ;
+        << ' ' << expr->to_string()
+        << " ;";
     return read_fmt();
 }
 
@@ -18,7 +19,7 @@ std::string VariableDeclaration::to_string() const noexcept {
             fmt << " = " << p.second->to_string() ;
         fmt << ',' ;
     }
-    fmt << ';' ;
+    fmt << " ;" ;
     return read_fmt();
 }
 
