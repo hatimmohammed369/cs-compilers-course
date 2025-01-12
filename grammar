@@ -4,9 +4,7 @@
 
 Program => Statement*
 
-Statement => ( Return | Print | VariableDeclaration | Expression ) ';'
-
-Return => 'return' Expression
+Statement => ( Print | VariableDeclaration | Expression ) ';'
 
 Print => ( 'print' | 'println' ) Expression
 
@@ -45,7 +43,9 @@ Primary => Cast | Block | Group | NAME | Literal
 
 Cast => '(' type ')' Primary
 
-Block => '{' Statement* '}'
+Block => '{' ( Statement | Return )* '}'
+
+Return => 'return' Expression
 
 Group => '(' Expression ')'
 
