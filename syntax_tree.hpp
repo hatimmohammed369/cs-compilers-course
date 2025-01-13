@@ -79,7 +79,6 @@ public:
 class Block: public Expression {
 public:
     std::vector<Statement*> statements;
-    Expression* expr;
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };

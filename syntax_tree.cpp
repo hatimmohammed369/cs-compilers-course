@@ -59,8 +59,6 @@ std::string Block::to_string() const noexcept {
         fmt << tree->to_string() ;
         fmt << ';' ;
     }
-    if (this->expr)
-        fmt << this->expr->to_string() ;
     fmt << "}" ;
     return read_fmt();
 }
