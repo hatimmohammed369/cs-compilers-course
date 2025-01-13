@@ -492,7 +492,7 @@ Object* Interpreter::visit_print(Print* tree) {
     return nullptr;
 }
 
-Object* visit_return(Return* tree) {
+Object* Interpreter::visit_return(Return* tree) {
     return tree->accept(this);
 }
 
