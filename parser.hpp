@@ -51,6 +51,7 @@ public:
     ParseResult parse_primary();
     ParseResult parse_literal();
     ParseResult parse_block();
+    ParseResult parse_return();
     ParseResult parse_group();
     ParseResult parse_cast();
 };

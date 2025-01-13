@@ -68,7 +68,9 @@ ParseResult Parser::parse_statement() {
         result = parse_print();
     else
         result = parse_expression();
-    if (result.error.empty()) {
+    if (!result.parsed_hunk) {
+        return result;
+    } else if (result.error.empty()) {
         if (current.ttype == TokenType::SEMI_COLON) {
             read_next_token();
         } else if (is_mode_file() || current.ttype != TokenType::LINEBREAK) {
@@ -597,8 +599,11 @@ ParseResult Parser::parse_block() {
     read_next_token();
     Block* block = new Block;
     ParseResult result;
-    while (has_next()) {
-        result = parse_statement();
+    while (has_next() || current.ttype != TokenType::RIGHT_CURLY_BRACE) {
+        if (current.ttype == TokenType::KEYWORD_RETURN)
+            result = parse_return();
+        else
+            result = parse_statement();
         if (!result.error.empty()) {
             result.parsed_hunk = nullptr;
             break;
@@ -608,13 +613,6 @@ ParseResult Parser::parse_block() {
         block->statements.push_back(
             reinterpret_cast<Statement*>(result.parsed_hunk)
         );
-    }
-    result = parse_expression();
-    if (!result.error.empty()) {
-        result.parsed_hunk = nullptr;
-    } else if (result.parsed_hunk) {
-        block->expr =
-            reinterpret_cast<Expression*>(result.parsed_hunk);
     }
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
@@ -627,6 +625,26 @@ ParseResult Parser::parse_block() {
         read_next_token();
         result.parsed_hunk =
             reinterpret_cast<TreeBase*>(block);
+    }
+    return result;
+}
+
+ParseResult Parser::parse_return() {
+    // Skip keyword `return`
+    read_next_token();
+    ParseResult result = parse_expression();
+    if (!result.error.empty()) {
+        result.parsed_hunk = nullptr;
+    } else if (current.ttype == TokenType::SEMI_COLON) {
+        // Skip ;
+        read_next_token();
+        Return* ret =
+            new Return{reinterpret_cast<Expression*>(result.parsed_hunk)};
+        result.parsed_hunk =
+            reinterpret_cast<TreeBase*>(ret);
+    } else {
+        result.parsed_hunk = nullptr;
+        result.error = "Expected ; after statement";
     }
     return result;
 }

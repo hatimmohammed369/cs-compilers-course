@@ -453,14 +453,12 @@ Object* Interpreter::visit_logical(Logical* tree) {
 Object* Interpreter::visit_block(Block* tree) {
     if (!tree || tree->statements.empty())
         return nullptr;
-    for (
-        auto stmt_ptr = tree->statements.begin();
-        stmt_ptr != tree->statements.end()-1;
-        stmt_ptr++
-    ) {
-        (void)(*stmt_ptr)->accept(this);
+    for (Statement* stmt : tree->statements) {
+        Object* eval = stmt->accept(this);
+        if (dynamic_cast<Return*>(stmt))
+            return eval;
     }
-    return tree->statements.back()->accept(this);
+    return ObjectVoid::VOID_OBJECT;
 }
 
 Object* Interpreter::visit_cast(Cast* tree) {
@@ -495,7 +493,7 @@ Object* Interpreter::visit_print(Print* tree) {
 }
 
 Object* Interpreter::visit_return(Return* tree) {
-    return tree->accept(this);
+    return tree->expr->accept(this);
 }
 
 Object* Interpreter::visit_name(Name* tree) {
