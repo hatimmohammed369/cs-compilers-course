@@ -1,7 +1,7 @@
 .PHONY: clean main
 
 CC = g++
-CFLAGS = -Wall -g -std=c++2a
+CFLAGS = -Wall -g -std=c++23
 LDFLAGS = -lm -lreadline
 HEADERS = *.hpp
 EXECUTABLE = main
