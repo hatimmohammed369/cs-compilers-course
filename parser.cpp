@@ -73,7 +73,7 @@ ParseResult Parser::parse_statement() {
     } else if (result.error.empty()) {
         if (current.ttype == TokenType::SEMI_COLON) {
             read_next_token();
-        } else if (is_mode_file() || current.ttype != TokenType::LINEBREAK) {
+        } else if (is_mode_file() || !check({TokenType::LINEBREAK, TokenType::SEMI_COLON, TokenType::END_OF_FILE})) {
             result.parsed_hunk = nullptr;
             result.error = "Expected ; after statement";
         }
@@ -136,6 +136,7 @@ ParseResult Parser::parse_variable_declaration() {
                 read_next_token();
                 break;
             }
+            case TokenType::END_OF_FILE:
             case TokenType::SEMI_COLON: {
                 goto END;
             }
