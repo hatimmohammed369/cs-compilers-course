@@ -30,10 +30,10 @@ Object* Interpreter::visit_grouped_expression(GroupedExpression* tree) {
 }
 
 Object* Interpreter::visit_unary(Unary* tree) {
+    Object* expr = tree->expr->accept(this);
     switch (tree->unary_op.ttype) {
         case TokenType::BANG: {
-            ObjectBoolean* obj =
-                dynamic_cast<ObjectBoolean*>(tree->expr->accept(this));
+            ObjectBoolean* obj = dynamic_cast<ObjectBoolean*>(expr);
             if (!obj) {
                 std::cerr << "Unary logical operator ! applied to non-boolean" ;
                 exit(1);
@@ -41,14 +41,11 @@ Object* Interpreter::visit_unary(Unary* tree) {
             return obj->negated();
         }
         case TokenType::MINUS: {
-            Object* expr_value = tree->expr->accept(this);
-            ObjectInteger* int_obj =
-                dynamic_cast<ObjectInteger*>(expr_value);
+            ObjectInteger* int_obj = dynamic_cast<ObjectInteger*>(expr);
             if (int_obj)
                 return -(*int_obj);
 
-            ObjectFloat* float_obj =
-                dynamic_cast<ObjectFloat*>(expr_value);
+            ObjectFloat* float_obj = dynamic_cast<ObjectFloat*>(expr);
             if (float_obj)
                 return -(*float_obj);
 
@@ -56,14 +53,11 @@ Object* Interpreter::visit_unary(Unary* tree) {
             exit(1);
         }
         case TokenType::PLUS: {
-            Object* expr_value = tree->expr->accept(this);
-            ObjectInteger* int_obj =
-                dynamic_cast<ObjectInteger*>(expr_value);
+            ObjectInteger* int_obj = dynamic_cast<ObjectInteger*>(expr);
             if (int_obj)
                 return int_obj;
 
-            ObjectFloat* float_obj =
-                dynamic_cast<ObjectFloat*>(expr_value);
+            ObjectFloat* float_obj = dynamic_cast<ObjectFloat*>(expr);
             if (float_obj)
                 return float_obj;
 
@@ -71,8 +65,7 @@ Object* Interpreter::visit_unary(Unary* tree) {
             exit(1);
         }
         case TokenType::TILDE: {
-            ObjectInteger* int_obj =
-                dynamic_cast<ObjectInteger*>(tree->expr->accept(this));
+            ObjectInteger* int_obj = dynamic_cast<ObjectInteger*>(expr);
             if (!int_obj) {
                 std::cerr << "Unary bitwise operator ~ applied to non-integer" ;
                 exit(1);
@@ -88,23 +81,23 @@ Object* Interpreter::visit_unary(Unary* tree) {
 }
 
 Object* Interpreter::visit_exponential(Exponential* tree) {
+    Object* left = tree->left->accept(this);
+    Object* right = tree->right->accept(this);
+
     ObjectInteger *int_base, *int_exponent;
     ObjectFloat *float_base, *float_exponent;
-    int_base =
-        dynamic_cast<ObjectInteger*>(tree->left->accept(this));
+
+    int_base = dynamic_cast<ObjectInteger*>(left);
     if (int_base) goto FIND_EXPONENT;
-    float_base =
-        dynamic_cast<ObjectFloat*>(tree->left->accept(this));
+    float_base = dynamic_cast<ObjectFloat*>(left);
     if (!float_base) {
         std::cerr << "Numeric operator ** used with non-numeric base\n" ;
         exit(1);
     }
 FIND_EXPONENT:
-    int_exponent =
-        dynamic_cast<ObjectInteger*>(tree->right->accept(this));
+    int_exponent = dynamic_cast<ObjectInteger*>(right);
     if (int_exponent) goto EVALUATE;
-    float_exponent =
-        dynamic_cast<ObjectFloat*>(tree->right->accept(this));
+    float_exponent = dynamic_cast<ObjectFloat*>(right);
     if (!float_exponent) {
         std::cerr << "Numeric operator ** used with non-numeric exponent\n" ;
         exit(1);
@@ -130,17 +123,15 @@ EVALUATE:
 }
 
 Object* Interpreter::visit_factor(Factor* tree) {
+    Object* left = tree->left->accept(this);
+    Object* right = tree->right->accept(this);
+
     ObjectInteger *left_int, *right_int;
     ObjectFloat *left_float, *right_float;
-    left_int =
-        dynamic_cast<ObjectInteger*>(
-            tree->left->accept(this)
-        );
+
+    left_int = dynamic_cast<ObjectInteger*>(left);
     if (left_int) goto FIND_RIGHT;
-    left_float =
-        dynamic_cast<ObjectFloat*>(
-            tree->left->accept(this)
-        );
+    left_float = dynamic_cast<ObjectFloat*>(left);
     if (!left_float) {
         std::cerr <<
             "Left operand of operator " <<
@@ -149,15 +140,9 @@ Object* Interpreter::visit_factor(Factor* tree) {
         exit(1);
     }
 FIND_RIGHT:
-    right_int =
-        dynamic_cast<ObjectInteger*>(
-            tree->right->accept(this)
-        );
+    right_int = dynamic_cast<ObjectInteger*>(right);
     if (right_int) goto EVALUATE;
-    right_float =
-        dynamic_cast<ObjectFloat*>(
-            tree->right->accept(this)
-        );
+    right_float = dynamic_cast<ObjectFloat*>(right);
     if (!right_float) {
         std::cerr <<
             "right operand of operator " <<
@@ -210,17 +195,15 @@ EVALUATE:
 }
 
 Object* Interpreter::visit_term(Term* tree) {
+    Object* left = tree->left->accept(this);
+    Object* right = tree->right->accept(this);
+
     ObjectInteger *left_int, *right_int;
     ObjectFloat *left_float, *right_float;
-    left_int =
-        dynamic_cast<ObjectInteger*>(
-            tree->left->accept(this)
-        );
+
+    left_int = dynamic_cast<ObjectInteger*>(left);
     if (left_int) goto FIND_RIGHT;
-    left_float =
-        dynamic_cast<ObjectFloat*>(
-            tree->left->accept(this)
-        );
+    left_float = dynamic_cast<ObjectFloat*>(left);
     if (!left_float) {
         std::cerr <<
             "Left operand of operator " <<
@@ -229,15 +212,9 @@ Object* Interpreter::visit_term(Term* tree) {
         exit(1);
     }
 FIND_RIGHT:
-    right_int =
-        dynamic_cast<ObjectInteger*>(
-            tree->right->accept(this)
-        );
+    right_int = dynamic_cast<ObjectInteger*>(right);
     if (right_int) goto EVALUATE;
-    right_float =
-        dynamic_cast<ObjectFloat*>(
-            tree->right->accept(this)
-        );
+    right_float = dynamic_cast<ObjectFloat*>(right);
     if (!right_float) {
         std::cerr <<
             "right operand of operator " <<
@@ -274,17 +251,15 @@ EVALUATE:
 }
 
 Object* Interpreter::visit_comparison(Comparison* tree) {
+    Object* left = tree->left->accept(this);
+    Object* right = tree->right->accept(this);
+
     ObjectInteger *left_int, *right_int;
     ObjectFloat *left_float, *right_float;
-    left_int =
-        dynamic_cast<ObjectInteger*>(
-            tree->left->accept(this)
-        );
+
+    left_int = dynamic_cast<ObjectInteger*>(left);
     if (left_int) goto FIND_RIGHT;
-    left_float =
-        dynamic_cast<ObjectFloat*>(
-            tree->left->accept(this)
-        );
+    left_float = dynamic_cast<ObjectFloat*>(left);
     if (!left_float) {
         std::cerr <<
             "Left operand of operator " <<
@@ -293,15 +268,9 @@ Object* Interpreter::visit_comparison(Comparison* tree) {
         exit(1);
     }
 FIND_RIGHT:
-    right_int =
-        dynamic_cast<ObjectInteger*>(
-            tree->right->accept(this)
-        );
+    right_int = dynamic_cast<ObjectInteger*>(right);
     if (right_int) goto EVALUATE;
-    right_float =
-        dynamic_cast<ObjectFloat*>(
-            tree->right->accept(this)
-        );
+    right_float = dynamic_cast<ObjectFloat*>(right);
     if (!right_float) {
         std::cerr <<
             "right operand of operator " <<
@@ -356,14 +325,15 @@ EVALUATE:
 }
 
 Object* Interpreter::visit_shift(Shift* tree) {
-    ObjectInteger* value =
-        dynamic_cast<ObjectInteger*>(tree->left->accept(this));
+    Object* left = tree->left->accept(this);
+    Object* right = tree->right->accept(this);
+
+    ObjectInteger* value = dynamic_cast<ObjectInteger*>(left);
     if (!value) {
         std::cerr << "Can not shift a non-integer value\n";
         exit(1);
     }
-    ObjectInteger* count =
-        dynamic_cast<ObjectInteger*>(tree->right->accept(this));
+    ObjectInteger* count = dynamic_cast<ObjectInteger*>(right);
     if (!count || count->value < 0) {
         std::cerr << "Shift count is negative\n";
         exit(1);
