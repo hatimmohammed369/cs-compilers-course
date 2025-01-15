@@ -198,6 +198,13 @@ Object* Interpreter::visit_term(Term* tree) {
     Object* left = tree->left->accept(this);
     Object* right = tree->right->accept(this);
 
+    ObjectString* left_str = dynamic_cast<ObjectString*>(left);
+    if (left_str)
+        return new ObjectString{*left_str + right->to_string()};
+    ObjectString* right_str = dynamic_cast<ObjectString*>(right);
+    if (right_str)
+        return new ObjectString{left->to_string() + *right_str};
+
     ObjectInteger *left_int, *right_int;
     ObjectFloat *left_float, *right_float;
 
