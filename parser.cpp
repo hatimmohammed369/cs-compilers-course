@@ -85,13 +85,15 @@ ParseResult Parser::parse_statement() {
 
 ParseResult Parser::parse_print() {
     // Skip keyword `print` or `println`
+    Print* print_smt =
+        new Print{current, nullptr};
     read_next_token();
     ParseResult result = parse_expression();
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
     } else {
-        Print* print_smt =
-            new Print{reinterpret_cast<Expression*>(result.parsed_hunk)};
+        print_smt->expr =
+            reinterpret_cast<Expression*>(result.parsed_hunk);
         result.parsed_hunk =
             reinterpret_cast<TreeBase*>(print_smt);
     }

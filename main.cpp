@@ -29,8 +29,7 @@ int main(int argc, char* argv[]) {
             result = parser.parse_source();
             if (result.error.empty()) {
                 eval = interpreter.interpret(result.parsed_hunk);
-                if (eval) cout << eval ;
-                cout << '\n' ;
+                if (eval) cout << eval << '\n' ;
             } else {
                 cerr << result.error << '\n' ;
             }

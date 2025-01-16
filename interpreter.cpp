@@ -472,6 +472,8 @@ Object* Interpreter::visit_print(Print* tree) {
     std::cout << expr_str ;
     if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN)
         std::cout << '\n' ;
+    if (is_mode_interactive())
+        std::cout << '\n';
     return nullptr;
 }
 

@@ -49,7 +49,8 @@ class Print: public Statement {
 public:
     Token print_keyword;
     Expression* expr;
-    Print(Expression* e): expr{e} {}
+    Print(Token print_tok, Expression* e):
+        print_keyword{print_tok}, expr{e} {}
     std::string to_string() const noexcept override;
     Object* accept(Visitor* visitor) override;
 };
