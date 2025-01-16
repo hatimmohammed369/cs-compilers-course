@@ -236,7 +236,7 @@ Token Lexer::generate_string_token() {
 Token Lexer::generate_identifier_token() {
     TokenType ttype = TokenType::IDENTIFIER;
     std::string value;
-    while (has_next() && std::isalnum(*current)) {
+    while (has_next() && (*current == '_' || std::isalpha(*current))) {
         value.push_back(*current);
         current++;
     }

@@ -604,7 +604,7 @@ ParseResult Parser::parse_block() {
     read_next_token();
     Block* block = new Block;
     ParseResult result;
-    while (has_next() || current.ttype != TokenType::RIGHT_CURLY_BRACE) {
+    while (current.ttype != TokenType::RIGHT_CURLY_BRACE) {
         if (current.ttype == TokenType::KEYWORD_RETURN)
             result = parse_return();
         else
