@@ -430,11 +430,13 @@ Object* Interpreter::visit_logical(Logical* tree) {
 Object* Interpreter::visit_block(Block* tree) {
     if (!tree || tree->statements.empty())
         return nullptr;
+    env.begin_scope();
     for (Statement* stmt : tree->statements) {
         Object* eval = stmt->accept(this);
         if (dynamic_cast<Return*>(stmt))
             return eval;
     }
+    env.end_scope();
     return ObjectVoid::VOID_OBJECT;
 }
 
@@ -452,10 +454,11 @@ Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
     ) {
         std::pair<std::string, TreeBase*> p = *stmt_ptr;
         std::string name = p.first;
+        env.define(name);
         Object* value = (
             p.second ? p.second->accept(this) : ObjectVoid::VOID_OBJECT
         );
-        defined_names[name] = value;
+        env.set(name, value);
     }
     return nullptr;
 }
@@ -474,7 +477,7 @@ Object* Interpreter::visit_return(Return* tree) {
 }
 
 Object* Interpreter::visit_name(Name* tree) {
-    Object* name_val = defined_names[tree->name_str];
+    Object* name_val = env.get(tree->name_str);
     if (!name_val) {
         std::cerr << "Undefined name '" << tree->name_str << "'\n";
         exit(1);

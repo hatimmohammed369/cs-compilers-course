@@ -1,11 +1,13 @@
 #ifndef COMMON_H_INCLUDED
 #define COMMON_H_INCLUDED
 
+#include <cstring>
+#include <cstdint>
+#include <format>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <cstring>
-#include <cstdint>
+#include <vector>
 
 static std::ostringstream fmt;
 static std::string read_fmt() __attribute__((unused));

@@ -1,11 +1,11 @@
 #ifndef INTERPRETER_H_INCLUDED
 #define INTERPRETER_H_INCLUDED
 
-#include <unordered_map>
+#include "environment.hpp"
 #include "syntax_tree.hpp"
 
 class Interpreter: public Visitor {
-    std::unordered_map<std::string, Object*> defined_names{};
+    Environment env{};
 public:
     Object* interpret(TreeBase* tree);
     Object* visit_program(Program* tree);

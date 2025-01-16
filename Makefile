@@ -12,11 +12,14 @@ repl: clean main
 norepl: clean main
 	./main --file $(file)
 
-main: object.o typing.o interpreter.o lexer.o syntax_tree.o parser.o main.o
+main: object.o environment.o typing.o interpreter.o lexer.o syntax_tree.o parser.o main.o
 	$(CC) $(LDFLAGS) -o $(EXECUTABLE) $^ $(HEADERS)
 	chmod +x ./main
 
 object.o: object.cpp
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+environment.o: environment.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 typing.o: typing.cpp
