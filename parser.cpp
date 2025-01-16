@@ -90,8 +90,10 @@ ParseResult Parser::parse_print() {
     if (!result.error.empty()) {
         result.parsed_hunk = nullptr;
     } else {
+        Print* print_smt =
+            new Print{reinterpret_cast<Expression*>(result.parsed_hunk)};
         result.parsed_hunk =
-            reinterpret_cast<Expression*>(result.parsed_hunk);
+            reinterpret_cast<TreeBase*>(print_smt);
     }
     return result;
 }
