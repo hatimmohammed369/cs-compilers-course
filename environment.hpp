@@ -21,8 +21,8 @@ public:
     inline Table globals() const noexcept { return scopes[0]; }
     inline void begin_scope() noexcept { scopes.push_back(Table{}); }
     inline void end_scope() noexcept {
-        for (auto s : scopes.back())
-            resolved_names.erase(s.first);
+        for (const auto& [key, _] : scopes.back())
+            resolved_names.erase(key);
         scopes.pop_back();
     }
     void define(const std::string& s) noexcept;

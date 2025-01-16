@@ -431,13 +431,16 @@ Object* Interpreter::visit_block(Block* tree) {
     if (!tree || tree->statements.empty())
         return nullptr;
     env.begin_scope();
+    Object* return_value = ObjectVoid::VOID_OBJECT;
     for (Statement* stmt : tree->statements) {
         Object* eval = stmt->accept(this);
-        if (dynamic_cast<Return*>(stmt))
-            return eval;
+        if (dynamic_cast<Return*>(stmt)) {
+            return_value = eval;
+            break;
+        }
     }
     env.end_scope();
-    return ObjectVoid::VOID_OBJECT;
+    return return_value;
 }
 
 Object* Interpreter::visit_cast(Cast* tree) {
