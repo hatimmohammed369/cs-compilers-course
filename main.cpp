@@ -27,11 +27,11 @@ int main(int argc, char* argv[]) {
             add_history(buffer);
             parser.init(buffer, strlen(buffer));
             result = parser.parse_source();
-            if (result.error.empty()) {
-                eval = interpreter.interpret(result.parsed_hunk);
+            if (result.is_ok()) {
+                eval = interpreter.interpret(result.unwrap());
                 if (eval) cout << eval << '\n' ;
             } else {
-                cerr << result.error << '\n' ;
+                cerr << result.unwrap_error() << '\n' ;
             }
             // free buffer because readline always allocates a new buffer
             free(buffer);
@@ -54,10 +54,10 @@ int main(int argc, char* argv[]) {
         // Read all characters
         input_file.read(input, file_size);
         parser.init(input, file_size);
-        if (result.error.empty())
-            interpreter.interpret(result.parsed_hunk);
+        if (result.is_ok())
+            interpreter.interpret(result.unwrap());
         else
-            cerr << result.error << '\n' ;
+            cerr << result.unwrap_error() << '\n' ;
         // Free input buffer
         delete[] input;
     } else {
