@@ -320,26 +320,29 @@ ParseResult Parser::parse_equality() {
 
 ParseResult Parser::parse_comparison() {
     ParseResult result = parse_shift();
-    if (!result.error.empty() || !result.parsed_hunk)
-        return result;
     while (
-        result.error.empty() &&
-        check({TokenType::GREATER, TokenType::GREATER_EQUAL, TokenType::LESS, TokenType::LESS_EQUAL})
+        result.is_ok() &&
+        check({
+            TokenType::GREATER,
+            TokenType::GREATER_EQUAL,
+            TokenType::LESS,
+            TokenType::LESS_EQUAL
+        })
     ) {
         Token op = consume();
         ParseResult right = parse_shift();
-        if (right.parsed_hunk) {
-            result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new Comparison{result.parsed_hunk, op, right.parsed_hunk}
+        if (right.is_usable()) {
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(
+                    new Comparison{result.unwrap(), op, right.unwrap()}
+                )
             );
-        } else if (!right.error.empty()) {
-            result.parsed_hunk = nullptr;
-            result.error = right.error;
-        } else {
-            result.parsed_hunk = nullptr;
-            result.error = "Expected expression after ";
-            result.error.append(op.value);
+        } else if (result.is_null_tree()) {
+            result = ParseResult::Error(
+                "Expected expression after " + op.value
+            );
         }
+
     }
     return result;
 }
