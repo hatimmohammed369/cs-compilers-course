@@ -568,10 +568,12 @@ ParseResult Parser::parse_literal() {
             parsed_hunk = reinterpret_cast<TreeBase*>(string_literal);
             break;
         }
-        default: {}
+        default: {
+            std::cerr << "Fatal\n" ;
+            exit(1);
+        }
     }
-    const std::string error{};
-    return ParseResult{error, parsed_hunk};
+    return ParseResult::Ok(parsed_hunk);
 }
 
 ParseResult Parser::parse_block() {
