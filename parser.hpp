@@ -7,6 +7,11 @@
 
 using ParseResult = Result<TreeBase*/*value type*/, std::string/*error type*/>;
 
+static inline bool is_useless(const ParseResult& r) __attribute__((unused));
+static inline bool is_useless(const ParseResult& r) {
+    return r.is_error() || !r.unwrap();
+}
+
 class Parser {
     Lexer lexer;
     Token current;
