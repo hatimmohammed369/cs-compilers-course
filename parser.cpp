@@ -96,9 +96,9 @@ ParseResult Parser::parse_variable_declaration() {
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
     if (current.ttype != TokenType::IDENTIFIER) {
-        result.parsed_hunk = nullptr;
-        result.error = "Expected identifier after type";
-        result.error.append(type_token.value);
+        result = ParseResult::Error(
+            "Expected identifier after type" + type_token.value
+        );
         return result;
     }
     VariableDeclaration::var_value_pairs initial_values;
@@ -117,13 +117,12 @@ ParseResult Parser::parse_variable_declaration() {
             case TokenType::COLON_EQUAL: {
                 read_next_token();
                 initializer = parse_expression();
-                if (!initializer.error.empty()) {
-                    result.parsed_hunk = nullptr;
-                    result.error = initializer.error;
+                if (initializer.is_error()) {
+                    result = ParseResult::Error(initializer.unwrap_error());
                     goto END;
                 }
                 initial_values.back().second =
-                    initializer.parsed_hunk;
+                    initializer.unwrap();
                 break;
             }
             case TokenType::COMMA: {
@@ -135,18 +134,18 @@ ParseResult Parser::parse_variable_declaration() {
                 goto END;
             }
             default: {
-                result.parsed_hunk = nullptr;
-                result.error = "Unexpected item";
+                result = ParseResult::Error("Unexpected item");
                 goto END;
             }
         }
     }
 END:
-    if (result.error.empty()) {
+    if (result.is_ok()) {
         VariableDeclaration* declarations_list =
             new VariableDeclaration {target_type, initial_values};
-        result.parsed_hunk =
-            reinterpret_cast<TreeBase*>(declarations_list);
+        result = ParseResult::Ok(
+            reinterpret_cast<TreeBase*>(declarations_list)
+        );
     }
     return result;
 }
