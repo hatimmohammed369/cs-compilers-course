@@ -2,24 +2,10 @@
 #define PARSER_H_INCLUDED
 
 #include "lexer.hpp"
+#include "result.hpp"
 #include "syntax_tree.hpp"
 
-class ParseResult {
-public:
-    std::string error;
-    TreeBase* parsed_hunk;
-
-    ParseResult():
-        error{std::string()}, parsed_hunk{nullptr} {}
-
-    ParseResult(std::string err, TreeBase* base):
-        error{err}, parsed_hunk{base} {}
-
-    static ParseResult empty_parse_result() {
-        return ParseResult{std::string(), nullptr};
-    }
-
-};
+using ParseResult = Result<TreeBase*/*value type*/, std::string/*error type*/>;
 
 class Parser {
     Lexer lexer;
