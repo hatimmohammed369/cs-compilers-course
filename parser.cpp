@@ -63,18 +63,14 @@ ParseResult Parser::parse_statement() {
         result = parse_print();
     else
         result = parse_expression();
-    if (!result.parsed_hunk) {
+
+    if (result.is_error() || !result.unwrap())
         return result;
-    } else if (result.error.empty()) {
-        if (current.ttype == TokenType::SEMI_COLON) {
-            read_next_token();
-        } else if (is_mode_file() || !check({TokenType::LINEBREAK, TokenType::SEMI_COLON, TokenType::END_OF_FILE})) {
-            result.parsed_hunk = nullptr;
-            result.error = "Expected ; after statement";
-        }
-    } else {
-        result.parsed_hunk = nullptr;
-    }
+    else if (current.ttype == TokenType::SEMI_COLON)
+        read_next_token();
+    else if (is_mode_file() || !check({TokenType::LINEBREAK, TokenType::SEMI_COLON, TokenType::END_OF_FILE}))
+        result = ParseResult::Error("Expected ; after statement");
+
     return result;
 }
 
