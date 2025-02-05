@@ -612,18 +612,21 @@ ParseResult Parser::parse_return() {
     // Skip keyword `return`
     read_next_token();
     ParseResult result = parse_expression();
-    if (!result.error.empty()) {
-        result.parsed_hunk = nullptr;
-    } else if (current.ttype == TokenType::SEMI_COLON) {
-        // Skip ;
-        read_next_token();
-        Return* ret =
-            new Return{reinterpret_cast<Expression*>(result.parsed_hunk)};
-        result.parsed_hunk =
-            reinterpret_cast<TreeBase*>(ret);
-    } else {
-        result.parsed_hunk = nullptr;
-        result.error = "Expected ; after statement";
+    if (result.is_usable()) {
+        if (current.ttype == TokenType::SEMI_COLON) {
+            // Skip ;
+            read_next_token();
+            Return* ret = new Return{
+                reinterpret_cast<Expression*>(result.unwrap())
+            };
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(ret)
+            );
+        } else {
+            result = ParseResult::Error(
+                "Expected ; after statement"
+            );
+        }
     }
     return result;
 }
