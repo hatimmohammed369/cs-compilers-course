@@ -42,18 +42,13 @@ ParseResult Parser::parse_source() {
     ParseResult result;
     while (has_next()) {
         result = parse_statement();
-        if (!result.error.empty()) {
-            result.parsed_hunk = nullptr;
-            break;
-        } else if (!result.parsed_hunk) {
-            break;
-        }
+        if (result.is_error() || !result.unwrap()) break;
         source_tree->statements.push_back(
-            reinterpret_cast<Statement*>(result.parsed_hunk)
+            reinterpret_cast<Statement*>(result.unwrap())
         );
     }
-    result.parsed_hunk = (
-        result.error.empty() ?
+    result = ParseResult::Ok(
+        result.is_ok() ?
         source_tree :
         nullptr
     );
