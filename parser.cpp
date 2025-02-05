@@ -42,7 +42,7 @@ ParseResult Parser::parse_source() {
     ParseResult result;
     while (has_next()) {
         result = parse_statement();
-        if (is_useless(result)) break;
+        if (result.is_useless()) break;
         source_tree->statements.push_back(
             reinterpret_cast<Statement*>(result.unwrap())
         );
@@ -68,7 +68,7 @@ ParseResult Parser::parse_statement() {
     else
         result = parse_expression();
 
-    if (is_useless(result))
+    if (result.is_useless())
         return result;
     else if (current.ttype == TokenType::SEMI_COLON)
         read_next_token();
@@ -87,7 +87,7 @@ ParseResult Parser::parse_print() {
     Print* print_smt =
         new Print{current, nullptr};
     ParseResult result = parse_expression();
-    if (!is_useless(result)) {
+    if (result.is_usable()) {
         print_smt->expr =
             reinterpret_cast<Expression*>(result.unwrap());
         result = ParseResult::Ok(

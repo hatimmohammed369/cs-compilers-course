@@ -5,8 +5,13 @@
 #include "result.hpp"
 #include "syntax_tree.hpp"
 
-class ParseResult: Result<TreeBase*/*value type*/, std::string/*error type*/> {
+class ParseResult: public Result<TreeBase*/*value type*/, std::string/*error type*/> {
 public:
+    explicit ParseResult() {
+        value = {};
+        error = {};
+        _is_ok = false;
+    }
     explicit ParseResult(
         ParseResult::ValueType val,
         ParseResult::ErrorType err,
@@ -34,7 +39,7 @@ public:
     }
 
     inline bool is_null_tree() {
-        return value == nullptr;
+        return _is_ok && value == nullptr;
     }
 };
 
