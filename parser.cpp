@@ -397,25 +397,26 @@ ParseResult Parser::parse_term() {
 
 ParseResult Parser::parse_factor() {
     ParseResult result = parse_exponential();
-    if (!result.error.empty() || !result.parsed_hunk)
-        return result;
     while (
-        result.error.empty() &&
-        check({TokenType::STAR, TokenType::SLASH, TokenType::DOUBLE_SLASH, TokenType::PERCENT})
+        result.is_ok() && check({
+            TokenType::STAR,
+            TokenType::SLASH,
+            TokenType::DOUBLE_SLASH,
+            TokenType::PERCENT
+        })
     ) {
         Token op = consume();
         ParseResult right = parse_exponential();
-        if (right.parsed_hunk) {
-            result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new Factor{result.parsed_hunk, op, right.parsed_hunk}
+        if (right.is_usable()) {
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(
+                    new Factor{result.unwrap(), op, right.unwrap()}
+                )
             );
-        } else if (!right.error.empty()) {
-            result.parsed_hunk = nullptr;
-            result.error = right.error;
-        } else {
-            result.parsed_hunk = nullptr;
-            result.error = "Expected expression after ";
-            result.error.append(op.value);
+        } else if (result.is_null_tree()) {
+            result = ParseResult::Error(
+                "Expected expression after " + op.value
+            );
         }
     }
     return result;
