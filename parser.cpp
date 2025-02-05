@@ -682,19 +682,21 @@ ParseResult Parser::parse_cast() {
     // Skip closing round brace around target type
     read_next_token();
     ParseResult result = parse_primary();
-    if (!result.error.empty()) {
-        result.parsed_hunk = nullptr;
+    if (result.is_useless()) {
         return result;
-    } else if (!result.parsed_hunk) {
-        // Expected expression  after cast target type
-        result.error = "Expected expression  after cast target type";
+    } else if (result.is_empty()) {
+        // Expected expression after cast target type
+        result = ParseResult::Error(
+            "Expected expression after cast target type"
+        );
         return result;
     }
     Cast* cast_expr = new Cast{
         target_type,
-        reinterpret_cast<TreeBase*>(result.parsed_hunk)
+        reinterpret_cast<TreeBase*>(result.unwrap())
     };
-    result.parsed_hunk =
-        reinterpret_cast<TreeBase*>(cast_expr);
+    result = ParseResult::Ok(
+        reinterpret_cast<TreeBase*>(cast_expr)
+    );
     return result;
 }
