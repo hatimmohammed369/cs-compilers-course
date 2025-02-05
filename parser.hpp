@@ -29,8 +29,12 @@ public:
         return !_is_ok || !value;
     }
 
-    inline bool is_empty() {
-        return _is_ok && !value;
+    inline bool is_usable() {
+        return _is_ok && value;
+    }
+
+    inline bool is_null_tree() {
+        return value == nullptr;
     }
 };
 
