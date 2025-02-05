@@ -473,16 +473,15 @@ ParseResult Parser::parse_unary() {
     ParseResult result;
     Token op = consume();
     result = parse_unary();
-    if (!result.error.empty()) {
-        return result;
-    } else if (!result.parsed_hunk) {
-        result.parsed_hunk = nullptr;
-        result.error.append("Expected expression after ");
-        result.error.append(op.value);
-    } else {
-        Unary* unary = new Unary{op, result.parsed_hunk};
-        result.parsed_hunk =
-            reinterpret_cast<TreeBase*>(unary);
+    if (result.is_usable()) {
+        Unary* unary = new Unary{op, result.unwrap()};
+        result = ParseResult::Ok(
+            reinterpret_cast<TreeBase*>(unary)
+        );
+    } else if (result.is_null_tree()) {
+        result = ParseResult::Error(
+            "Expected expression after " + op.value
+        );
     }
     return result;
 }
