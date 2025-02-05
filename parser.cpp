@@ -424,29 +424,31 @@ ParseResult Parser::parse_factor() {
 
 ParseResult Parser::parse_exponential() {
     ParseResult result = parse_unary();
-    if (!result.parsed_hunk)
+    if (result.is_useless())
         return result;
     std::vector<Token> ops;
     std::vector<TreeBase*> items;
-    items.push_back(result.parsed_hunk);
+    items.push_back(result.unwrap());
     while (
-        result.error.empty() &&
+        result.is_ok() &&
         current.ttype == TokenType::EXPONENT
     ) {
         Token op = consume();
         ParseResult exponent = parse_unary();
-        if (exponent.parsed_hunk) {
+        if (exponent.is_error()) {
+            result = ParseResult::Error(
+                exponent.unwrap_error()
+            );
+        } else if (exponent.is_usable()) {
             ops.push_back(op);
-            items.push_back(exponent.parsed_hunk);
-        } else if (!exponent.error.empty()) {
-            result.parsed_hunk = nullptr;
-            result.error = exponent.error;
-        } else {
-            result.parsed_hunk = nullptr;
-            result.error = "Expected expression after **";
+            items.push_back(exponent.unwrap());
+        } else if (result.is_null_tree()) {
+            result = ParseResult::Error(
+                "Expected expression after **"
+            );
         }
     }
-    if (result.error.empty()) {
+    if (result.is_ok()) {
         while (items.size() >= 2) {
             TreeBase* exponent = items.back();
             items.pop_back();
@@ -459,7 +461,7 @@ ParseResult Parser::parse_exponential() {
             );
             ops.pop_back();
         }
-        result.parsed_hunk = items.back();
+        result = ParseResult::Ok(items.back());
         items.pop_back();
     }
     return result;
