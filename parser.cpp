@@ -586,27 +586,24 @@ ParseResult Parser::parse_block() {
             result = parse_return();
         else
             result = parse_statement();
-        if (!result.error.empty()) {
-            result.parsed_hunk = nullptr;
-            break;
-        } else if (!result.parsed_hunk) {
-            break;
-        }
+        if (result.is_useless()) break;
         block->statements.push_back(
-            reinterpret_cast<Statement*>(result.parsed_hunk)
+            reinterpret_cast<Statement*>(result.unwrap())
         );
     }
-    if (!result.error.empty()) {
-        result.parsed_hunk = nullptr;
-    } else if (current.ttype != TokenType::RIGHT_CURLY_BRACE) {
-        result.parsed_hunk = nullptr;
-        // Expected closing curly brace after statement
-        result.error = "Expected \x7d after statement";
-    } else {
-        // Skip closing curly brace
-        read_next_token();
-        result.parsed_hunk =
-            reinterpret_cast<TreeBase*>(block);
+    if (result.is_usable()) {
+        if (current.ttype == TokenType::RIGHT_CURLY_BRACE) {
+            // Skip closing curly brace
+            read_next_token();
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(block)
+            );
+        } else {
+            // Expected closing curly brace after statement
+            result = ParseResult::Error(
+                "Expected \x7d after statement"
+            );
+        }
     }
     return result;
 }
