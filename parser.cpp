@@ -297,25 +297,22 @@ ParseResult Parser::parse_bitwise_and() {
 
 ParseResult Parser::parse_equality() {
     ParseResult result = parse_comparison();
-    if (!result.error.empty() || !result.parsed_hunk)
-        return result;
     while (
-        result.error.empty() &&
+        result.is_ok() &&
         check({TokenType::LOGICAL_EQUAL, TokenType::LOGICAL_NOT_EQUAL})
     ) {
         Token op = consume();
         ParseResult right = parse_comparison();
-        if (right.parsed_hunk) {
-            result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new Equality{result.parsed_hunk, op, right.parsed_hunk}
+        if (right.is_usable()) {
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(
+                    new Equality{result.unwrap(), op, right.unwrap()}
+                )
             );
-        } else if (!right.error.empty()) {
-            result.parsed_hunk = nullptr;
-            result.error = right.error;
-        } else {
-            result.parsed_hunk = nullptr;
-            result.error = "Expected expression after ";
-            result.error.append(op.value);
+        } else if (result.is_null_tree()) {
+            result = ParseResult::Error(
+                "Expected expression after " + op.value
+            );
         }
     }
     return result;
