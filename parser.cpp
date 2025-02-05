@@ -491,7 +491,7 @@ ParseResult Parser::parse_primary() {
     if (current.ttype == TokenType::LINEBREAK) {
         read_next_token();
         if (current.ttype == TokenType::LINEBREAK)
-            result.error.append("Expected expression");
+            result = ParseResult::Error("Expected expression");
         return result;
     }
     switch (current.ttype) {
@@ -502,8 +502,6 @@ ParseResult Parser::parse_primary() {
                 result = parse_cast();
             else
                 result = parse_group();
-            if (!result.error.empty())
-                result.parsed_hunk = nullptr;
             return result;
         }
         case TokenType::LEFT_CURLY_BRACE: {
@@ -512,8 +510,9 @@ ParseResult Parser::parse_primary() {
         case TokenType::IDENTIFIER: {
             Name* name_expr =
                 new Name{consume().value};
-            result.parsed_hunk =
-                reinterpret_cast<TreeBase*>(name_expr);
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(name_expr)
+            );
             return result;
         }
         default: {}
