@@ -42,16 +42,20 @@ ParseResult Parser::parse_source() {
     ParseResult result;
     while (has_next()) {
         result = parse_statement();
-        if (result.is_error() || !result.unwrap()) break;
+        if (is_useless(result)) break;
         source_tree->statements.push_back(
             reinterpret_cast<Statement*>(result.unwrap())
         );
     }
-    result = ParseResult::Ok(
-        result.is_ok() ?
-        source_tree :
-        nullptr
-    );
+    if (!source_tree->statements.empty()) {
+        result = ParseResult::Ok(
+            reinterpret_cast<TreeBase*>(source_tree)
+        );
+    } else {
+        if (result.is_ok())
+            result = ParseResult::Ok(nullptr);
+        delete source_tree;
+    }
     return result;
 }
 
