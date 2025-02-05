@@ -652,22 +652,27 @@ ParseResult Parser::parse_return() {
 
 ParseResult Parser::parse_group() {
     ParseResult result = parse_expression();
-    if (!result.parsed_hunk) {
+    if (result.is_usable()) {
+        if (current.ttype == TokenType::RIGHT_ROUND_BRACE) {
+            // Skip closing round brace
+            read_next_token();
+            GroupedExpression* grouped_expr =
+                new GroupedExpression{result.unwrap()};
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(grouped_expr)
+            );
+        } else {
+            // Expected closing round brace after statement
+            result = ParseResult::Error(
+                "Expected \x29 after statement"
+            );
+        }
+    } else if (result.is_null_tree()) {
         // Expected expression after opening round brace
-        result.error = "Expected expression after \x28";
-        return result;
-    } else if (current.ttype != TokenType::RIGHT_ROUND_BRACE) {
-        result.parsed_hunk = nullptr;
-        // Expected closing round brace after statement
-        result.error = "Expected \x29 after statement";
-        return result;
+        result = ParseResult::Error(
+            "Expected expression after \x28"
+        );
     }
-    // Skip closing round brace
-    read_next_token();
-    GroupedExpression* grouped_expr =
-        new GroupedExpression{result.parsed_hunk};
-    result.parsed_hunk =
-        reinterpret_cast<TreeBase*>(grouped_expr);
     return result;
 }
 
