@@ -68,12 +68,15 @@ ParseResult Parser::parse_statement() {
     else
         result = parse_expression();
 
-    if (result.is_error() || !result.unwrap())
+    if (is_useless(result))
         return result;
     else if (current.ttype == TokenType::SEMI_COLON)
         read_next_token();
-    else if (is_mode_file() || !check({TokenType::LINEBREAK, TokenType::SEMI_COLON, TokenType::END_OF_FILE}))
-        result = ParseResult::Error("Expected ; after statement");
+    else if (
+        is_mode_file() || !check(
+            {TokenType::LINEBREAK, TokenType::SEMI_COLON, TokenType::END_OF_FILE}
+        )
+    ) { result = ParseResult::Error("Expected ; after statement"); }
 
     return result;
 }
@@ -84,7 +87,7 @@ ParseResult Parser::parse_print() {
     Print* print_smt =
         new Print{current, nullptr};
     ParseResult result = parse_expression();
-    if (result.is_ok() && result.unwrap()) {
+    if (!is_useless(result)) {
         print_smt->expr =
             reinterpret_cast<Expression*>(result.unwrap());
         result = ParseResult::Ok(
@@ -156,7 +159,7 @@ END:
 
 ParseResult Parser::parse_expression() {
     ParseResult result = parse_logical_or();
-    if (!result.error.empty() || !result.parsed_hunk)
+    if (result.is_error() || !result.unwrap())
         return result;
     while (
         result.error.empty() &&
