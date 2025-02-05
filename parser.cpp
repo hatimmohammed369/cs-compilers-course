@@ -228,29 +228,26 @@ ParseResult Parser::parse_logical_and() {
 
 ParseResult Parser::parse_bitwise_xor() {
     ParseResult result = parse_bitwise_or();
-    if (!result.error.empty() || !result.parsed_hunk)
-        return result;
     while (
-        result.error.empty() &&
+        result.is_ok() &&
         current.ttype == TokenType::BITWISE_XOR
     ) {
         Token op = consume();
         ParseResult right = parse_bitwise_or();
-        if (right.parsed_hunk) {
-            result.parsed_hunk = reinterpret_cast<TreeBase*>(
-                new Bitwise{result.parsed_hunk, op, right.parsed_hunk}
+        if (right.is_usable()) {
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(
+                    new Bitwise{result.unwrap(), op, right.unwrap()}
+                )
             );
-        } else if (!right.error.empty()) {
-            result.parsed_hunk = nullptr;
-            result.error = right.error;
-        } else {
-            result.parsed_hunk = nullptr;
-            result.error = "Expected expression after ";
-            result.error.append(op.value);
+        } else if (result.is_null_tree()) {
+            result = ParseResult::Error(
+                "Expected expression after " + op.value
+            );
         }
     }
     return result;
-}
+} 
 
 ParseResult Parser::parse_bitwise_or() {
     ParseResult result = parse_bitwise_and();
