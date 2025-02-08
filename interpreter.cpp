@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include "object.hpp"
 #include "token.hpp"
+#include "visitor.hpp"
 
 InterpreterResult Interpreter::interpret(TreeBase* tree) {
     return tree->accept(this);
@@ -598,10 +599,8 @@ InterpreterResult Interpreter::visit_return(Return* tree) {
 }
 
 InterpreterResult Interpreter::visit_name(Name* tree) {
-    Object* name_val = env.get(tree->name_str);
-    if (!name_val) {
-        std::cerr << "Undefined name '" << tree->name_str << "'\n";
-        exit(1);
-    }
-    return name_val;
+    EnvironmentResult get_result = env.get(tree->name_str);
+    if (get_result.is_error())
+        return InterpreterResult::Error(get_result.unwrap_error());
+    return InterpreterResult::Ok(get_result.unwrap());
 }
