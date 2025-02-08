@@ -16,7 +16,8 @@ InterpreterResult Interpreter::visit_program(Program* tree) {
         stmt_ptr != tree->statements.end()-1;
         stmt_ptr++
     ) {
-        (void)(*stmt_ptr)->accept(this);
+        InterpreterResult r = (*stmt_ptr)->accept(this);
+        if (r.is_error()) return r;
     }
     return tree->statements.back()->accept(this);
 }
