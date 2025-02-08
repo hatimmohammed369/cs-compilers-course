@@ -449,33 +449,45 @@ InterpreterResult Interpreter::visit_equality(Equality* tree) {
 }
 
 InterpreterResult Interpreter::visit_bitwise(Bitwise* tree) {
+    InterpreterResult left_result = tree->left->accept(this);
+    if (left_result.is_error())
+        return left_result;
     const ObjectInteger* left =
-        dynamic_cast<const ObjectInteger*>(
-            tree->left->accept(this)
-        );
+        dynamic_cast<const ObjectInteger*>(left_result.unwrap());
+
+    InterpreterResult right_result = tree->right->accept(this);
+    if (right_result.is_error())
+        return right_result;
     const ObjectInteger* right =
-        dynamic_cast<const ObjectInteger*>(
-            tree->right->accept(this)
-        );
+        dynamic_cast<const ObjectInteger*>(right_result.unwrap());
+
     if (!left || !right) {
-        std::cerr << "Applying bitwise `"
-            << tree->op.value
-            << "` to non-integer operands\n";
-        exit(1);
+        return InterpreterResult::Error(
+            "Applying bitwise `"
+            + tree->op.value
+            + "` to non-integer operands\n"
+        );
     }
+    Object* value = nullptr;
     switch (tree->op.ttype) {
-        case TokenType::BITWISE_XOR:
-            return *left ^ right;
-        case TokenType::BITWISE_OR:
-            return *left | right;
-        case TokenType::BITWISE_AND:
-            return *left & right;
-        default: {
-            std::cerr << "Invalid bitwise operator `" << tree->op.value << "`\n";
-            exit(1);
+        case TokenType::BITWISE_XOR: {
+            value = *left ^ right;
+            break;
         }
+        case TokenType::BITWISE_OR: {
+            value = *left | right;
+            break;
+        }
+        case TokenType::BITWISE_AND: {
+            value = *left & right;
+            break;
+        }
+        default: {}
     }
-    return nullptr;
+    if (value) return InterpreterResult::Ok(value);
+    return InterpreterResult::Error(
+        "Invalid bitwise operator `" + tree->op.value + "`\n"
+    );
 }
 
 InterpreterResult Interpreter::visit_logical(Logical* tree) {
