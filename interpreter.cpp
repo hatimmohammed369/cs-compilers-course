@@ -491,23 +491,38 @@ InterpreterResult Interpreter::visit_bitwise(Bitwise* tree) {
 }
 
 InterpreterResult Interpreter::visit_logical(Logical* tree) {
+    InterpreterResult left_result = tree->left->accept(this);
+    if (left_result.is_error())
+        return left_result;
     const ObjectBoolean* left =
-        tree->left->accept(this)->to_boolean();
+        left_result.unwrap()->to_boolean();
+
+    InterpreterResult right_result = tree->right->accept(this);
+    if (right_result.is_error())
+        return right_result;
     const ObjectBoolean* right =
-        tree->right->accept(this)->to_boolean();
+        right_result.unwrap()->to_boolean();
+
+    Object* value = nullptr;
     switch (tree->op.ttype) {
-        case TokenType::KEYWORD_XOR:
-            return left->xor_with(right);
-        case TokenType::KEYWORD_OR:
-            return *left || right;
-        case TokenType::KEYWORD_AND:
-            return *left && right;
-        default: {
-            std::cerr << "Invalid logical operator `" << tree->op.value << "`\n";
-            exit(1);
+        case TokenType::KEYWORD_XOR: {
+            value = left->xor_with(right);
+            break;
         }
+        case TokenType::KEYWORD_OR: {
+            value = *left || right;
+            break;
+        }
+        case TokenType::KEYWORD_AND: {
+            value = *left && right;
+            break;
+        }
+        default: {}
     }
-    return nullptr;
+    if (value) return InterpreterResult::Ok(value);
+    return InterpreterResult::Error(
+        "Invalid logical operator `" + tree->op.value + "`\n"
+    );
 }
 
 InterpreterResult Interpreter::visit_block(Block* tree) {
