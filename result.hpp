@@ -21,6 +21,23 @@ public:
         return Result{{}, error, false};
     }
 
+    explicit Result() {
+        value = {};
+        error = {};
+        _is_ok = false;
+    }
+
+    explicit Result(
+        Result::ValueType val,
+        Result::ErrorType err,
+        bool ok
+    ) {
+        value = val;
+        error = err;
+        _is_ok = ok;
+    }
+
+
     inline bool is_ok() const noexcept { return _is_ok; }
     inline bool is_error() const noexcept { return !_is_ok; }
 

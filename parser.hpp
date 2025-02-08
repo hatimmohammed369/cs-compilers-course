@@ -7,20 +7,7 @@
 
 class ParseResult: public Result<TreeBase*/*value type*/, std::string/*error type*/> {
 public:
-    explicit ParseResult() {
-        value = {};
-        error = {};
-        _is_ok = false;
-    }
-    explicit ParseResult(
-        ParseResult::ValueType val,
-        ParseResult::ErrorType err,
-        bool ok
-    ) {
-        value = val;
-        error = err;
-        _is_ok = ok;
-    }
+    using Result::Result;
 
     static ParseResult Ok(ParseResult::ValueType value) {
         return ParseResult{value, {}, true};
