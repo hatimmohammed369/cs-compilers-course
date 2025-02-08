@@ -51,10 +51,8 @@ ParseResult Parser::parse_source() {
         result = ParseResult::Ok(
             reinterpret_cast<TreeBase*>(source_tree)
         );
-    } else {
-        if (result.is_ok())
-            result = ParseResult::Ok(nullptr);
-        delete source_tree;
+    } else if (result.is_ok()) {
+        result = ParseResult::Ok(nullptr);
     }
     return result;
 }

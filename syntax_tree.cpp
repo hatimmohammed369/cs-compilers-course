@@ -7,7 +7,7 @@ std::string Return::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* Return::accept(Visitor* visitor) {
+InterpreterResult Return::accept(Visitor* visitor) {
     return visitor->visit_return(this);
 }
 
@@ -18,7 +18,7 @@ std::string Print::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* Print::accept(Visitor* visitor) {
+InterpreterResult Print::accept(Visitor* visitor) {
     return visitor->visit_print(this);
 }
 
@@ -34,7 +34,7 @@ std::string VariableDeclaration::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* VariableDeclaration::accept(Visitor* visitor) {
+InterpreterResult VariableDeclaration::accept(Visitor* visitor) {
     return visitor->visit_variable_declaration(this);
 }
 
@@ -44,7 +44,7 @@ std::string Cast::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* Cast::accept(Visitor* visitor) {
+InterpreterResult Cast::accept(Visitor* visitor) {
     return visitor->visit_cast(this);
 }
 
@@ -63,7 +63,7 @@ std::string Block::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* Block::accept(Visitor* visitor) {
+InterpreterResult Block::accept(Visitor* visitor) {
     return visitor->visit_block(this);
 }
 
@@ -73,7 +73,7 @@ std::string Program::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* Program::accept(Visitor* visitor) {
+InterpreterResult Program::accept(Visitor* visitor) {
     return visitor->visit_program(this);
 }
 
@@ -84,35 +84,35 @@ std::string Binary::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* Logical::accept(Visitor* visitor) {
+InterpreterResult Logical::accept(Visitor* visitor) {
     return visitor->visit_logical(this);
 }
 
-Object* Bitwise::accept(Visitor* visitor) {
+InterpreterResult Bitwise::accept(Visitor* visitor) {
     return visitor->visit_bitwise(this);
 }
 
-Object* Equality::accept(Visitor* visitor) {
+InterpreterResult Equality::accept(Visitor* visitor) {
     return visitor->visit_equality(this);
 }
 
-Object* Shift::accept(Visitor* visitor) {
+InterpreterResult Shift::accept(Visitor* visitor) {
     return visitor->visit_shift(this);
 }
 
-Object* Comparison::accept(Visitor* visitor) {
+InterpreterResult Comparison::accept(Visitor* visitor) {
     return visitor->visit_comparison(this);
 }
 
-Object* Term::accept(Visitor* visitor) {
+InterpreterResult Term::accept(Visitor* visitor) {
     return visitor->visit_term(this);
 }
 
-Object* Factor::accept(Visitor* visitor) {
+InterpreterResult Factor::accept(Visitor* visitor) {
     return visitor->visit_factor(this);
 }
 
-Object* Exponential::accept(Visitor* visitor) {
+InterpreterResult Exponential::accept(Visitor* visitor) {
     return visitor->visit_exponential(this);
 }
 
@@ -122,7 +122,7 @@ std::string Unary::to_string() const noexcept {
     return read_fmt();
 }
 
-Object* Unary::accept(Visitor* visitor) {
+InterpreterResult Unary::accept(Visitor* visitor) {
     return visitor->visit_unary(this);
 }
 
@@ -130,7 +130,7 @@ std::string Literal::to_string() const noexcept {
     return value_object->to_string();
 }
 
-Object* Literal::accept(Visitor* visitor) {
+InterpreterResult Literal::accept(Visitor* visitor) {
     return visitor->visit_literal(this);
 }
 
@@ -145,11 +145,11 @@ std::string Name::to_string() const noexcept {
     return name_str;
 }
 
-Object* Name::accept(Visitor* visitor) {
+InterpreterResult Name::accept(Visitor* visitor) {
     return visitor->visit_name(this);
 }
 
-Object* GroupedExpression::accept(Visitor* visitor) {
+InterpreterResult GroupedExpression::accept(Visitor* visitor) {
     return visitor->visit_grouped_expression(this);
 }
 

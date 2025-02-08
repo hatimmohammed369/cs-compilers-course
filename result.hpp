@@ -58,25 +58,27 @@ class PointerValueResult:
     public Result<PointerType/*value type*/, E/*error type*/> {
 public:
     using Result<PointerType,E>::Result;
+    using ValueType = typename Result<PointerType,E>::ValueType;
+    using ErrorType = typename Result<PointerType,E>::ErrorType;
 
-    static PointerValueResult Ok(PointerValueResult::ValueType value) {
+    static PointerValueResult Ok(ValueType value) {
         return PointerValueResult{value, {}, true};
     }
 
-    static PointerValueResult Error(PointerValueResult::ErrorType error) {
+    static PointerValueResult Error(ErrorType error) {
         return PointerValueResult{{}, error, false};
     }
 
     inline bool is_useless() {
-        return !_is_ok || value == nullptr;
+        return !this->_is_ok || this->value == nullptr;
     }
 
     inline bool is_usable() {
-        return _is_ok && value != nullptr;
+        return this->_is_ok && this->value != nullptr;
     }
 
     inline bool is_null_value() {
-        return _is_ok && value == nullptr;
+        return this->_is_ok && this->value == nullptr;
     }
 };
 
