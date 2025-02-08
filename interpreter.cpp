@@ -385,31 +385,38 @@ EVALUATE:
 }
 
 InterpreterResult Interpreter::visit_shift(Shift* tree) {
-    Object* left = tree->left->accept(this);
-    Object* right = tree->right->accept(this);
+    InterpreterResult left_result = tree->left->accept(this);
+    if (left_result.is_error())
+        return left_result;
+    Object* left = left_result.unwrap();
+
+    InterpreterResult right_result = tree->right->accept(this);
+    if (right_result.is_error())
+        return right_result;
+    Object* right = right_result.unwrap();
 
     ObjectInteger* value = dynamic_cast<ObjectInteger*>(left);
     if (!value) {
-        std::cerr << "Can not shift a non-integer value\n";
-        exit(1);
+        return InterpreterResult::Error(
+            "Can not shift a non-integer value\n"
+        );
     }
     ObjectInteger* count = dynamic_cast<ObjectInteger*>(right);
     if (!count || count->value < 0) {
-        std::cerr << "Shift count is negative\n";
-        exit(1);
+        return InterpreterResult::Error(
+            "Shift count is negative\n"
+        );
     }
-
     switch (tree->op.ttype) {
         case TokenType::RIGHT_SHIFT:
-            return (*value) >> count;
+            return InterpreterResult::Ok((*value) >> count);
         case TokenType::LEFT_SHIFT:
-            return (*value) << count;
-        default: {
-            std::cerr << "Invalid shift operator " << tree->op.value << " for numeric operands\n";
-            exit(1);
-        }
+            return InterpreterResult::Ok((*value) << count);
+        default: {}
     }
-    return nullptr;
+    return InterpreterResult::Error(
+        "Invalid shift operator " + tree->op.value + " for numeric operands\n"
+    );
 }
 
 InterpreterResult Interpreter::visit_equality(Equality* tree) {
