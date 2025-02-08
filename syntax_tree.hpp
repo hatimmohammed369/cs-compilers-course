@@ -38,6 +38,7 @@ public:
 };
 
 class Assignment: public Expression {
+public:
     Token name;
     Expression* expr;
     Assignment(Token _name, Expression* _expr):
