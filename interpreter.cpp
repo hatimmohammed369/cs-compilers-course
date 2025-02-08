@@ -23,7 +23,7 @@ InterpreterResult Interpreter::visit_program(Program* tree) {
 }
 
 InterpreterResult Interpreter::visit_literal(Literal* tree) {
-    return tree->value_object;
+    return InterpreterResult::Ok(tree->value_object);
 }
 
 InterpreterResult Interpreter::visit_grouped_expression(GroupedExpression* tree) {
