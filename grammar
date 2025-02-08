@@ -9,13 +9,13 @@ Statement => ( Print | VariableDeclaration | Expression ) ';'
 Print => ( 'print' | 'println' ) Expression
 
 VariableDeclaration =>
-	type NAME ( ':=' Expression )? ( ',' NAME ( ':=' Expression )? )*
+	type IDENTIFIER ( ':=' Expression )? ( ',' IDENTIFIER ( ':=' Expression )? )*
 
 type => 'int' | 'float' | 'boolean' | 'string' | 'void'
 
 Expression => Assigment ;
 
-Assigment => ( NAME '=' Assigment ) | LogicalOr ;
+Assigment => ( IDENTIFIER '=' Assigment ) | LogicalOr ;
 
 LogicalOr => LogicalAnd ( 'or' LogicalAnd )*
 
@@ -41,7 +41,7 @@ Exponential => Unary ( '**' Unary )*
 
 Unary => ( ( '!' | '-' | '+' | '~' ) Unary ) | Primary
 
-Primary => Cast | Block | Group | NAME | Literal
+Primary => Cast | Block | Group | IDENTIFIER | Literal
 
 Cast => '(' type ')' Primary
 
