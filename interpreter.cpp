@@ -564,12 +564,18 @@ InterpreterResult Interpreter::visit_variable_declaration(VariableDeclaration* t
         std::pair<std::string, TreeBase*> p = *stmt_ptr;
         std::string name = p.first;
         env.define(name);
-        Object* value = (
-            p.second ? p.second->accept(this) : ObjectVoid::VOID_OBJECT
-        );
+        Object* value = ObjectVoid::VOID_OBJECT;
+        if (p.second) {
+            InterpreterResult initializer_result =
+                p.second->accept(this);
+            if (initializer_result.is_error())
+                return initializer_result;
+            else
+                value = initializer_result.unwrap();
+        }
         env.set(name, value);
     }
-    return nullptr;
+    return InterpreterResult::Ok(nullptr);
 }
 
 InterpreterResult Interpreter::visit_print(Print* tree) {
