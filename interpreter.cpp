@@ -420,21 +420,32 @@ InterpreterResult Interpreter::visit_shift(Shift* tree) {
 }
 
 InterpreterResult Interpreter::visit_equality(Equality* tree) {
-    const Object* left =
-        tree->left->accept(this);
-    const Object* right =
-        tree->right->accept(this);
+    InterpreterResult left_result = tree->left->accept(this);
+    if (left_result.is_error())
+        return left_result;
+    const Object* left = left_result.unwrap();
+
+    InterpreterResult right_result = tree->right->accept(this);
+    if (right_result.is_error())
+        return right_result;
+    const Object* right = right_result.unwrap();
+
     switch (tree->op.ttype) {
-        case TokenType::LOGICAL_EQUAL:
-            return left->equals(right);
-        case TokenType::LOGICAL_NOT_EQUAL:
-            return left->equals(right)->negated();
-        default: {
-            std::cerr << "Invalid equality operator " << tree->op.value << '\n' ;
-            exit(1);
+        case TokenType::LOGICAL_EQUAL: {
+            return InterpreterResult::Ok(
+                left->equals(right)
+            );
         }
+        case TokenType::LOGICAL_NOT_EQUAL: {
+            return InterpreterResult::Ok(
+                left->equals(right)->negated()
+            );
+        }
+        default: {}
     }
-    return nullptr;
+    return InterpreterResult::Error(
+        "Invalid equality operator " + tree->op.value + '\n'
+    );
 }
 
 InterpreterResult Interpreter::visit_bitwise(Bitwise* tree) {
