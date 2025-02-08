@@ -157,6 +157,21 @@ END:
 
 ParseResult Parser::parse_expression() {
     ParseResult result = parse_logical_or();
+    if (result.is_error())
+        return result;
+    Token name_token = current;
+    Name* name_expr =
+        dynamic_cast<Name*>(result.unwrap());
+    if (name_expr && current.ttype == TokenType::EQUAL) {
+        Assignment* assignment = new Assignment{
+            name_token, nullptr
+        };
+        ParseResult expr_result = parse_expression();
+        if (expr_result.is_error())
+            return expr_result;
+        assignment->expr = reinterpret_cast<Expression*>(expr_result.unwrap());
+        return ParseResult::Ok(assignment);
+    }
     while (
         result.is_ok() &&
         current.ttype == TokenType::KEYWORD_XOR
