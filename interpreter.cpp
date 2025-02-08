@@ -621,3 +621,10 @@ InterpreterResult Interpreter::visit_name(Name* tree) {
         return InterpreterResult::Error(get_result.unwrap_error());
     return InterpreterResult::Ok(get_result.unwrap());
 }
+
+InterpreterResult Interpreter::visit_assignment(Assignment* tree) {
+    InterpreterResult expr_result = tree->expr->accept(this);
+    if (expr_result.is_error())
+        return expr_result;
+    return env.set(tree->name.value, expr_result.unwrap());
+}

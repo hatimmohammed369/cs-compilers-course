@@ -26,6 +26,7 @@ public:
     InterpreterResult visit_print(Print* tree);
     InterpreterResult visit_return(Return* tree);
     InterpreterResult visit_name(Name* tree);
+    InterpreterResult visit_assignment(Assignment* tree);
 };
 
 #endif

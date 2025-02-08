@@ -7,7 +7,7 @@ std::string Assignment::to_string() const noexcept {
 }
 
 InterpreterResult Assignment::accept(Visitor* visitor) {
-    return InterpreterResult::Ok(nullptr);
+    return visitor->visit_assignment(this);
 }
 
 std::string Return::to_string() const noexcept {

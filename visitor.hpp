@@ -22,6 +22,7 @@ class VariableDeclaration;
 class Name;
 class Print;
 class Return;
+class Assignment;
 
 using InterpreterResult =
     PointerValueResult<Object*, std::string>;
@@ -47,6 +48,7 @@ public:
     virtual InterpreterResult visit_print(Print* tree) = 0;
     virtual InterpreterResult visit_return(Return* tree) = 0;
     virtual InterpreterResult visit_name(Name* tree) = 0;
+    virtual InterpreterResult visit_assignment(Assignment* tree) = 0;
 };
 
 #endif
