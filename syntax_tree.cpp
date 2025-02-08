@@ -1,5 +1,15 @@
 #include "syntax_tree.hpp"
 
+std::string Assignment::to_string() const noexcept {
+    return std::format(
+        "{} = {};", name.value, expr->to_string()
+    );
+}
+
+InterpreterResult Assignment::accept(Visitor* visitor) {
+    return InterpreterResult::Ok(nullptr);
+}
+
 std::string Return::to_string() const noexcept {
     fmt << "return "
         << expr->to_string()

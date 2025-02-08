@@ -37,6 +37,15 @@ public:
     ~Expression() = default;
 };
 
+class Assignment: public Expression {
+    Token name;
+    Expression* expr;
+    Assignment(Token _name, Expression* _expr):
+        name{_name}, expr{_expr} {}
+    std::string to_string() const noexcept override;
+    InterpreterResult accept(Visitor* visitor) override;
+};
+
 class Return: public Statement {
 public:
     Expression* expr;

@@ -13,7 +13,9 @@ VariableDeclaration =>
 
 type => 'int' | 'float' | 'boolean' | 'string' | 'void'
 
-Expression => LogicalOr ( 'xor' LogicalOr )*
+Expression => Assigment ;
+
+Assigment => ( NAME '=' Assigment ) | LogicalOr ;
 
 LogicalOr => LogicalAnd ( 'or' LogicalAnd )*
 
