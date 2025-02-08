@@ -579,14 +579,18 @@ InterpreterResult Interpreter::visit_variable_declaration(VariableDeclaration* t
 }
 
 InterpreterResult Interpreter::visit_print(Print* tree) {
+    InterpreterResult expr_result =
+        tree->expr->accept(this);
+    if (expr_result.is_error())
+        return expr_result;
     std::string expr_str =
-        tree->expr->accept(this)->to_string();
+        expr_result.unwrap()->to_string();
     std::cout << expr_str ;
     if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN)
         std::cout << '\n' ;
     if (is_mode_interactive())
         std::cout << '\n';
-    return nullptr;
+    return InterpreterResult::Ok(nullptr);
 }
 
 InterpreterResult Interpreter::visit_return(Return* tree) {
