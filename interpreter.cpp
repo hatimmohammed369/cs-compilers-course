@@ -295,8 +295,15 @@ EVALUATE:
 }
 
 InterpreterResult Interpreter::visit_comparison(Comparison* tree) {
-    Object* left = tree->left->accept(this);
-    Object* right = tree->right->accept(this);
+    InterpreterResult left_result = tree->left->accept(this);
+    if (left_result.is_error())
+        return left_result;
+    Object* left = left_result.unwrap();
+
+    InterpreterResult right_result = tree->right->accept(this);
+    if (right_result.is_error())
+        return right_result;
+    Object* right = right_result.unwrap();
 
     ObjectInteger *left_int, *right_int;
     ObjectFloat *left_float, *right_float;
@@ -305,67 +312,76 @@ InterpreterResult Interpreter::visit_comparison(Comparison* tree) {
     if (left_int) goto FIND_RIGHT;
     left_float = dynamic_cast<ObjectFloat*>(left);
     if (!left_float) {
-        std::cerr <<
-            "Left operand of operator " <<
-            tree->op.value <<
-            " is not numeric \n";
-        exit(1);
+        return InterpreterResult::Error(
+            "Left operand of operator " +
+            tree->op.value +
+            " is not numeric\n"
+        );
     }
 FIND_RIGHT:
     right_int = dynamic_cast<ObjectInteger*>(right);
     if (right_int) goto EVALUATE;
     right_float = dynamic_cast<ObjectFloat*>(right);
     if (!right_float) {
-        std::cerr <<
-            "right operand of operator " <<
-            tree->op.value <<
-            " is not numeric \n";
-        exit(1);
+        return InterpreterResult::Error(
+            "right operand of operator " +
+            tree->op.value +
+            " is not numeric \n"
+        );
     }
 EVALUATE:
+    Object* value = nullptr;
     switch (tree->op.ttype) {
         case TokenType::GREATER: {
             if (left_int && right_int)
-                return (*left_int) > right_int;
+                value = (*left_int) > right_int;
             else if (left_int && right_float)
-                return (*left_int) > right_float;
+                value = (*left_int) > right_float;
             else if (left_float && right_int)
-                return (*left_float) > right_int;
-            return (*left_float) > right_float;
+                value = (*left_float) > right_int;
+            else
+                value = (*left_float) > right_float;
+            break;
         }
         case TokenType::GREATER_EQUAL: {
             if (left_int && right_int)
-                return (*left_int) >= right_int;
+                value = (*left_int) >= right_int;
             else if (left_int && right_float)
-                return (*left_int) >= right_float;
+                value = (*left_int) >= right_float;
             else if (left_float && right_int)
-                return (*left_float) >= right_int;
-            return (*left_float) >= right_float;
+                value = (*left_float) >= right_int;
+            else
+                value = (*left_float) >= right_float;
+            break;
         }
         case TokenType::LESS: {
             if (left_int && right_int)
-                return (*left_int) < right_int;
+                value = (*left_int) < right_int;
             else if (left_int && right_float)
-                return (*left_int) < right_float;
+                value = (*left_int) < right_float;
             else if (left_float && right_int)
-                return (*left_float) < right_int;
-            return (*left_float) < right_float;
+                value = (*left_float) < right_int;
+            else
+                value = (*left_float) < right_float;
+            break;
         }
         case TokenType::LESS_EQUAL: {
             if (left_int && right_int)
-                return (*left_int) <= right_int;
+                value = (*left_int) <= right_int;
             else if (left_int && right_float)
-                return (*left_int) <= right_float;
+                value = (*left_int) <= right_float;
             else if (left_float && right_int)
-                return (*left_float) <= right_int;
-            return (*left_float) <= right_float;
+                value = (*left_float) <= right_int;
+            else
+                value = (*left_float) <= right_float;
+            break;
         }
-        default: {
-            std::cerr << "Invalid binary operator " << tree->op.value << " for numeric operands\n";
-            exit(1);
-        }
+        default: {}
     }
-    return nullptr;
+    if (value) return InterpreterResult::Ok(value);
+    return InterpreterResult::Error(
+        "Invalid binary operator " + tree->op.value + " for numeric operands\n"
+    );
 }
 
 InterpreterResult Interpreter::visit_shift(Shift* tree) {
