@@ -154,8 +154,8 @@ public:
 
 class Literal: public Expression {
 public:
-    InterpreterResult value_object;
-    Literal(InterpreterResult val): value_object{val} {}
+    Object* value_object;
+    Literal(Object* val): value_object{val} {}
     std::string to_string() const noexcept override;
     InterpreterResult accept(Visitor* visitor) override;
 };
