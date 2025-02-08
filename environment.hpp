@@ -3,6 +3,10 @@
 
 #include <unordered_map>
 #include "object.hpp"
+#include "result.hpp"
+
+using EnvironmentResult =
+    PointerValueResult<Object*/*value type*/, std::string/*error type*/>;
 
 class Environment {
 public:
@@ -25,9 +29,9 @@ public:
             resolved_names.erase(key);
         scopes.pop_back();
     }
-    void define(const std::string& s) noexcept;
-    void set(const std::string& s, Object* value) noexcept;
-    Object* get(const std::string& s) const noexcept;
+    EnvironmentResult define(const std::string& s) noexcept;
+    EnvironmentResult set(const std::string& s, Object* value) noexcept;
+    EnvironmentResult get(const std::string& s) const noexcept;
 };
 
 #endif
