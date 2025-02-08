@@ -29,8 +29,10 @@ int main(int argc, char* argv[]) {
             result = parser.parse_source();
             if (result.is_ok()) {
                 eval = interpreter.interpret(result.unwrap());
-                if (eval.is_ok()) cout << eval.unwrap() << '\n' ;
-                else cerr << eval.unwrap_error() << '\n' ;
+                if (eval.is_usable())
+                    cout << eval.unwrap() << '\n' ;
+                else if (eval.is_error())
+                    cerr << eval.unwrap_error() << '\n' ;
             } else {
                 cerr << result.unwrap_error() << '\n' ;
             }
