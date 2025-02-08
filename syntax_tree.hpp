@@ -11,7 +11,7 @@ class TreeBase {
 public:
     ~TreeBase() = default;
     virtual std::string to_string() const noexcept = 0;
-    virtual Object* accept(Visitor* visitor) = 0;
+    virtual InterpreterResult accept(Visitor* visitor) = 0;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const TreeBase* tree_node) {
@@ -24,7 +24,7 @@ class Program: public TreeBase {
 public:
     std::vector<Statement*> statements;
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Statement: public TreeBase {
@@ -42,7 +42,7 @@ public:
     Expression* expr;
     Return(Expression* e): expr{e} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Print: public Statement {
@@ -52,7 +52,7 @@ public:
     Print(Token print_tok, Expression* e):
         print_keyword{print_tok}, expr{e} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class VariableDeclaration: public Statement {
@@ -64,7 +64,7 @@ public:
     VariableDeclaration(Type* _type, var_value_pairs list):
         target_type{_type}, pairs{list} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Cast: public Expression {
@@ -74,14 +74,14 @@ public:
     Cast(Type* to_type, TreeBase* expr):
         target_type{to_type}, casted_expr{expr} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Block: public Expression {
 public:
     std::vector<Statement*> statements;
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Binary: public Expression {
@@ -97,49 +97,49 @@ public:
 class Logical: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Bitwise: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Equality: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Comparison: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Shift: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Term: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Factor: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Exponential: public Binary {
 public:
     using Binary::Binary;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Unary: public Expression {
@@ -149,15 +149,15 @@ public:
     Unary(Token op, TreeBase* node):
         unary_op{op}, expr{node} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Literal: public Expression {
 public:
-    Object* value_object;
-    Literal(Object* val): value_object{val} {}
+    InterpreterResult value_object;
+    Literal(InterpreterResult val): value_object{val} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class Name: public Expression {
@@ -165,7 +165,7 @@ public:
     std::string name_str;
     Name(std::string _str): name_str{_str} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 class GroupedExpression: public Expression {
@@ -174,7 +174,7 @@ public:
     GroupedExpression(TreeBase* expr):
         grouped_expr{expr} {}
     std::string to_string() const noexcept override;
-    Object* accept(Visitor* visitor) override;
+    InterpreterResult accept(Visitor* visitor) override;
 };
 
 #endif

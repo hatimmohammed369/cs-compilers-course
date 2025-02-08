@@ -4,13 +4,13 @@
 #include "object.hpp"
 #include "token.hpp"
 
-Object* Interpreter::interpret(TreeBase* tree) {
+InterpreterResult Interpreter::interpret(TreeBase* tree) {
     return tree->accept(this);
 }
 
-Object* Interpreter::visit_program(Program* tree) {
+InterpreterResult Interpreter::visit_program(Program* tree) {
     if (!tree || tree->statements.empty())
-        return nullptr;
+        return InterpreterResult::Ok(nullptr);
     for (
         auto stmt_ptr = tree->statements.begin();
         stmt_ptr != tree->statements.end()-1;
@@ -21,15 +21,15 @@ Object* Interpreter::visit_program(Program* tree) {
     return tree->statements.back()->accept(this);
 }
 
-Object* Interpreter::visit_literal(Literal* tree) {
+InterpreterResult Interpreter::visit_literal(Literal* tree) {
     return tree->value_object;
 }
 
-Object* Interpreter::visit_grouped_expression(GroupedExpression* tree) {
+InterpreterResult Interpreter::visit_grouped_expression(GroupedExpression* tree) {
     return tree->grouped_expr->accept(this);
 }
 
-Object* Interpreter::visit_unary(Unary* tree) {
+InterpreterResult Interpreter::visit_unary(Unary* tree) {
     Object* expr = tree->expr->accept(this);
     switch (tree->unary_op.ttype) {
         case TokenType::BANG: {
@@ -80,7 +80,7 @@ Object* Interpreter::visit_unary(Unary* tree) {
     return nullptr;
 }
 
-Object* Interpreter::visit_exponential(Exponential* tree) {
+InterpreterResult Interpreter::visit_exponential(Exponential* tree) {
     Object* left = tree->left->accept(this);
     Object* right = tree->right->accept(this);
 
@@ -122,7 +122,7 @@ EVALUATE:
     };
 }
 
-Object* Interpreter::visit_factor(Factor* tree) {
+InterpreterResult Interpreter::visit_factor(Factor* tree) {
     Object* left = tree->left->accept(this);
     Object* right = tree->right->accept(this);
 
@@ -194,7 +194,7 @@ EVALUATE:
     return nullptr;
 }
 
-Object* Interpreter::visit_term(Term* tree) {
+InterpreterResult Interpreter::visit_term(Term* tree) {
     Object* left = tree->left->accept(this);
     Object* right = tree->right->accept(this);
 
@@ -257,7 +257,7 @@ EVALUATE:
     return nullptr;
 }
 
-Object* Interpreter::visit_comparison(Comparison* tree) {
+InterpreterResult Interpreter::visit_comparison(Comparison* tree) {
     Object* left = tree->left->accept(this);
     Object* right = tree->right->accept(this);
 
@@ -331,7 +331,7 @@ EVALUATE:
     return nullptr;
 }
 
-Object* Interpreter::visit_shift(Shift* tree) {
+InterpreterResult Interpreter::visit_shift(Shift* tree) {
     Object* left = tree->left->accept(this);
     Object* right = tree->right->accept(this);
 
@@ -359,7 +359,7 @@ Object* Interpreter::visit_shift(Shift* tree) {
     return nullptr;
 }
 
-Object* Interpreter::visit_equality(Equality* tree) {
+InterpreterResult Interpreter::visit_equality(Equality* tree) {
     const Object* left =
         tree->left->accept(this);
     const Object* right =
@@ -377,7 +377,7 @@ Object* Interpreter::visit_equality(Equality* tree) {
     return nullptr;
 }
 
-Object* Interpreter::visit_bitwise(Bitwise* tree) {
+InterpreterResult Interpreter::visit_bitwise(Bitwise* tree) {
     const ObjectInteger* left =
         dynamic_cast<const ObjectInteger*>(
             tree->left->accept(this)
@@ -407,7 +407,7 @@ Object* Interpreter::visit_bitwise(Bitwise* tree) {
     return nullptr;
 }
 
-Object* Interpreter::visit_logical(Logical* tree) {
+InterpreterResult Interpreter::visit_logical(Logical* tree) {
     const ObjectBoolean* left =
         tree->left->accept(this)->to_boolean();
     const ObjectBoolean* right =
@@ -427,7 +427,7 @@ Object* Interpreter::visit_logical(Logical* tree) {
     return nullptr;
 }
 
-Object* Interpreter::visit_block(Block* tree) {
+InterpreterResult Interpreter::visit_block(Block* tree) {
     if (!tree || tree->statements.empty())
         return nullptr;
     env.begin_scope();
@@ -443,13 +443,13 @@ Object* Interpreter::visit_block(Block* tree) {
     return return_value;
 }
 
-Object* Interpreter::visit_cast(Cast* tree) {
+InterpreterResult Interpreter::visit_cast(Cast* tree) {
     return tree->target_type->cast(
         tree->casted_expr->accept(this)
     );
 }
 
-Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
+InterpreterResult Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
     for (
         auto stmt_ptr = tree->pairs.begin();
         stmt_ptr != tree->pairs.end();
@@ -466,7 +466,7 @@ Object* Interpreter::visit_variable_declaration(VariableDeclaration* tree) {
     return nullptr;
 }
 
-Object* Interpreter::visit_print(Print* tree) {
+InterpreterResult Interpreter::visit_print(Print* tree) {
     std::string expr_str =
         tree->expr->accept(this)->to_string();
     std::cout << expr_str ;
@@ -477,11 +477,11 @@ Object* Interpreter::visit_print(Print* tree) {
     return nullptr;
 }
 
-Object* Interpreter::visit_return(Return* tree) {
+InterpreterResult Interpreter::visit_return(Return* tree) {
     return tree->expr->accept(this);
 }
 
-Object* Interpreter::visit_name(Name* tree) {
+InterpreterResult Interpreter::visit_name(Name* tree) {
     Object* name_val = env.get(tree->name_str);
     if (!name_val) {
         std::cerr << "Undefined name '" << tree->name_str << "'\n";
