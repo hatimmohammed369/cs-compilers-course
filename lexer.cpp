@@ -353,11 +353,11 @@ Token Lexer::generate_next_token() {
                 current++;
                 ttype = TokenType::LOGICAL_EQUAL;
                 value = "==";
-                break;
             } else {
-                current--;
-                return generate_invalid_token();
+                ttype = TokenType::EQUAL;
+                value = "=";
             }
+            break;
         case '&':
             current++;
             ttype = TokenType::BITWISE_AND;
