@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
         // Interactive Mode
         // Read input from user directly
         *Config::get_mode() = Mode::Interactive;
-        Object* eval;
+        InterpreterResult eval;
         // Line characters store
         char* buffer;
         while ((buffer = readline("> ")) != nullptr) {
@@ -29,7 +29,8 @@ int main(int argc, char* argv[]) {
             result = parser.parse_source();
             if (result.is_ok()) {
                 eval = interpreter.interpret(result.unwrap());
-                if (eval) cout << eval << '\n' ;
+                if (eval.is_ok()) cout << eval.unwrap() << '\n' ;
+                else cerr << eval.unwrap_error() << '\n' ;
             } else {
                 cerr << result.unwrap_error() << '\n' ;
             }
@@ -54,10 +55,13 @@ int main(int argc, char* argv[]) {
         // Read all characters
         input_file.read(input, file_size);
         parser.init(input, file_size);
-        if (result.is_ok())
-            interpreter.interpret(result.unwrap());
-        else
+        if (result.is_ok()) {
+            InterpreterResult r = interpreter.interpret(result.unwrap());
+            if (r.is_error())
+                cerr << r.unwrap_error() << '\n' ;
+        } else {
             cerr << result.unwrap_error() << '\n' ;
+        }
         // Free input buffer
         delete[] input;
     } else {
