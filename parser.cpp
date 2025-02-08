@@ -156,13 +156,15 @@ END:
 }
 
 ParseResult Parser::parse_expression() {
+    Token name_token = current;
     ParseResult result = parse_logical_or();
     if (result.is_error())
         return result;
-    Token name_token = current;
     Name* name_expr =
         dynamic_cast<Name*>(result.unwrap());
     if (name_expr && current.ttype == TokenType::EQUAL) {
+        // Skip assignment equal `=`
+        read_next_token();
         Assignment* assignment = new Assignment{
             name_token, nullptr
         };

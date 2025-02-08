@@ -57,6 +57,7 @@ int main(int argc, char* argv[]) {
         // Read all characters
         input_file.read(input, file_size);
         parser.init(input, file_size);
+        result = parser.parse_source();
         if (result.is_ok()) {
             InterpreterResult r = interpreter.interpret(result.unwrap());
             if (r.is_error())
