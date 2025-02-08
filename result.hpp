@@ -37,7 +37,6 @@ public:
         _is_ok = ok;
     }
 
-
     inline bool is_ok() const noexcept { return _is_ok; }
     inline bool is_error() const noexcept { return !_is_ok; }
 
@@ -51,6 +50,33 @@ public:
         if (_is_ok)
             throw std::runtime_error("Attemping to unwrap an error from an value result");
         return error;
+    }
+};
+
+template <typename PointerType, typename E>
+class PointerValueResult:
+    public Result<PointerType/*value type*/, E/*error type*/> {
+public:
+    using Result<PointerType,E>::Result;
+
+    static PointerValueResult Ok(PointerValueResult::ValueType value) {
+        return PointerValueResult{value, {}, true};
+    }
+
+    static PointerValueResult Error(PointerValueResult::ErrorType error) {
+        return PointerValueResult{{}, error, false};
+    }
+
+    inline bool is_useless() {
+        return !_is_ok || value == nullptr;
+    }
+
+    inline bool is_usable() {
+        return _is_ok && value != nullptr;
+    }
+
+    inline bool is_null_value() {
+        return _is_ok && value == nullptr;
     }
 };
 

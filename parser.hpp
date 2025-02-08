@@ -5,30 +5,8 @@
 #include "result.hpp"
 #include "syntax_tree.hpp"
 
-class ParseResult: public Result<TreeBase*/*value type*/, std::string/*error type*/> {
-public:
-    using Result::Result;
-
-    static ParseResult Ok(ParseResult::ValueType value) {
-        return ParseResult{value, {}, true};
-    }
-
-    static ParseResult Error(ParseResult::ErrorType error) {
-        return ParseResult{{}, error, false};
-    }
-
-    inline bool is_useless() {
-        return !_is_ok || !value;
-    }
-
-    inline bool is_usable() {
-        return _is_ok && value;
-    }
-
-    inline bool is_null_tree() {
-        return _is_ok && value == nullptr;
-    }
-};
+using ParseResult =
+    PointerValueResult<TreeBase*/*value type*/, std::string/*error type*/>;
 
 class Parser {
     Lexer lexer;

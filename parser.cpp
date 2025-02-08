@@ -171,7 +171,7 @@ ParseResult Parser::parse_expression() {
                     new Logical{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -194,7 +194,7 @@ ParseResult Parser::parse_logical_or() {
                     new Logical{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -217,7 +217,7 @@ ParseResult Parser::parse_logical_and() {
                     new Logical{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -240,7 +240,7 @@ ParseResult Parser::parse_bitwise_xor() {
                     new Bitwise{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -263,7 +263,7 @@ ParseResult Parser::parse_bitwise_or() {
                     new Bitwise{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -286,7 +286,7 @@ ParseResult Parser::parse_bitwise_and() {
                     new Bitwise{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -309,7 +309,7 @@ ParseResult Parser::parse_equality() {
                     new Equality{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -337,7 +337,7 @@ ParseResult Parser::parse_comparison() {
                     new Comparison{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -361,7 +361,7 @@ ParseResult Parser::parse_shift() {
                     new Shift{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -385,7 +385,7 @@ ParseResult Parser::parse_term() {
                     new Term{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -413,7 +413,7 @@ ParseResult Parser::parse_factor() {
                     new Factor{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
@@ -442,7 +442,7 @@ ParseResult Parser::parse_exponential() {
         } else if (exponent.is_usable()) {
             ops.push_back(op);
             items.push_back(exponent.unwrap());
-        } else if (result.is_null_tree()) {
+        } else if (result.is_null_value()) {
             result = ParseResult::Error(
                 "Expected expression after **"
             );
@@ -478,7 +478,7 @@ ParseResult Parser::parse_unary() {
         result = ParseResult::Ok(
             reinterpret_cast<TreeBase*>(unary)
         );
-    } else if (result.is_null_tree()) {
+    } else if (result.is_null_value()) {
         result = ParseResult::Error(
             "Expected expression after " + op.value
         );
@@ -648,7 +648,7 @@ ParseResult Parser::parse_group() {
                 "Expected \x29 after statement"
             );
         }
-    } else if (result.is_null_tree()) {
+    } else if (result.is_null_value()) {
         // Expected expression after opening round brace
         result = ParseResult::Error(
             "Expected expression after \x28"
@@ -676,7 +676,7 @@ ParseResult Parser::parse_cast() {
         result = ParseResult::Ok(
             reinterpret_cast<TreeBase*>(cast_expr)
         );
-    } else if (result.is_null_tree()) {
+    } else if (result.is_null_value()) {
         // Expected expression after cast target type
         result = ParseResult::Error(
             "Expected expression after cast target type"
