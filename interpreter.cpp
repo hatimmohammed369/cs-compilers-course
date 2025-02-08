@@ -96,13 +96,13 @@ InterpreterResult Interpreter::visit_exponential(Exponential* tree) {
     if (int_base) goto FIND_EXPONENT;
     float_base = dynamic_cast<ObjectFloat*>(base);
     if (!float_base)
-        return InterpreterResult::Error("Numeric operator ** used with non-numeric base\n");
+        return InterpreterResult::Error("Numeric operator ** used with non-numeric base");
 FIND_EXPONENT:
     int_exponent = dynamic_cast<ObjectInteger*>(exponent);
     if (int_exponent) goto EVALUATE;
     float_exponent = dynamic_cast<ObjectFloat*>(exponent);
     if (!float_exponent)
-        return InterpreterResult::Error("Numeric operator ** used with non-numeric exponent\n");
+        return InterpreterResult::Error("Numeric operator ** used with non-numeric exponent");
 EVALUATE:
     Object* value;
     if (int_base && int_exponent) {
@@ -147,7 +147,7 @@ InterpreterResult Interpreter::visit_factor(Factor* tree) {
         return InterpreterResult::Error(
             "Left operand of operator " +
             tree->op.value +
-            " is not numeric \n"
+            " is not numeric"
         );
     }
 FIND_RIGHT:
@@ -158,7 +158,7 @@ FIND_RIGHT:
         return InterpreterResult::Error(
             "right operand of operator " +
             tree->op.value +
-            " is not numeric \n"
+            " is not numeric"
         );
     }
 EVALUATE:
@@ -185,7 +185,7 @@ EVALUATE:
             else
                 value = (*left_float) / right_float;
             if (!value)
-                return InterpreterResult::Error("Division by zero\n");
+                return InterpreterResult::Error("Division by zero");
             break;
         }
         case TokenType::DOUBLE_SLASH: {
@@ -202,7 +202,7 @@ EVALUATE:
         case TokenType::PERCENT: {
             if (!(left_int && right_int)) {
                 return InterpreterResult::Error(
-                    "Applying mod operator % with a non-integer operand\n"
+                    "Applying mod operator % with a non-integer operand"
                 );
             }
             value = (*left_int) % right_int;
@@ -214,7 +214,7 @@ EVALUATE:
     }
     if (value) return InterpreterResult::Ok(value);
     return InterpreterResult::Error(
-        "Invalid binary operator " + tree->op.value + " for numeric operands\n"
+        "Invalid binary operator " + tree->op.value + " for numeric operands"
     );
 }
 
@@ -252,7 +252,7 @@ InterpreterResult Interpreter::visit_term(Term* tree) {
         return InterpreterResult::Error(
             "Left operand of operator " +
             tree->op.value +
-            " is not numeric\n"
+            " is not numeric"
         );
     }
 FIND_RIGHT:
@@ -263,7 +263,7 @@ FIND_RIGHT:
         return InterpreterResult::Error(
             "right operand of operator " +
             tree->op.value +
-            " is not numeric\n"
+            " is not numeric"
         );
     }
 EVALUATE:
@@ -295,7 +295,7 @@ EVALUATE:
     }
     if (value) return InterpreterResult::Ok(value);
     return InterpreterResult::Error(
-        "Invalid binary operator " + tree->op.value + " for numeric operands\n"
+        "Invalid binary operator " + tree->op.value + " for numeric operands"
     );
 }
 
@@ -320,7 +320,7 @@ InterpreterResult Interpreter::visit_comparison(Comparison* tree) {
         return InterpreterResult::Error(
             "Left operand of operator " +
             tree->op.value +
-            " is not numeric\n"
+            " is not numeric"
         );
     }
 FIND_RIGHT:
@@ -331,7 +331,7 @@ FIND_RIGHT:
         return InterpreterResult::Error(
             "right operand of operator " +
             tree->op.value +
-            " is not numeric \n"
+            " is not numeric"
         );
     }
 EVALUATE:
@@ -385,7 +385,7 @@ EVALUATE:
     }
     if (value) return InterpreterResult::Ok(value);
     return InterpreterResult::Error(
-        "Invalid binary operator " + tree->op.value + " for numeric operands\n"
+        "Invalid binary operator " + tree->op.value + " for numeric operands"
     );
 }
 
@@ -403,13 +403,13 @@ InterpreterResult Interpreter::visit_shift(Shift* tree) {
     ObjectInteger* value = dynamic_cast<ObjectInteger*>(left);
     if (!value) {
         return InterpreterResult::Error(
-            "Can not shift a non-integer value\n"
+            "Can not shift a non-integer value"
         );
     }
     ObjectInteger* count = dynamic_cast<ObjectInteger*>(right);
     if (!count || count->value < 0) {
         return InterpreterResult::Error(
-            "Shift count is negative\n"
+            "Shift count is negative"
         );
     }
     switch (tree->op.ttype) {
@@ -420,7 +420,7 @@ InterpreterResult Interpreter::visit_shift(Shift* tree) {
         default: {}
     }
     return InterpreterResult::Error(
-        "Invalid shift operator " + tree->op.value + " for numeric operands\n"
+        "Invalid shift operator " + tree->op.value + " for numeric operands"
     );
 }
 
@@ -449,7 +449,7 @@ InterpreterResult Interpreter::visit_equality(Equality* tree) {
         default: {}
     }
     return InterpreterResult::Error(
-        "Invalid equality operator " + tree->op.value + '\n'
+        "Invalid equality operator " + tree->op.value
     );
 }
 
@@ -470,7 +470,7 @@ InterpreterResult Interpreter::visit_bitwise(Bitwise* tree) {
         return InterpreterResult::Error(
             "Applying bitwise `"
             + tree->op.value
-            + "` to non-integer operands\n"
+            + "` to non-integer operands"
         );
     }
     Object* value = nullptr;
@@ -491,7 +491,7 @@ InterpreterResult Interpreter::visit_bitwise(Bitwise* tree) {
     }
     if (value) return InterpreterResult::Ok(value);
     return InterpreterResult::Error(
-        "Invalid bitwise operator `" + tree->op.value + "`\n"
+        "Invalid bitwise operator `" + tree->op.value
     );
 }
 
@@ -526,7 +526,7 @@ InterpreterResult Interpreter::visit_logical(Logical* tree) {
     }
     if (value) return InterpreterResult::Ok(value);
     return InterpreterResult::Error(
-        "Invalid logical operator `" + tree->op.value + "`\n"
+        "Invalid logical operator `" + tree->op.value
     );
 }
 

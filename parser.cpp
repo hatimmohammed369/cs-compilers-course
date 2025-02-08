@@ -678,7 +678,7 @@ ParseResult Parser::parse_cast() {
         Type::get_type_by_token(type_token.ttype);
     if (!target_type) {
         return ParseResult::Error(
-            "Undefined type '" + type_token.value + "'\n"
+            "Undefined type '" + type_token.value
         );
     }
     // Skip closing round brace around target type

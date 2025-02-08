@@ -8,7 +8,7 @@ Environment::Environment() {
 EnvironmentResult Environment::define(const std::string& s) noexcept {
     if (resolved_names.contains(s)) {
         return EnvironmentResult::Error(
-            std::format("Name `{}` already defined!\n", s)
+            std::format("Name `{}` already defined!", s)
         );
     }
     resolved_names[s] = scopes.size()-1;
@@ -21,7 +21,7 @@ EnvironmentResult Environment::set(const std::string& s, Object* value) noexcept
         resolved_names.find(s);
     if (name_depth_ptr == resolved_names.end()) {
         return EnvironmentResult::Error(
-            std::format("Name `{}` not defined!\n", s)
+            std::format("Name `{}` not defined!", s)
         );
     }
     Table* name_scope = scopes.at(name_depth_ptr->second);
@@ -34,7 +34,7 @@ EnvironmentResult Environment::get(const std::string& s) const noexcept {
         resolved_names.find(s);
     if (name_depth_ptr == resolved_names.end()) {
         return EnvironmentResult::Error(
-            std::format("Name `{}` not defined!\n", s)
+            std::format("Name `{}` not defined!", s)
         );
     }
     return EnvironmentResult::Ok(
