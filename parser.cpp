@@ -81,9 +81,9 @@ ParseResult Parser::parse_statement() {
 
 ParseResult Parser::parse_print() {
     // Skip keyword `print` or `println`
-    read_next_token();
     Print* print_smt =
         new Print{current, nullptr};
+    read_next_token();
     ParseResult result = parse_expression();
     if (result.is_usable()) {
         print_smt->expr =
