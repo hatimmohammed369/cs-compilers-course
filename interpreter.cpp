@@ -527,18 +527,20 @@ InterpreterResult Interpreter::visit_logical(Logical* tree) {
 
 InterpreterResult Interpreter::visit_block(Block* tree) {
     if (!tree || tree->statements.empty())
-        return nullptr;
+        return InterpreterResult::Ok(nullptr);
     env.begin_scope();
     Object* return_value = ObjectVoid::VOID_OBJECT;
     for (Statement* stmt : tree->statements) {
-        Object* eval = stmt->accept(this);
+        InterpreterResult stmt_result = stmt->accept(this);
+        if (stmt_result.is_error())
+            return stmt_result;
         if (dynamic_cast<Return*>(stmt)) {
-            return_value = eval;
+            return_value = stmt_result.unwrap();
             break;
         }
     }
     env.end_scope();
-    return return_value;
+    return InterpreterResult::Ok(return_value);
 }
 
 InterpreterResult Interpreter::visit_cast(Cast* tree) {
