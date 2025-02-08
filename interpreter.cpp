@@ -577,7 +577,9 @@ InterpreterResult Interpreter::visit_variable_declaration(VariableDeclaration* t
     ) {
         std::pair<std::string, TreeBase*> p = *stmt_ptr;
         std::string name = p.first;
-        env.define(name);
+        EnvironmentResult r = env.define(name);
+        if (r.is_error())
+            return InterpreterResult::Error(r.unwrap_error());
         Object* value = ObjectVoid::VOID_OBJECT;
         if (p.second) {
             InterpreterResult initializer_result =
@@ -587,7 +589,9 @@ InterpreterResult Interpreter::visit_variable_declaration(VariableDeclaration* t
             else
                 value = initializer_result.unwrap();
         }
-        env.set(name, value);
+        r = env.set(name, value);
+        if (r.is_error())
+            return InterpreterResult::Error(r.unwrap_error());
     }
     return InterpreterResult::Ok(nullptr);
 }
