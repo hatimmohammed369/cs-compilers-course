@@ -78,28 +78,28 @@ InterpreterResult Interpreter::visit_unary(Unary* tree) {
 }
 
 InterpreterResult Interpreter::visit_exponential(Exponential* tree) {
-    InterpreterResult left_result = tree->left->accept(this);
-    if (left_result.is_error())
-        return left_result;
-    Object* left = left_result.unwrap();
+    InterpreterResult base_result = tree->left->accept(this);
+    if (base_result.is_error())
+        return base_result;
+    Object* base = base_result.unwrap();
 
-    InterpreterResult right_result = tree->right->accept(this);
-    if (right_result.is_error())
-        return right_result;
-    Object* right = right_result.unwrap();
+    InterpreterResult exponent_result = tree->right->accept(this);
+    if (exponent_result.is_error())
+        return exponent_result;
+    Object* exponent = exponent_result.unwrap();
 
     ObjectInteger *int_base, *int_exponent;
     ObjectFloat *float_base, *float_exponent;
 
-    int_base = dynamic_cast<ObjectInteger*>(left);
+    int_base = dynamic_cast<ObjectInteger*>(base);
     if (int_base) goto FIND_EXPONENT;
-    float_base = dynamic_cast<ObjectFloat*>(left);
+    float_base = dynamic_cast<ObjectFloat*>(base);
     if (!float_base)
         return InterpreterResult::Error("Numeric operator ** used with non-numeric base\n");
 FIND_EXPONENT:
-    int_exponent = dynamic_cast<ObjectInteger*>(right);
+    int_exponent = dynamic_cast<ObjectInteger*>(exponent);
     if (int_exponent) goto EVALUATE;
-    float_exponent = dynamic_cast<ObjectFloat*>(right);
+    float_exponent = dynamic_cast<ObjectFloat*>(exponent);
     if (!float_exponent)
         return InterpreterResult::Error("Numeric operator ** used with non-numeric exponent\n");
 EVALUATE:
