@@ -78,8 +78,15 @@ InterpreterResult Interpreter::visit_unary(Unary* tree) {
 }
 
 InterpreterResult Interpreter::visit_exponential(Exponential* tree) {
-    Object* left = tree->left->accept(this);
-    Object* right = tree->right->accept(this);
+    InterpreterResult left_result = tree->left->accept(this);
+    if (left_result.is_error())
+        return left_result;
+    Object* left = left_result.unwrap();
+
+    InterpreterResult right_result = tree->right->accept(this);
+    if (right_result.is_error())
+        return right_result;
+    Object* right = right_result.unwrap();
 
     ObjectInteger *int_base, *int_exponent;
     ObjectFloat *float_base, *float_exponent;
@@ -87,36 +94,40 @@ InterpreterResult Interpreter::visit_exponential(Exponential* tree) {
     int_base = dynamic_cast<ObjectInteger*>(left);
     if (int_base) goto FIND_EXPONENT;
     float_base = dynamic_cast<ObjectFloat*>(left);
-    if (!float_base) {
-        std::cerr << "Numeric operator ** used with non-numeric base\n" ;
-        exit(1);
-    }
+    if (!float_base)
+        return InterpreterResult::Error("Numeric operator ** used with non-numeric base\n");
 FIND_EXPONENT:
     int_exponent = dynamic_cast<ObjectInteger*>(right);
     if (int_exponent) goto EVALUATE;
     float_exponent = dynamic_cast<ObjectFloat*>(right);
-    if (!float_exponent) {
-        std::cerr << "Numeric operator ** used with non-numeric exponent\n" ;
-        exit(1);
-    }
+    if (!float_exponent)
+        return InterpreterResult::Error("Numeric operator ** used with non-numeric exponent\n");
 EVALUATE:
     if (int_base && int_exponent) {
-        return new ObjectInteger{
-            static_cast<i64>(std::powl(int_base->value, int_exponent->value))
-        };
+        return InterpreterResult::Ok(
+            new ObjectInteger{
+                static_cast<i64>(std::powl(int_base->value, int_exponent->value))
+            }
+        );
     } else if (int_base && float_exponent) {
-        return new ObjectFloat{
-            static_cast<float64>(std::pow(int_base->value, float_exponent->value))
-        };
+        return InterpreterResult::Ok(
+            new ObjectFloat{
+                static_cast<float64>(std::pow(int_base->value, float_exponent->value))
+            }
+        );
     } else if (float_base && int_exponent) {
-        return new ObjectFloat{
-            static_cast<float64>(std::pow(float_base->value, int_exponent->value))
-        };
+        return InterpreterResult::Ok(
+            new ObjectFloat{
+                static_cast<float64>(std::pow(float_base->value, int_exponent->value))
+            }
+        );
     }
     // float_base && float_exponent
-    return new ObjectFloat{
-        static_cast<float64>(std::pow(float_base->value, float_exponent->value))
-    };
+    return InterpreterResult::Ok(
+        new ObjectFloat{
+            static_cast<float64>(std::pow(float_base->value, float_exponent->value))
+        }
+    );
 }
 
 InterpreterResult Interpreter::visit_factor(Factor* tree) {
