@@ -184,6 +184,8 @@ EVALUATE:
                 value = (*left_float) / right_int;
             else
                 value = (*left_float) / right_float;
+            if (!value)
+                return InterpreterResult::Error("Division by zero\n");
             break;
         }
         case TokenType::DOUBLE_SLASH: {
@@ -204,6 +206,8 @@ EVALUATE:
                 );
             }
             value = (*left_int) % right_int;
+            if (!value)
+                return InterpreterResult::Error("Zero modulus");
             break;
         }
         default: {}
@@ -549,11 +553,20 @@ InterpreterResult Interpreter::visit_cast(Cast* tree) {
         tree->casted_expr->accept(this);
     if (expr_result.is_error())
         return expr_result;
-    return InterpreterResult::Ok(
+    Object* cast_return =
         tree->target_type->cast(
             expr_result.unwrap()
-        )
-    );
+        );
+    if (!cast_return) {
+        return InterpreterResult::Error(
+            std::format(
+                "Object of type `{}` can not be casted to object of type `{}`",
+                expr_result.unwrap()->type_info->to_string(),
+                tree->target_type->to_string()
+            )
+        );
+    }
+    return InterpreterResult::Ok(cast_return);
 }
 
 InterpreterResult Interpreter::visit_variable_declaration(VariableDeclaration* tree) {

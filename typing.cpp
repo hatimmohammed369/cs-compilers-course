@@ -129,8 +129,7 @@ ObjectInteger* TypeInteger::cast(const Object* obj) const noexcept {
             static_cast<i64>(_obj->value)
         };
     } else if (obj_type_name == Type::NAME) {
-        std::cerr << "Type object can't be casted to `int`\n";
-        exit(1);
+        return nullptr;
     }
     return reinterpret_cast<ObjectInteger*>(obj->copy());
 }
@@ -158,8 +157,7 @@ ObjectFloat* TypeFloat::cast(const Object* obj) const noexcept {
             static_cast<float64>(_obj->value)
         };
     } else if (obj_type_name == Type::NAME) {
-        std::cerr << "Type object can't be casted to `float`\n";
-        exit(1);
+        return nullptr;
     }
     return reinterpret_cast<ObjectFloat*>(obj->copy());
 }

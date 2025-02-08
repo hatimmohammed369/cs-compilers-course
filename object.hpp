@@ -168,10 +168,7 @@ ObjectBoolean* Number<T>::to_boolean() const noexcept {
 template <typename T>
 template <typename U>
 ObjectInteger* Number<T>::integer_div(const Number<U>* other) const noexcept {
-    if (!other->value) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
+    if (!other->value) return nullptr;
     return new ObjectInteger {
         static_cast<i64>(value) / static_cast<i64>(other->value)
     };
@@ -180,10 +177,7 @@ ObjectInteger* Number<T>::integer_div(const Number<U>* other) const noexcept {
 template <typename T>
 template <typename U>
 ObjectFloat* Number<T>::operator/(const Number<U>* other) const noexcept {
-    if (!other->value) {
-        std::cerr << "Division by zero\n";
-        exit(1);
-    }
+    if (!other->value) return nullptr;
     return new ObjectFloat {
         static_cast<float64>(value) / static_cast<float64>(other->value)
     };

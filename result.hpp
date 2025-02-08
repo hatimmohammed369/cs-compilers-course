@@ -24,7 +24,7 @@ public:
     explicit Result() {
         value = {};
         error = {};
-        _is_ok = false;
+        _is_ok = true;
     }
 
     explicit Result(

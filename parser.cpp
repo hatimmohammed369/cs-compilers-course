@@ -660,8 +660,9 @@ ParseResult Parser::parse_cast() {
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
     if (!target_type) {
-        std::cerr << "Undefined type '" << type_token.value << "'\n" ;
-        exit(1);
+        return ParseResult::Error(
+            "Undefined type '" + type_token.value + "'\n"
+        );
     }
     // Skip closing round brace around target type
     read_next_token();

@@ -23,10 +23,7 @@ ObjectFloat* ObjectInteger::operator*(const ObjectFloat* other) const noexcept {
 }
 
 ObjectInteger* ObjectInteger::operator%(const ObjectInteger* other) const noexcept {
-    if (!other->value) {
-        std::cerr << "Zero modulus\n";
-        exit(1);
-    }
+    if (!other->value) return nullptr;
     return new ObjectInteger {value % other->value};
 }
 
