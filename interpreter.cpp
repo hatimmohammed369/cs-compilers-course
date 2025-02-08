@@ -103,31 +103,26 @@ FIND_EXPONENT:
     if (!float_exponent)
         return InterpreterResult::Error("Numeric operator ** used with non-numeric exponent\n");
 EVALUATE:
+    Object* value;
     if (int_base && int_exponent) {
-        return InterpreterResult::Ok(
-            new ObjectInteger{
-                static_cast<i64>(std::powl(int_base->value, int_exponent->value))
-            }
-        );
+        value = new ObjectInteger{
+            static_cast<i64>(std::powl(int_base->value, int_exponent->value))
+        };
     } else if (int_base && float_exponent) {
-        return InterpreterResult::Ok(
-            new ObjectFloat{
-                static_cast<float64>(std::pow(int_base->value, float_exponent->value))
-            }
-        );
+        value = new ObjectFloat{
+            static_cast<float64>(std::pow(int_base->value, float_exponent->value))
+        };
     } else if (float_base && int_exponent) {
-        return InterpreterResult::Ok(
-            new ObjectFloat{
-                static_cast<float64>(std::pow(float_base->value, int_exponent->value))
-            }
-        );
-    }
-    // float_base && float_exponent
-    return InterpreterResult::Ok(
-        new ObjectFloat{
+        value = new ObjectFloat{
+            static_cast<float64>(std::pow(float_base->value, int_exponent->value))
+        };
+    } else {
+        // float base && float_exponent
+        value = new ObjectFloat{
             static_cast<float64>(std::pow(float_base->value, float_exponent->value))
-        }
-    );
+        };
+    }
+    return InterpreterResult::Ok(value);
 }
 
 InterpreterResult Interpreter::visit_factor(Factor* tree) {
