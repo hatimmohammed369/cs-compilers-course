@@ -31,54 +31,50 @@ InterpreterResult Interpreter::visit_grouped_expression(GroupedExpression* tree)
 }
 
 InterpreterResult Interpreter::visit_unary(Unary* tree) {
-    Object* expr = tree->expr->accept(this);
+    InterpreterResult expr_result = tree->expr->accept(this);
+    if (expr_result.is_error())
+        return expr_result;
+    Object* expr = expr_result.unwrap();
     switch (tree->unary_op.ttype) {
         case TokenType::BANG: {
             ObjectBoolean* obj = dynamic_cast<ObjectBoolean*>(expr);
-            if (!obj) {
-                std::cerr << "Unary logical operator ! applied to non-boolean" ;
-                exit(1);
-            }
-            return obj->negated();
+            if (!obj)
+                return InterpreterResult::Error("Unary logical operator ! applied to non-boolean") ;
+            return InterpreterResult::Ok(obj->negated());
         }
         case TokenType::MINUS: {
             ObjectInteger* int_obj = dynamic_cast<ObjectInteger*>(expr);
             if (int_obj)
-                return -(*int_obj);
+                return InterpreterResult::Ok(-(*int_obj));
 
             ObjectFloat* float_obj = dynamic_cast<ObjectFloat*>(expr);
             if (float_obj)
-                return -(*float_obj);
+                return InterpreterResult::Ok(-(*float_obj));
 
-            std::cerr << "Unary arithmetic operator - applied to non-numeric" ;
-            exit(1);
+            return InterpreterResult::Error("Unary arithmetic operator - applied to non-numeric") ;
         }
         case TokenType::PLUS: {
             ObjectInteger* int_obj = dynamic_cast<ObjectInteger*>(expr);
             if (int_obj)
-                return int_obj;
+                return InterpreterResult::Ok(int_obj);
 
             ObjectFloat* float_obj = dynamic_cast<ObjectFloat*>(expr);
             if (float_obj)
-                return float_obj;
+                return InterpreterResult::Ok(float_obj);
 
-            std::cerr << "Unary arithmetic operator + applied to non-numeric" ;
-            exit(1);
+            return InterpreterResult::Error("Unary arithmetic operator + applied to non-numeric") ;
         }
         case TokenType::TILDE: {
             ObjectInteger* int_obj = dynamic_cast<ObjectInteger*>(expr);
-            if (!int_obj) {
-                std::cerr << "Unary bitwise operator ~ applied to non-integer" ;
-                exit(1);
-            }
-            return ~(*int_obj);
+            if (!int_obj)
+                return InterpreterResult::Error("Unary bitwise operator ~ applied to non-integer") ;
+            return InterpreterResult::Ok(~(*int_obj));
         }
-        default: {
-            std::cerr << "Invalid unary operator " << tree->unary_op.value << '\n';
-            exit(1);
-        }
+        default: {}
     }
-    return nullptr;
+    return InterpreterResult::Error(
+        "Invalid unary operator " + tree->unary_op.value
+    );
 }
 
 InterpreterResult Interpreter::visit_exponential(Exponential* tree) {
