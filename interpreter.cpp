@@ -544,8 +544,14 @@ InterpreterResult Interpreter::visit_block(Block* tree) {
 }
 
 InterpreterResult Interpreter::visit_cast(Cast* tree) {
-    return tree->target_type->cast(
-        tree->casted_expr->accept(this)
+    InterpreterResult expr_result =
+        tree->casted_expr->accept(this);
+    if (expr_result.is_error())
+        return expr_result;
+    return InterpreterResult::Ok(
+        tree->target_type->cast(
+            expr_result.unwrap()
+        )
     );
 }
 
