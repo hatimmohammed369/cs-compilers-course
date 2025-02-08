@@ -2,7 +2,7 @@
 
 Environment::Environment() {
     // Globals
-    scopes.push_back(Table{});
+    scopes.push_back(new Table{});
 }
 
 EnvironmentResult Environment::define(const std::string& s) noexcept {
@@ -12,7 +12,7 @@ EnvironmentResult Environment::define(const std::string& s) noexcept {
         );
     }
     resolved_names[s] = scopes.size()-1;
-    get_current_scope()[s] = nullptr;
+    (*get_current_scope())[s] = nullptr;
     return EnvironmentResult::Ok(nullptr);
 }
 
@@ -24,7 +24,8 @@ EnvironmentResult Environment::set(const std::string& s, Object* value) noexcept
             std::format("Name `{}` not defined!\n", s)
         );
     }
-    scopes.at(name_depth_ptr->second).insert({s, value});
+    Table* name_scope = scopes.at(name_depth_ptr->second);
+    (*name_scope)[s] = value;
     return EnvironmentResult::Ok(nullptr);
 }
 
@@ -37,6 +38,6 @@ EnvironmentResult Environment::get(const std::string& s) const noexcept {
         );
     }
     return EnvironmentResult::Ok(
-        scopes.at(name_depth_ptr->second).at(s)
+        scopes.at(name_depth_ptr->second)->at(s)
     );
 }
