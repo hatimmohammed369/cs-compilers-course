@@ -5,12 +5,16 @@
 #include "syntax_tree.hpp"
 #include "token.hpp"
 
+void Parser::report_error(const std::string& s) noexcept {
+    std::cerr << s << "\n\n" ;
+}
+
 void Parser::init(char* in, size_t source_len) noexcept {
     lexer.init(in, source_len);
     read_next_token();
 }
 
-Lexer Parser::get_lexer() noexcept {
+inline Lexer Parser::get_lexer() noexcept {
     return lexer;
 }
 
@@ -34,6 +38,28 @@ bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcep
     return false;
 }
 
+void Parser::synchronize() noexcept {
+    Token last = current;
+    read_next_token();
+    while (has_next()) {
+        if (last.ttype == TokenType::SEMI_COLON) return;
+        if (
+            check({
+                TokenType::KEYWORD_TYPE,
+                TokenType::KEYWORD_VOID,
+                TokenType::KEYWORD_BOOLEAN,
+                TokenType::KEYWORD_STRING,
+                TokenType::KEYWORD_FLOAT,
+                TokenType::KEYWORD_INT,
+                TokenType::KEYWORD_PRINT,
+                TokenType::KEYWORD_PRINTLN,
+            })
+        ) { return; }
+        last = current;
+        read_next_token();
+    }
+}
+
 ParseResult Parser::parse_source() {
     // Skip empty lines
     while (current.ttype == TokenType::LINEBREAK)
@@ -42,17 +68,25 @@ ParseResult Parser::parse_source() {
     ParseResult result;
     while (has_next()) {
         result = parse_statement();
-        if (result.is_useless()) break;
-        source_tree->statements.push_back(
-            reinterpret_cast<Statement*>(result.unwrap())
-        );
+        if (result.is_usable()) {
+            source_tree->statements.push_back(
+                reinterpret_cast<Statement*>(result.unwrap())
+            );
+        } else if (result.is_error()) {
+            report_error(result.unwrap_error());
+            synchronize();
+        } else if (result.is_null_value()) {
+            continue;
+        }
     }
-    if (!source_tree->statements.empty()) {
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(source_tree)
-        );
-    } else if (result.is_ok()) {
-        result = ParseResult::Ok(nullptr);
+    if (!_errors) {
+        if (!source_tree->statements.empty()) {
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(source_tree)
+            );
+        } else {
+            result = ParseResult::Ok(nullptr);
+        }
     }
     return result;
 }
@@ -66,30 +100,50 @@ ParseResult Parser::parse_statement() {
     else
         result = parse_expression();
 
-    if (result.is_useless())
+    if (result.is_useless()) {
         return result;
-    else if (current.ttype == TokenType::SEMI_COLON)
+    } else if (current.ttype == TokenType::SEMI_COLON) {
         read_next_token();
-    else if (
+        if (_errors)
+            result = ParseResult::Ok(nullptr);
+    } else if (
         is_mode_file() || !check(
             {TokenType::LINEBREAK, TokenType::SEMI_COLON, TokenType::END_OF_FILE}
         )
-    ) { result = ParseResult::Error("Expected ; after statement"); }
+    ) {
+        _errors++;
+        result = ParseResult::Error("Expected ; after statement");
+    }
 
     return result;
 }
 
 ParseResult Parser::parse_print() {
     // Skip keyword `print` or `println`
-    Print* print_smt =
+    Print* print_stmt =
         new Print{current, nullptr};
     read_next_token();
     ParseResult result = parse_expression();
     if (result.is_usable()) {
-        print_smt->expr =
-            reinterpret_cast<Expression*>(result.unwrap());
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(print_smt)
+        if (current.ttype == TokenType::SEMI_COLON) {
+            read_next_token();
+            if (!_errors) {
+                print_stmt->expr =
+                    reinterpret_cast<Expression*>(result.unwrap());
+                result = ParseResult::Ok(
+                    reinterpret_cast<TreeBase*>(print_stmt)
+                );
+            } else {
+                result = ParseResult::Ok(nullptr);
+            }
+        } else {
+            _errors++;
+            result = ParseResult::Error("Expected ; after print statement");
+        }
+    } else if (result.is_null_value()) {
+        _errors++;
+        result = ParseResult::Error(
+            std::format("Expected expression after `{}`", print_stmt->print_keyword.value)
         );
     }
     return result;
@@ -101,10 +155,14 @@ ParseResult Parser::parse_variable_declaration() {
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
     if (current.ttype != TokenType::IDENTIFIER) {
-        result = ParseResult::Error(
-            "Expected identifier after type" + type_token.value
+        _errors++;
+        report_error(
+            std::format(
+                "Expected identifier after type {}", type_token.value
+            )
         );
-        return result;
+        synchronize();
+        return ParseResult::Ok(nullptr);
     }
     VariableDeclaration::var_value_pairs initial_values;
     ParseResult initializer;
@@ -139,6 +197,7 @@ ParseResult Parser::parse_variable_declaration() {
                 goto END;
             }
             default: {
+                _errors++;
                 result = ParseResult::Error("Unexpected item");
                 goto END;
             }
@@ -146,11 +205,20 @@ ParseResult Parser::parse_variable_declaration() {
     }
 END:
     if (result.is_ok()) {
-        VariableDeclaration* declarations_list =
-            new VariableDeclaration {target_type, initial_values};
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(declarations_list)
-        );
+        if (!_errors) {
+            VariableDeclaration* declarations_list =
+                new VariableDeclaration {target_type, initial_values};
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(declarations_list)
+            );
+        } else {
+            result = ParseResult::Ok(nullptr);
+        }
+    } else {
+        _errors++;
+        report_error(result.unwrap_error());
+        result = ParseResult::Ok(nullptr);
+        synchronize();
     }
     return result;
 }
@@ -171,8 +239,11 @@ ParseResult Parser::parse_expression() {
         ParseResult expr_result = parse_expression();
         if (expr_result.is_error())
             return expr_result;
-        assignment->expr = reinterpret_cast<Expression*>(expr_result.unwrap());
-        return ParseResult::Ok(assignment);
+        if (!_errors) {
+            assignment->expr = reinterpret_cast<Expression*>(expr_result.unwrap());
+            return ParseResult::Ok(assignment);
+        }
+        return ParseResult::Ok(nullptr);
     }
     while (
         result.is_ok() &&
@@ -186,13 +257,14 @@ ParseResult Parser::parse_expression() {
                     new Logical{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_logical_or() {
@@ -209,13 +281,14 @@ ParseResult Parser::parse_logical_or() {
                     new Logical{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_logical_and() {
@@ -232,13 +305,14 @@ ParseResult Parser::parse_logical_and() {
                     new Logical{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_bitwise_xor() {
@@ -255,13 +329,14 @@ ParseResult Parser::parse_bitwise_xor() {
                     new Bitwise{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_bitwise_or() {
@@ -278,13 +353,14 @@ ParseResult Parser::parse_bitwise_or() {
                     new Bitwise{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_bitwise_and() {
@@ -301,13 +377,14 @@ ParseResult Parser::parse_bitwise_and() {
                     new Bitwise{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_equality() {
@@ -324,13 +401,14 @@ ParseResult Parser::parse_equality() {
                     new Equality{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_comparison() {
@@ -352,14 +430,15 @@ ParseResult Parser::parse_comparison() {
                     new Comparison{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
 
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_shift() {
@@ -376,14 +455,15 @@ ParseResult Parser::parse_shift() {
                     new Shift{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
 
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_term() {
@@ -400,14 +480,15 @@ ParseResult Parser::parse_term() {
                     new Term{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
 
     } 
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_factor() {
@@ -428,13 +509,14 @@ ParseResult Parser::parse_factor() {
                     new Factor{result.unwrap(), op, right.unwrap()}
                 )
             );
-        } else if (result.is_null_value()) {
+        } else if (right.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after " + op.value
             );
         }
     }
-    return result;
+    return ParseResult::Ok(!_errors ? result.unwrap() : nullptr);
 }
 
 ParseResult Parser::parse_exponential() {
@@ -458,12 +540,13 @@ ParseResult Parser::parse_exponential() {
             ops.push_back(op);
             items.push_back(exponent.unwrap());
         } else if (result.is_null_value()) {
+            _errors++;
             result = ParseResult::Error(
                 "Expected expression after **"
             );
         }
     }
-    if (result.is_ok()) {
+    if (result.is_ok() && !_errors) {
         while (items.size() >= 2) {
             TreeBase* exponent = items.back();
             items.pop_back();
@@ -478,8 +561,9 @@ ParseResult Parser::parse_exponential() {
         }
         result = ParseResult::Ok(items.back());
         items.pop_back();
+        return result;
     }
-    return result;
+    return ParseResult::Ok(nullptr);
 }
 
 ParseResult Parser::parse_unary() {
@@ -489,11 +573,16 @@ ParseResult Parser::parse_unary() {
     Token op = consume();
     result = parse_unary();
     if (result.is_usable()) {
-        Unary* unary = new Unary{op, result.unwrap()};
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(unary)
-        );
+        if (!_errors) {
+            Unary* unary = new Unary{op, result.unwrap()};
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(unary)
+            );
+        } else {
+            result = ParseResult::Ok(nullptr);
+        }
     } else if (result.is_null_value()) {
+        _errors++;
         result = ParseResult::Error(
             "Expected expression after " + op.value
         );
@@ -505,8 +594,10 @@ ParseResult Parser::parse_primary() {
     ParseResult result;
     if (current.ttype == TokenType::LINEBREAK) {
         read_next_token();
-        if (current.ttype == TokenType::LINEBREAK)
+        if (current.ttype == TokenType::LINEBREAK) {
+            _errors++;
             result = ParseResult::Error("Expected expression");
+        }
         return result;
     }
     switch (current.ttype) {
@@ -517,10 +608,11 @@ ParseResult Parser::parse_primary() {
                 result = parse_cast();
             else
                 result = parse_group();
-            return result;
+            break;
         }
         case TokenType::LEFT_CURLY_BRACE: {
-            return parse_block();
+            result = parse_block();
+            break;
         }
         case TokenType::IDENTIFIER: {
             Name* name_expr =
@@ -528,11 +620,15 @@ ParseResult Parser::parse_primary() {
             result = ParseResult::Ok(
                 reinterpret_cast<TreeBase*>(name_expr)
             );
-            return result;
+            break;
         }
-        default: {}
+        default: {
+            result = parse_literal();
+        }
     }
-    return parse_literal();
+    if (_errors && result.is_ok())
+        result = ParseResult::Ok(nullptr);
+    return result;
 }
 
 ParseResult Parser::parse_literal() {
@@ -584,11 +680,10 @@ ParseResult Parser::parse_literal() {
             break;
         }
         default: {
-            std::cerr << "Fatal\n" ;
-            exit(1);
+            return ParseResult::Ok(nullptr);
         }
     }
-    return ParseResult::Ok(parsed_hunk);
+    return ParseResult::Ok(!_errors ? parsed_hunk : nullptr);
 }
 
 ParseResult Parser::parse_block() {
@@ -608,13 +703,18 @@ ParseResult Parser::parse_block() {
     }
     if (result.is_usable()) {
         if (current.ttype == TokenType::RIGHT_CURLY_BRACE) {
-            // Skip closing curly brace
-            read_next_token();
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(block)
-            );
+            if (!_errors) {
+                // Skip closing curly brace
+                read_next_token();
+                result = ParseResult::Ok(
+                    reinterpret_cast<TreeBase*>(block)
+                );
+            } else {
+                result = ParseResult::Ok(nullptr);
+            }
         } else {
             // Expected closing curly brace after statement
+            _errors++;
             result = ParseResult::Error(
                 "Expected \x7d after statement"
             );
@@ -629,15 +729,20 @@ ParseResult Parser::parse_return() {
     ParseResult result = parse_expression();
     if (result.is_usable()) {
         if (current.ttype == TokenType::SEMI_COLON) {
-            // Skip ;
-            read_next_token();
-            Return* ret = new Return{
-                reinterpret_cast<Expression*>(result.unwrap())
-            };
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(ret)
-            );
+            if (!_errors) {
+                // Skip ;
+                read_next_token();
+                Return* ret = new Return{
+                    reinterpret_cast<Expression*>(result.unwrap())
+                };
+                result = ParseResult::Ok(
+                    reinterpret_cast<TreeBase*>(ret)
+                );
+            } else {
+                result = ParseResult::Ok(nullptr);
+            }
         } else {
+            _errors++;
             result = ParseResult::Error(
                 "Expected ; after statement"
             );
@@ -650,21 +755,27 @@ ParseResult Parser::parse_group() {
     ParseResult result = parse_expression();
     if (result.is_usable()) {
         if (current.ttype == TokenType::RIGHT_ROUND_BRACE) {
-            // Skip closing round brace
-            read_next_token();
-            GroupedExpression* grouped_expr =
-                new GroupedExpression{result.unwrap()};
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(grouped_expr)
-            );
+            if (!_errors) {
+                // Skip closing round brace
+                read_next_token();
+                GroupedExpression* grouped_expr =
+                    new GroupedExpression{result.unwrap()};
+                result = ParseResult::Ok(
+                    reinterpret_cast<TreeBase*>(grouped_expr)
+                );
+            } else {
+                result = ParseResult::Ok(nullptr);
+            }
         } else {
             // Expected closing round brace after statement
+            _errors++;
             result = ParseResult::Error(
                 "Expected \x29 after statement"
             );
         }
     } else if (result.is_null_value()) {
         // Expected expression after opening round brace
+        _errors++;
         result = ParseResult::Error(
             "Expected expression after \x28"
         );
@@ -677,6 +788,7 @@ ParseResult Parser::parse_cast() {
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
     if (!target_type) {
+        _errors++;
         return ParseResult::Error(
             "Undefined type '" + type_token.value
         );
@@ -685,15 +797,20 @@ ParseResult Parser::parse_cast() {
     read_next_token();
     ParseResult result = parse_primary();
     if (result.is_usable()) {
-        Cast* cast_expr = new Cast{
-            target_type,
-            reinterpret_cast<TreeBase*>(result.unwrap())
-        };
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(cast_expr)
-        );
+        if (!_errors) {
+            Cast* cast_expr = new Cast{
+                target_type,
+                reinterpret_cast<TreeBase*>(result.unwrap())
+            };
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(cast_expr)
+            );
+        } else {
+            result = ParseResult::Ok(nullptr);
+        }
     } else if (result.is_null_value()) {
         // Expected expression after cast target type
+        _errors++;
         result = ParseResult::Error(
             "Expected expression after cast target type"
         );

@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
                 else if (eval.is_error())
                     cerr << eval.unwrap_error() << '\n' ;
             } else {
-                cerr << result.unwrap_error() << '\n' ;
+                cerr << parser.errors() << " syntax errors found\n";
             }
             // free buffer because readline always allocates a new buffer
             free(buffer);
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
             if (r.is_error())
                 cerr << r.unwrap_error() << '\n' ;
         } else {
-            cerr << result.unwrap_error() << '\n' ;
+            cerr << parser.errors() << " syntax errors found\n";
         }
         // Free input buffer
         delete[] input;

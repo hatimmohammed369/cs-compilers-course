@@ -11,13 +11,17 @@ using ParseResult =
 class Parser {
     Lexer lexer;
     Token current;
+    size_t _errors = 0;
+    void report_error(const std::string& msg) noexcept;
 public:
     void init(char* in, size_t source_len) noexcept;
+    inline size_t errors() const noexcept { return _errors; }
     inline Lexer get_lexer() noexcept;
     inline void read_next_token() noexcept;
     inline bool has_next() const noexcept;
     Token consume() noexcept;
     bool check(const std::initializer_list<TokenType>& types) const noexcept;
+    void synchronize() noexcept ;
     ParseResult parse_source();
     ParseResult parse_statement();
     ParseResult parse_print();
