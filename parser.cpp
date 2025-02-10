@@ -118,27 +118,31 @@ ParseResult Parser::parse_statement() {
 }
 
 ParseResult Parser::parse_print() {
+    TokenType keyword = current.ttype;
     Print* print_stmt =
         new Print{current, nullptr};
     // Skip keyword `print` or `println`
     read_next_token();
     ParseResult result = parse_expression();
-    if (result.is_usable()) {
+    if (keyword == TokenType::KEYWORD_PRINT) {
+        if (!result.is_null_value()) {
+            print_stmt->expr =
+                reinterpret_cast<Expression*>(result.unwrap());
+            result = ParseResult::Ok(
+                reinterpret_cast<TreeBase*>(print_stmt)
+            );
+        } else {
+            _errors++;
+            report_error("Expected expression after `print`");
+            result = ParseResult::Ok(nullptr);
+            synchronize();
+        }
+    } else if (result.is_ok()) {
         print_stmt->expr =
             reinterpret_cast<Expression*>(result.unwrap());
         result = ParseResult::Ok(
             reinterpret_cast<TreeBase*>(print_stmt)
         );
-    } else if (result.is_null_value()) {
-        _errors++;
-        report_error(
-            std::format(
-                "Expected expression after `{}`",
-                print_stmt->print_keyword.value
-            )
-        );
-        result = ParseResult::Ok(nullptr);
-        synchronize();
     }
     return result;
 }

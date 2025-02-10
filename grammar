@@ -6,7 +6,7 @@ Program => Statement*
 
 Statement => ( Print | VariableDeclaration | Expression ) ';'
 
-Print => ( 'print' | 'println' ) Expression
+Print => 'print' Expression | 'println' Expression?
 
 VariableDeclaration =>
 	type IDENTIFIER ( ':=' Expression )? ( ',' IDENTIFIER ( ':=' Expression )? )*

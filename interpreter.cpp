@@ -1,4 +1,5 @@
 #include <cmath>
+#include <format>
 #include "interpreter.hpp"
 #include "common.hpp"
 #include "object.hpp"
@@ -597,15 +598,28 @@ InterpreterResult Interpreter::visit_variable_declaration(VariableDeclaration* t
 }
 
 InterpreterResult Interpreter::visit_print(Print* tree) {
-    InterpreterResult expr_result =
-        tree->expr->accept(this);
-    if (expr_result.is_error())
-        return expr_result;
-    std::string expr_str =
-        expr_result.unwrap()->to_string();
-    std::cout << expr_str ;
-    if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN)
+    if (tree->expr) {
+        InterpreterResult expr_result =
+            tree->expr->accept(this);
+        if (expr_result.is_error())
+            return expr_result;
+        std::string expr_str =
+            expr_result.unwrap()->to_string();
+        std::cout << expr_str ;
+        if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN)
+            std::cout << '\n' ;
+    } else if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN) {
+        // `println` without an expression
         std::cout << '\n' ;
+    } else if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINT) {
+        std::cerr << "Keyword `print` parsed without an expression\n";
+        exit(1);
+    } else {
+        std::cerr
+            << "Unknown print keyword token \n"
+            << tree->print_keyword.ttype ;
+        exit(1);
+    }
     if (is_mode_interactive())
         std::cout << '\n';
     return InterpreterResult::Ok(nullptr);
