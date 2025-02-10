@@ -27,13 +27,13 @@ int main(int argc, char* argv[]) {
             add_history(buffer);
             parser.init(buffer, strlen(buffer));
             result = parser.parse_source();
-            if (result.is_ok()) {
+            if (result.is_usable()) {
                 eval = interpreter.interpret(result.unwrap());
                 if (eval.is_usable())
                     cout << eval.unwrap() << '\n' ;
                 else if (eval.is_error())
                     cerr << eval.unwrap_error() << '\n' ;
-            } else {
+            } else if (parser.errors()) {
                 cerr << parser.errors() << " syntax errors found\n";
             }
             // free buffer because readline always allocates a new buffer
@@ -58,11 +58,11 @@ int main(int argc, char* argv[]) {
         input_file.read(input, file_size);
         parser.init(input, file_size);
         result = parser.parse_source();
-        if (result.is_ok()) {
+        if (result.is_usable()) {
             InterpreterResult r = interpreter.interpret(result.unwrap());
             if (r.is_error())
                 cerr << r.unwrap_error() << '\n' ;
-        } else {
+        } else if (parser.errors()) {
             cerr << parser.errors() << " syntax errors found\n";
         }
         // Free input buffer
