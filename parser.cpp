@@ -82,9 +82,7 @@ ParseResult Parser::parse_source() {
         }
     }
     if (!source_tree->statements.empty() && !_errors) {
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(source_tree)
-        );
+        result = ParseResult::Ok(source_tree);
     } else {
         // Empty program or at least one syntax error
         // return an empty syntax tree (null pointer)
@@ -128,9 +126,7 @@ ParseResult Parser::parse_print() {
         if (!result.is_null_value()) {
             print_stmt->expr =
                 reinterpret_cast<Expression*>(result.unwrap());
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(print_stmt)
-            );
+            result = ParseResult::Ok(print_stmt);
         } else {
             _errors++;
             report_error("Expected expression after `print`");
@@ -140,9 +136,7 @@ ParseResult Parser::parse_print() {
     } else if (result.is_ok()) {
         print_stmt->expr =
             reinterpret_cast<Expression*>(result.unwrap());
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(print_stmt)
-        );
+        result = ParseResult::Ok(print_stmt);
     }
     return result;
 }
@@ -208,9 +202,7 @@ END:
     if (result.is_ok()) {
         VariableDeclaration* declarations_list =
             new VariableDeclaration {target_type, initial_values};
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(declarations_list)
-        );
+        result = ParseResult::Ok(declarations_list);
     } else {
         _errors++;
         report_error(result.unwrap_error());
@@ -247,9 +239,7 @@ ParseResult Parser::parse_expression() {
         ParseResult right = parse_logical_or();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Logical{result.unwrap(), op, right.unwrap()}
-                )
+                new Logical{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -272,9 +262,7 @@ ParseResult Parser::parse_logical_or() {
         ParseResult right = parse_logical_and();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Logical{result.unwrap(), op, right.unwrap()}
-                )
+                new Logical{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -297,9 +285,7 @@ ParseResult Parser::parse_logical_and() {
         ParseResult right = parse_bitwise_xor();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Logical{result.unwrap(), op, right.unwrap()}
-                )
+                new Logical{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -322,9 +308,7 @@ ParseResult Parser::parse_bitwise_xor() {
         ParseResult right = parse_bitwise_or();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Bitwise{result.unwrap(), op, right.unwrap()}
-                )
+                new Bitwise{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -347,9 +331,7 @@ ParseResult Parser::parse_bitwise_or() {
         ParseResult right = parse_bitwise_and();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Bitwise{result.unwrap(), op, right.unwrap()}
-                )
+                new Bitwise{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -372,9 +354,7 @@ ParseResult Parser::parse_bitwise_and() {
         ParseResult right = parse_equality();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Bitwise{result.unwrap(), op, right.unwrap()}
-                )
+                new Bitwise{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -397,9 +377,7 @@ ParseResult Parser::parse_equality() {
         ParseResult right = parse_comparison();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Equality{result.unwrap(), op, right.unwrap()}
-                )
+                new Equality{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -427,9 +405,7 @@ ParseResult Parser::parse_comparison() {
         ParseResult right = parse_shift();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Comparison{result.unwrap(), op, right.unwrap()}
-                )
+                new Comparison{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -453,9 +429,7 @@ ParseResult Parser::parse_shift() {
         ParseResult right = parse_term();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Shift{result.unwrap(), op, right.unwrap()}
-                )
+                new Shift{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -479,9 +453,7 @@ ParseResult Parser::parse_term() {
         ParseResult right = parse_factor();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Term{result.unwrap(), op, right.unwrap()}
-                )
+                new Term{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -509,9 +481,7 @@ ParseResult Parser::parse_factor() {
         ParseResult right = parse_exponential();
         if (right.is_usable()) {
             result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(
-                    new Factor{result.unwrap(), op, right.unwrap()}
-                )
+                new Factor{result.unwrap(), op, right.unwrap()}
             );
         } else if (right.is_null_value()) {
             _errors++;
@@ -559,9 +529,7 @@ ParseResult Parser::parse_exponential() {
             TreeBase* base = items.back();
             items.pop_back();
             items.push_back(
-                reinterpret_cast<TreeBase*>(
-                    new Exponential{base, ops.back(), exponent}
-                )
+                new Exponential{base, ops.back(), exponent}
             );
             ops.pop_back();
         }
@@ -586,9 +554,7 @@ ParseResult Parser::parse_unary() {
     result = parse_unary();
     if (result.is_usable()) {
         Unary* unary = new Unary{op, result.unwrap()};
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(unary)
-        );
+        result = ParseResult::Ok(unary);
     } else if (result.is_null_value()) {
         _errors++;
         result = ParseResult::Error(
@@ -626,9 +592,7 @@ ParseResult Parser::parse_primary() {
         case TokenType::IDENTIFIER: {
             Name* name_expr =
                 new Name{consume().value};
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(name_expr)
-            );
+            result = ParseResult::Ok(name_expr);
             break;
         }
         default: {
@@ -643,47 +607,41 @@ ParseResult Parser::parse_literal() {
     switch (current.ttype) {
         case TokenType::KEYWORD_VOID: {
             ObjectVoid* obj = ObjectVoid::VOID_OBJECT;
-            Literal* void_literal =
+            parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(void_literal);
             break;
         }
         case TokenType::KEYWORD_TRUE: {
             ObjectBoolean* obj = ObjectBoolean::TRUE;
-            Literal* bool_literal =
+            parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
         case TokenType::KEYWORD_FALSE: {
             ObjectBoolean* obj = ObjectBoolean::FALSE;
-            Literal* bool_literal =
+            parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
             read_next_token();
-            parsed_hunk = reinterpret_cast<TreeBase*>(bool_literal);
             break;
         }
         case TokenType::INTEGER: {
             ObjectInteger* obj = new ObjectInteger{std::stoll(consume().value)};
-            Literal* int_literal =
+            parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            parsed_hunk = reinterpret_cast<TreeBase*>(int_literal);
             break;
         }
         case TokenType::FLOAT: {
             ObjectFloat* obj = new ObjectFloat{std::stold(consume().value, nullptr)};
-            Literal* float_literal =
+            parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            parsed_hunk = reinterpret_cast<TreeBase*>(float_literal);
             break;
         }
         case TokenType::STRING: {
             ObjectString* obj = new ObjectString{consume().value};
-            Literal* string_literal =
+            parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            parsed_hunk = reinterpret_cast<TreeBase*>(string_literal);
             break;
         }
         default: {
@@ -719,9 +677,7 @@ ParseResult Parser::parse_block() {
         if (current.ttype == TokenType::RIGHT_CURLY_BRACE) {
             // Skip closing curly brace
             read_next_token();
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(block)
-            );
+            result = ParseResult::Ok(block);
         } else {
             // Expected closing curly brace after statement
             _errors++;
@@ -744,9 +700,7 @@ ParseResult Parser::parse_return() {
             Return* ret = new Return{
                 reinterpret_cast<Expression*>(result.unwrap())
             };
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(ret)
-            );
+            result = ParseResult::Ok(ret);
         } else {
             _errors++;
             report_error(
@@ -767,9 +721,7 @@ ParseResult Parser::parse_group() {
             read_next_token();
             GroupedExpression* grouped_expr =
                 new GroupedExpression{result.unwrap()};
-            result = ParseResult::Ok(
-                reinterpret_cast<TreeBase*>(grouped_expr)
-            );
+            result = ParseResult::Ok(grouped_expr);
         } else {
             // Expected closing round brace after statement
             _errors++;
@@ -803,11 +755,9 @@ ParseResult Parser::parse_cast() {
     if (result.is_usable()) {
         Cast* cast_expr = new Cast{
             target_type,
-            reinterpret_cast<TreeBase*>(result.unwrap())
+            reinterpret_cast<Expression*>(result.unwrap())
         };
-        result = ParseResult::Ok(
-            reinterpret_cast<TreeBase*>(cast_expr)
-        );
+        result = ParseResult::Ok(cast_expr);
     } else if (result.is_null_value()) {
         // Expected expression after cast target type
         _errors++;

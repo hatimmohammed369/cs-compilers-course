@@ -80,8 +80,8 @@ public:
 class Cast: public Expression {
 public:
     Type* target_type;
-    TreeBase* casted_expr;
-    Cast(Type* to_type, TreeBase* expr):
+    Expression* casted_expr;
+    Cast(Type* to_type, Expression* expr):
         target_type{to_type}, casted_expr{expr} {}
     std::string to_string() const noexcept override;
     InterpreterResult accept(Visitor* visitor) override;
