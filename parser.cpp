@@ -11,6 +11,7 @@ void Parser::report_error(const std::string& s) noexcept {
 }
 
 void Parser::init(char* in, size_t source_len) noexcept {
+    _errors = 0;
     lexer.init(in, source_len);
     read_next_token();
 }

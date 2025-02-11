@@ -33,6 +33,8 @@ int main(int argc, char* argv[]) {
                     cout << eval.unwrap() << '\n' ;
                 else if (eval.is_error())
                     cerr << eval.unwrap_error() << '\n' ;
+                else
+                    cout << '\n';
             } else if (parser.errors()) {
                 cerr << parser.errors() << " syntax errors found\n";
             }
