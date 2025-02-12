@@ -76,11 +76,11 @@ ObjectInteger* ObjectInteger::copy() const noexcept {
 // ------------------------- ObjectFloat -------------------------
 
 std::string ObjectFloat::to_string() const noexcept {
-    fmt << std::setprecision(16) ;
-    fmt << value ;
+    std::string repr =
+        std::format("{:.16f}", value);
     if (std::floorl(value) == std::ceill(value))
-        fmt << ".0" ;
-    return read_fmt();
+        repr += ".0" ;
+    return repr;
 }
 
 ObjectFloat* ObjectFloat::operator-() const noexcept {

@@ -1,5 +1,6 @@
 #include "typing.hpp"
 #include "token.hpp"
+#include <format>
 
 const std::string Type::NAME = "type";
 const std::string TypeVoid::NAME = "void";
@@ -73,10 +74,7 @@ ObjectBoolean* Type::equals(const Object* other) const noexcept {
 }
 
 std::string Type::to_string() const noexcept {
-    fmt << "<type '" ;
-    fmt << this->type_name ;
-    fmt << "'>" ;
-    return read_fmt();
+    return std::format("<type '{}'>", this->type_name);
 }
 
 ObjectBoolean* Type::to_boolean() const noexcept {

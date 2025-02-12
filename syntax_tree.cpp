@@ -1,4 +1,7 @@
 #include "syntax_tree.hpp"
+#include <charconv>
+#include <format>
+#include <sstream>
 
 std::string Assignment::to_string() const noexcept {
     return std::format(
@@ -11,10 +14,7 @@ InterpreterResult Assignment::accept(Visitor* visitor) {
 }
 
 std::string Return::to_string() const noexcept {
-    fmt << "return "
-        << expr->to_string()
-        << " ;" ;
-    return read_fmt();
+    return std::format("return {} ;", expr->to_string());
 }
 
 InterpreterResult Return::accept(Visitor* visitor) {
@@ -22,10 +22,11 @@ InterpreterResult Return::accept(Visitor* visitor) {
 }
 
 std::string Print::to_string() const noexcept {
-    fmt << print_keyword.value
-        << ' ' << expr->to_string()
-        << " ;";
-    return read_fmt();
+    return std::format(
+        "{} {} ;",
+        print_keyword.value,
+        expr->to_string()
+    );
 }
 
 InterpreterResult Print::accept(Visitor* visitor) {
@@ -33,6 +34,7 @@ InterpreterResult Print::accept(Visitor* visitor) {
 }
 
 std::string VariableDeclaration::to_string() const noexcept {
+    std::ostringstream fmt;
     fmt << target_type->to_string() ;
     for (auto p : pairs) {
         fmt << p.first ;
@@ -41,7 +43,7 @@ std::string VariableDeclaration::to_string() const noexcept {
         fmt << ',' ;
     }
     fmt << " ;" ;
-    return read_fmt();
+    return fmt.str();
 }
 
 InterpreterResult VariableDeclaration::accept(Visitor* visitor) {
@@ -49,9 +51,11 @@ InterpreterResult VariableDeclaration::accept(Visitor* visitor) {
 }
 
 std::string Cast::to_string() const noexcept {
-    fmt << '(' << this->target_type->to_string() << ')' ;
-    fmt << casted_expr->to_string() ;
-    return read_fmt();
+    return std::format(
+        "({}){}",
+        this->target_type->to_string(),
+        casted_expr->to_string()
+    );
 }
 
 InterpreterResult Cast::accept(Visitor* visitor) {
@@ -59,6 +63,7 @@ InterpreterResult Cast::accept(Visitor* visitor) {
 }
 
 std::string Block::to_string() const noexcept {
+    std::ostringstream fmt;
     fmt << "{" ;
     for (
         auto stmt_ptr = this->statements.begin();
@@ -70,7 +75,7 @@ std::string Block::to_string() const noexcept {
         fmt << ';' ;
     }
     fmt << "}" ;
-    return read_fmt();
+    return fmt.str();
 }
 
 InterpreterResult Block::accept(Visitor* visitor) {
@@ -78,9 +83,10 @@ InterpreterResult Block::accept(Visitor* visitor) {
 }
 
 std::string Program::to_string() const noexcept {
+    std::ostringstream fmt;
     for (TreeBase* stmt : statements)
         fmt << stmt->to_string() << '\n' ;
-    return read_fmt();
+    return fmt.str();
 }
 
 InterpreterResult Program::accept(Visitor* visitor) {
@@ -88,10 +94,12 @@ InterpreterResult Program::accept(Visitor* visitor) {
 }
 
 std::string Binary::to_string() const noexcept {
-    fmt << left->to_string() ;
-    fmt << ' ' << op.value << ' ' ;
-    fmt << right->to_string() ;
-    return read_fmt();
+    return std::format(
+        "{} {} {}",
+        left->to_string(),
+        op.value,
+        right->to_string()
+    );
 }
 
 InterpreterResult Logical::accept(Visitor* visitor) {
@@ -127,9 +135,11 @@ InterpreterResult Exponential::accept(Visitor* visitor) {
 }
 
 std::string Unary::to_string() const noexcept {
-    fmt << unary_op.value ;
-    fmt << expr->to_string() ;
-    return read_fmt();
+    return std::format(
+        "{}{}",
+        unary_op.value,
+        expr->to_string()
+    );
 }
 
 InterpreterResult Unary::accept(Visitor* visitor) {
@@ -145,10 +155,7 @@ InterpreterResult Literal::accept(Visitor* visitor) {
 }
 
 std::string GroupedExpression::to_string() const noexcept {
-    fmt << '(' ;
-    fmt << grouped_expr->to_string() ;
-    fmt << ')' ;
-    return read_fmt();
+    return std::format("({})", grouped_expr->to_string());
 }
 
 std::string Name::to_string() const noexcept {

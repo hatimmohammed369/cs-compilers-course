@@ -10,15 +10,6 @@
 #include <string>
 #include <vector>
 
-static std::ostringstream fmt;
-static std::string read_fmt() __attribute__((unused));
-static std::string read_fmt() {
-    std::string str = fmt.str();
-    fmt.str("");
-    fmt.clear();
-    return str;
-}
-
 enum class Mode {
     File,
     Interactive

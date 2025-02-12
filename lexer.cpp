@@ -90,11 +90,12 @@ Token Lexer::generate_number_token() {
 
     if (!this->has_next() || !std::isdigit(*current)) {
         // Invalid numeric literal: no digits after decimal point
-        fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
-        fmt << std::string(value.size(), '^') ;
+        std::string repr;
+        repr += std::string(std::distance(source.cbegin(), token_start), ' ') ;
+        repr += std::string(value.size(), '^') ;
         Lexer::report_lexing_error(
             "Invalid numeric literal: no digits after decimal point",
-            read_fmt()
+            repr
         );
         ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
@@ -119,11 +120,12 @@ Token Lexer::generate_number_token() {
 
     if (!this->has_next() || !(std::isdigit(*current) || *current == '+' || *current == '-')) {
         // Invalid numeric literal: Missing exponent value
-        fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
-        fmt << std::string(value.size(), '^') ;
+        std::string repr;
+        repr += std::string(std::distance(source.cbegin(), token_start), ' ') ;
+        repr += std::string(value.size(), '^') ;
         Lexer::report_lexing_error(
             "Invalid numeric literal: Missing exponent value",
-            read_fmt()
+            repr
         );
         ttype = TokenType::INVALID;
         goto RETURN_TOKEN;
@@ -206,28 +208,30 @@ Token Lexer::generate_string_token() {
         }
     }
     if (!invalid_escapes.empty()) {
+        std::string repr;
         ttype = TokenType::INVALID;
         size_t i = 0;
         for (auto pos : invalid_escapes) {
             while (i < pos) {
-                fmt << ' ' ;
+                repr += ' ' ;
                 i++;
             }
-            fmt << "^^" ;
+            repr += "^^" ;
             i = pos + 2;
         }
         Lexer::report_lexing_error(
             "Invalid escape sequence",
-            read_fmt()
+            repr
         );
     }
     if (!terminated) {
+        std::string repr;
         ttype = TokenType::INVALID;
-        fmt << std::string(std::distance(source.cbegin(), token_start), ' ') ;
-        fmt << std::string(value.size(), '^') ;
+        repr += std::string(std::distance(source.cbegin(), token_start), ' ') ;
+        repr += std::string(value.size(), '^') ;
         Lexer::report_lexing_error(
             "Unterminated string literal",
-            read_fmt()
+            repr
         );
     }
     return Token{ttype, value};
