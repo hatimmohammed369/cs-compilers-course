@@ -620,6 +620,8 @@ InterpreterResult Interpreter::visit_print(Print* tree) {
             << tree->print_keyword.ttype ;
         exit(1);
     }
+    if (is_mode_interactive())
+        std::cout << '\n' ;
     return InterpreterResult::Ok(nullptr);
 }
 

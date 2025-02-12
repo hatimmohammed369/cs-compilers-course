@@ -84,13 +84,8 @@ ParseResult Parser::parse_source() {
             continue;
         }
     }
-    if (!source_tree->statements.empty() && !_errors) {
+    if (!source_tree->statements.empty() && !_errors)
         result = ParseResult::Ok(source_tree);
-    } else {
-        // Empty program or at least one syntax error
-        // return an empty syntax tree (null pointer)
-        result = ParseResult::Ok(nullptr);
-    }
     return result;
 }
 

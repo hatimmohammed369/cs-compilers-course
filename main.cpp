@@ -13,30 +13,39 @@ int main(int argc, char* argv[]) {
     // Placeholder code: read it print it
     Parser parser;
     Interpreter interpreter;
+    InterpreterResult eval;
     ParseResult result;
     if (argc == 1) {
         // Interactive Mode
         // Read input from user directly
         *Config::get_mode() = Mode::Interactive;
-        InterpreterResult eval;
         // Line characters store
         char* buffer;
+        Object* value;
         while ((buffer = readline("> ")) != nullptr) {
             if (strlen(buffer) == 0) continue; // Ignore empty lines
             // add last read line to prompt history
             add_history(buffer);
             parser.init(buffer, strlen(buffer));
             result = parser.parse_source();
-            if (result.is_usable()) {
-                eval = interpreter.interpret(result.unwrap());
-                if (eval.is_usable())
-                    cout << eval.unwrap() << '\n' ;
-                else if (eval.is_error())
-                    cerr << eval.unwrap_error() << '\n' ;
-                else
-                    cout << '\n';
-            } else if (parser.errors()) {
-                cerr << parser.errors() << " syntax errors found\n";
+            if (result.is_ok()) {
+                TreeBase* source_tree = result.unwrap();
+                if (source_tree) {
+                    eval = interpreter.interpret(source_tree);
+                    if (eval.is_ok()) {
+                        value = eval.unwrap();
+                        if (value) cout << value << '\n' ;
+                    } else if (eval.is_error()) {
+                        // Runtime error
+                        cerr << eval.unwrap_error() << "\n\n" ;
+                    }
+                } else {
+                    cout << '\n' ;
+                }
+            } else {
+                // Syntax error
+                cerr << result.unwrap_error() << "\n\n" ;
+                cerr << parser.errors() << " syntax errors found\n" ;
             }
             // free buffer because readline always allocates a new buffer
             free(buffer);
@@ -60,12 +69,19 @@ int main(int argc, char* argv[]) {
         input[file_size] = '\0';
         parser.init(input, file_size);
         result = parser.parse_source();
-        if (result.is_usable()) {
-            InterpreterResult r = interpreter.interpret(result.unwrap());
-            if (r.is_error())
-                cerr << r.unwrap_error() << '\n' ;
-        } else if (parser.errors()) {
-            cerr << parser.errors() << " syntax errors found\n";
+        if (result.is_ok()) {
+            TreeBase* source_tree = result.unwrap();
+            if (source_tree) {
+                eval = interpreter.interpret(source_tree);
+                if (eval.is_error()) {
+                    // Runtime error
+                    cerr << eval.unwrap_error() << '\n' ;
+                }
+            }
+        } else {
+            // Syntax error
+            cerr << result.unwrap_error() << "\n\n" ;
+            cerr << parser.errors() << " syntax errors found\n" ;
         }
         // Free input buffer
         delete[] input;
