@@ -6,8 +6,8 @@
 class Lexer {
     std::string source;
     std::string::const_iterator current;
-    size_t line;
-    std::string current_line;
+    std::vector<std::string> lines;
+
     Token generate_number_token();
     inline void skip_whitespaces();
     Token generate_string_token();
@@ -19,15 +19,15 @@ public:
     Token generate_next_token();
     inline bool has_next();
 
-    static size_t errors;
+    size_t errors = 0;
     void report_lexing_error(
         const std::string& error_msg,
         const std::string& post_msg
     ) {
         errors += 1;
-        std::cerr << "Error in line " << line << ":\n" ;
+        std::cerr << "Error in line " << lines.size() << ":\n" ;
         std::cerr << error_msg << '\n';
-        std::cerr << current_line << '\n' ;
+        std::cerr << lines.back() << '\n' ;
         std::cerr << post_msg << '\n' ;
     }
 };

@@ -2,21 +2,18 @@
 #include <vector>
 #include "lexer.hpp"
 
-size_t Lexer::errors = 0;
-
 void Lexer::init(char* in, const size_t& source_len) {
+    errors = 0;
     source.assign(in, source_len);
     if (source.back() != '\n')
         source.push_back('\n');
     current = source.begin();
-    line = 1;
-    current_line.clear();
+    lines.push_back(std::string{});
 }
 
 void Lexer::reset() {
     current = source.begin();
-    line = 1;
-    current_line.clear();
+    lines.clear();
 }
 
 inline bool Lexer::has_next() {
@@ -26,18 +23,18 @@ inline bool Lexer::has_next() {
 inline void Lexer::skip_whitespaces() {
     while (has_next() && std::isspace(*current)) {
         if (current != source.begin() && *(current-1) == '\n') {
-            line++;
-            current_line.clear();
+            // Add a new line
+            lines.push_back(std::string{});
         }
         current++;
     }
     if (!has_next()) {
         std::string::size_type last_line_break_in_input =
             source.rfind('\n');
-        current_line.assign(
+        lines.back().assign(
             source.substr(last_line_break_in_input)
         );
-    } else if (current_line.empty()) {
+    } else if (lines.back().empty()) {
         std::string::size_type cur_pos =
             std::distance(source.cbegin(), current);
         std::string::size_type last_line_break =
@@ -46,7 +43,7 @@ inline void Lexer::skip_whitespaces() {
             last_line_break = 0;
         std::string::size_type next_line_break =
             source.find_first_of('\n', cur_pos);
-        current_line.assign(
+        lines.back().assign(
             source.substr(last_line_break, next_line_break)
         );
     }
@@ -290,13 +287,13 @@ Token Lexer::generate_invalid_token() {
 }
 
 Token Lexer::generate_next_token() {
-    size_t old_line = line;
+    size_t old_line = lines.size();
     TokenType ttype;
     std::string value;
     skip_whitespaces();
     if (!has_next())
         return Token{TokenType::END_OF_FILE, std::string()};
-    else if (old_line < line)
+    else if (old_line < lines.size())
         return Token{TokenType::LINEBREAK, std::string("\n")};
     switch (*current) {
         case ';':
