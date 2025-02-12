@@ -59,6 +59,8 @@ class Token {
 public:
     TokenType ttype;
     std::string value;
+    size_t col;
+    size_t line;
     inline bool is_type_keyword() const noexcept {
         return (
             ttype == TokenType::KEYWORD_INT ||

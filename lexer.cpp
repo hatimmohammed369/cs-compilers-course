@@ -20,6 +20,7 @@ inline void Lexer::skip_whitespaces() {
         if (current != source.begin() && *(current-1) == '\n') {
             // Add a new line
             lines.push_back(std::string{});
+            col = 0;
         }
         current++;
     }
@@ -135,7 +136,7 @@ Token Lexer::generate_number_token() {
     }
 
 RETURN_TOKEN:
-    return Token{ttype, value};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_string_token() {
@@ -226,7 +227,7 @@ Token Lexer::generate_string_token() {
             repr
         );
     }
-    return Token{ttype, value};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_identifier_token() {
@@ -264,7 +265,7 @@ Token Lexer::generate_identifier_token() {
         ttype = TokenType::KEYWORD_XOR;
     else if (value == "type")
         ttype = TokenType::KEYWORD_TYPE;
-    return Token{ttype, value};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_invalid_token() {
@@ -278,7 +279,7 @@ Token Lexer::generate_invalid_token() {
         value.push_back(*current);
         current++;
     }
-    return Token{ttype, value};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_next_token() {
@@ -287,9 +288,9 @@ Token Lexer::generate_next_token() {
     std::string value;
     skip_whitespaces();
     if (!has_next())
-        return Token{TokenType::END_OF_FILE, std::string()};
+        return Token{TokenType::END_OF_FILE, std::string(), col, lines.size()-1};
     else if (old_line < lines.size())
-        return Token{TokenType::LINEBREAK, std::string("\n")};
+        return Token{TokenType::LINEBREAK, std::string("\n"), col, lines.size()-1};
     switch (*current) {
         case ';':
             current++;
@@ -461,5 +462,5 @@ Token Lexer::generate_next_token() {
         }
     }
 RETURN_TOKEN:
-    return Token{ttype, value};
+    return Token{ttype, value, col, lines.size()-1};
 }

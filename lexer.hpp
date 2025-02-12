@@ -7,6 +7,7 @@ class Lexer {
     std::string source;
     std::string::const_iterator current;
     std::vector<std::string> lines;
+    size_t col = 0;
 
     Token generate_number_token();
     inline void skip_whitespaces();
