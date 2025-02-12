@@ -44,8 +44,9 @@ void Parser::synchronize() noexcept {
     Token last = current;
     read_next_token();
     while (has_next()) {
-        if (last.ttype == TokenType::SEMI_COLON) return;
         if (
+            last.ttype == TokenType::SEMI_COLON ||
+            last.ttype == TokenType::RIGHT_CURLY_BRACE ||
             check({
                 TokenType::KEYWORD_TYPE,
                 TokenType::KEYWORD_VOID,
@@ -55,6 +56,7 @@ void Parser::synchronize() noexcept {
                 TokenType::KEYWORD_INT,
                 TokenType::KEYWORD_PRINT,
                 TokenType::KEYWORD_PRINTLN,
+                TokenType::LEFT_CURLY_BRACE
             })
         ) { return; }
         last = current;
