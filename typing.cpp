@@ -26,10 +26,10 @@ ObjectString::ObjectString(const std::string& s):
 ObjectString::ObjectString(const std::string&& s):
     std::string(s) {type_info = TypeString::get_type_object();}
 
-ObjectInteger::ObjectInteger(const i64& value): 
+ObjectInteger::ObjectInteger(const i64& value):
     Number::Number(value) {type_info = TypeInteger::get_type_object();}
 
-ObjectFloat::ObjectFloat(const float64& value): 
+ObjectFloat::ObjectFloat(const float64& value):
     Number::Number(value) {type_info = TypeFloat::get_type_object();}
 
 ObjectVoid::ObjectVoid() {type_info = TypeVoid::get_type_object();}

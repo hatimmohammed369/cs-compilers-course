@@ -11,11 +11,6 @@ void Lexer::init(char* in, const size_t& source_len) {
     lines.push_back(std::string{});
 }
 
-void Lexer::reset() {
-    current = source.begin();
-    lines.clear();
-}
-
 inline bool Lexer::has_next() {
     return current != source.end();
 }

@@ -15,7 +15,6 @@ class Lexer {
     Token generate_invalid_token();
 public:
     void init(char* in, const size_t& source_len);
-    void reset();
     Token generate_next_token();
     inline bool has_next();
 

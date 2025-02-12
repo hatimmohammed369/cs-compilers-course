@@ -48,7 +48,7 @@ class TypeFloat: public Type {
     TypeFloat(): Type() {
         this->type_name = TypeFloat::NAME;
         this->type_info = Type::get_type_object();
-    } 
+    }
 public:
     const static std::string NAME;
     static inline TypeFloat* get_type_object() {
@@ -66,7 +66,7 @@ class TypeString: public Type {
     TypeString(): Type() {
         this->type_name = TypeString::NAME;
         this->type_info = Type::get_type_object();
-    } 
+    }
 public:
     const static std::string NAME;
     static inline TypeString* get_type_object() {
@@ -84,7 +84,7 @@ class TypeBoolean: public Type {
     TypeBoolean(): Type() {
         this->type_name = TypeBoolean::NAME;
         this->type_info = Type::get_type_object();
-    } 
+    }
 public:
     const static std::string NAME;
     static inline TypeBoolean* get_type_object() {
@@ -102,7 +102,7 @@ class TypeVoid: public Type {
     TypeVoid(): Type() {
         this->type_name = TypeVoid::NAME;
         this->type_info = Type::get_type_object();
-    } 
+    }
 public:
     const static std::string NAME;
     static inline TypeVoid* get_type_object() {

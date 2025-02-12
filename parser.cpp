@@ -461,7 +461,7 @@ ParseResult Parser::parse_term() {
             break;
         }
 
-    } 
+    }
     return result;
 }
 
