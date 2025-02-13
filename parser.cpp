@@ -78,14 +78,18 @@ ParseResult Parser::parse_source() {
                 reinterpret_cast<Statement*>(result.unwrap())
             );
         } else if (result.is_error()) {
+            if (!has_next()) break;
             report_error(result.unwrap_error());
             synchronize();
         } else if (result.is_null_value()) {
             continue;
         }
     }
-    if (!source_tree->statements.empty() && !_errors)
-        result = ParseResult::Ok(source_tree);
+    if (result.is_ok()) {
+        result = ParseResult::Ok(
+            _errors || source_tree->statements.empty() ? nullptr : source_tree
+        );
+    }
     return result;
 }
 
