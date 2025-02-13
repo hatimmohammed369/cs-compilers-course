@@ -11,12 +11,12 @@ void Lexer::init(char* in, const size_t& source_len) {
     lines.push_back(std::string{});
 }
 
-inline bool Lexer::has_next() {
-    return current != source.end();
+inline bool Lexer::is_at_end() {
+    return current == source.end();
 }
 
 inline void Lexer::skip_whitespaces() {
-    while (has_next() && std::isspace(*current)) {
+    while (!is_at_end() && std::isspace(*current)) {
         if (current != source.begin() && *(current-1) == '\n') {
             // Add a new line
             lines.push_back(std::string{});
@@ -24,7 +24,7 @@ inline void Lexer::skip_whitespaces() {
         }
         current++;
     }
-    if (!has_next()) {
+    if (is_at_end()) {
         std::string::size_type last_line_break_in_input =
             source.rfind('\n');
         lines.back().assign(
@@ -66,12 +66,12 @@ Token Lexer::generate_number_token() {
     ttype = TokenType::INTEGER;
 
     // Read digits before decimal point before end of input
-    while (this->has_next() && std::isdigit(*current)) {
+    while (!is_at_end() && std::isdigit(*current)) {
         value.push_back(*current);
         current++;
     }
 
-    if (!this->has_next() || *current != '.') {
+    if (is_at_end() || *current != '.') {
         // We found an integer
         goto RETURN_TOKEN;
     }
@@ -81,7 +81,7 @@ Token Lexer::generate_number_token() {
     // Move over decimal point
     current++;
 
-    if (!this->has_next() || !std::isdigit(*current)) {
+    if (is_at_end() || !std::isdigit(*current)) {
         // Invalid numeric literal: no digits after decimal point
         std::string repr;
         repr += std::string(std::distance(source.cbegin(), token_start), ' ') ;
@@ -96,12 +96,12 @@ Token Lexer::generate_number_token() {
 
     ttype = TokenType::FLOAT;
     // Read digits after decimal point before end of input
-    while (this->has_next() && std::isdigit(*current)) {
+    while (!is_at_end() && std::isdigit(*current)) {
         value.push_back(*current);
         current++;
     }
 
-    if (!this->has_next() || !(*current == 'e' || *current == 'E')) {
+    if (is_at_end() || !(*current == 'e' || *current == 'E')) {
         // No exponent
         goto RETURN_TOKEN;
     }
@@ -111,7 +111,7 @@ Token Lexer::generate_number_token() {
     // Move over e
     current++;
 
-    if (!this->has_next() || !(std::isdigit(*current) || *current == '+' || *current == '-')) {
+    if (is_at_end() || !(std::isdigit(*current) || *current == '+' || *current == '-')) {
         // Invalid numeric literal: Missing exponent value
         std::string repr;
         repr += std::string(std::distance(source.cbegin(), token_start), ' ') ;
@@ -130,7 +130,7 @@ Token Lexer::generate_number_token() {
     current++;
 
     // Read digits after exponent sign
-    while (this->has_next() && std::isdigit(*current)) {
+    while (!is_at_end() && std::isdigit(*current)) {
         value.push_back(*current);
         current++;
     }
@@ -149,7 +149,7 @@ Token Lexer::generate_string_token() {
     ttype = TokenType::STRING;
     std::vector<size_t> invalid_escapes;
     for (;;current++) {
-        if (!has_next() || *current == '\n') {
+        if (is_at_end() || *current == '\n') {
             break;
         } else if (*current == '"') {
             // Skip closing "
@@ -159,7 +159,7 @@ Token Lexer::generate_string_token() {
         } else if (*current == '\\') {
             // Move to escaped character
             current++;
-            if (!this->has_next()) {
+            if (is_at_end()) {
                 break;
             } else if (*current == '\n') {
                 continue;
@@ -235,7 +235,7 @@ Token Lexer::generate_string_token() {
 Token Lexer::generate_identifier_token() {
     TokenType ttype = TokenType::IDENTIFIER;
     std::string value;
-    while (has_next() && (*current == '_' || std::isalpha(*current))) {
+    while (!is_at_end() && (*current == '_' || std::isalpha(*current))) {
         value.push_back(*current);
         current++;
     }
@@ -275,7 +275,7 @@ Token Lexer::generate_invalid_token() {
     const TokenType ttype = TokenType::INVALID;
     std::string value;
     while (
-        this->has_next() &&
+        !is_at_end() &&
         !is_valid_first_char(*current)
     ) {
         value.push_back(*current);
@@ -289,7 +289,7 @@ Token Lexer::generate_next_token() {
     TokenType ttype;
     std::string value;
     skip_whitespaces();
-    if (!has_next())
+    if (is_at_end())
         return Token{TokenType::END_OF_FILE, std::string(), col, lines.size()-1};
     else if (old_line < lines.size())
         return Token{TokenType::LINEBREAK, std::string("\n"), col, lines.size()-1};
@@ -306,7 +306,7 @@ Token Lexer::generate_next_token() {
             break;
         case ':':
             current++;
-            if (has_next() && *current == '=') {
+            if (!is_at_end() && *current == '=') {
                 current++;
                 ttype = TokenType::COLON_EQUAL;
                 value = ":=";
@@ -337,7 +337,7 @@ Token Lexer::generate_next_token() {
             break;
         case '!':
             current++;
-            if (this->has_next() && *current == '=') {
+            if (!is_at_end() && *current == '=') {
                 current++;
                 ttype = TokenType::LOGICAL_NOT_EQUAL;
                 value = "!=";
@@ -348,7 +348,7 @@ Token Lexer::generate_next_token() {
             break;
         case '=':
             current++;
-            if (this->has_next() && *current == '=') {
+            if (!is_at_end() && *current == '=') {
                 current++;
                 ttype = TokenType::LOGICAL_EQUAL;
                 value = "==";
@@ -379,7 +379,7 @@ Token Lexer::generate_next_token() {
             break;
         case '*':
             current++;
-            if (has_next() && *current == '*') {
+            if (!is_at_end() && *current == '*') {
                 current++;
                 ttype = TokenType::EXPONENT;
                 value = "**";
@@ -390,7 +390,7 @@ Token Lexer::generate_next_token() {
             break;
         case '/':
             current++;
-            if (has_next() && *current == '/') {
+            if (!is_at_end() && *current == '/') {
                 current++;
                 ttype = TokenType::DOUBLE_SLASH;
                 value = "//";
@@ -411,7 +411,7 @@ Token Lexer::generate_next_token() {
             break;
         case '>':
             current++;
-            if (has_next()) {
+            if (!is_at_end()) {
                 if (*current == '=') {
                     current++;
                     ttype = TokenType::GREATER_EQUAL;
@@ -429,7 +429,7 @@ Token Lexer::generate_next_token() {
             break;
         case '<':
             current++;
-            if (has_next()) {
+            if (!is_at_end()) {
                 if (*current == '=') {
                     current++;
                     ttype = TokenType::LESS_EQUAL;

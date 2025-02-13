@@ -17,7 +17,7 @@ class Lexer {
 public:
     void init(char* in, const size_t& source_len);
     Token generate_next_token();
-    inline bool has_next();
+    inline bool is_at_end();
 
     size_t errors = 0;
     void report_lexing_error(
