@@ -149,7 +149,7 @@ Token Lexer::generate_string_token() {
     ttype = TokenType::STRING;
     std::vector<size_t> invalid_escapes;
     for (;;current++) {
-        if (!has_next()) {
+        if (!has_next() || *current == '\n') {
             break;
         } else if (*current == '"') {
             // Skip closing "
@@ -161,6 +161,8 @@ Token Lexer::generate_string_token() {
             current++;
             if (!this->has_next()) {
                 break;
+            } else if (*current == '\n') {
+                continue;
             } else if (*current == '\\') {
                 // Quoted slash
                 value.push_back('\\');
