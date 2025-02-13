@@ -24,8 +24,8 @@ inline void Parser::read_next_token() noexcept {
     current = lexer.generate_next_token();
 }
 
-inline bool Parser::has_next() const noexcept {
-    return current.ttype != TokenType::END_OF_FILE;
+inline bool Parser::is_at_end() const noexcept {
+    return current.ttype == TokenType::END_OF_FILE;
 }
 
 Token Parser::consume() noexcept {
@@ -43,7 +43,7 @@ bool Parser::check(const std::initializer_list<TokenType>& types ) const noexcep
 void Parser::synchronize() noexcept {
     Token last = current;
     read_next_token();
-    while (has_next()) {
+    while (!is_at_end()) {
         if (
             last.ttype == TokenType::SEMI_COLON ||
             last.ttype == TokenType::RIGHT_CURLY_BRACE ||
@@ -70,7 +70,7 @@ ParseResult Parser::parse_source() {
         read_next_token();
     Program *source_tree = new Program;
     ParseResult result;
-    while (has_next()) {
+    while (!is_at_end()) {
         result = parse_statement();
         if (result.is_usable()) {
             if (_errors) continue;
@@ -78,7 +78,7 @@ ParseResult Parser::parse_source() {
                 reinterpret_cast<Statement*>(result.unwrap())
             );
         } else if (result.is_error()) {
-            if (!has_next()) break;
+            if (is_at_end()) break;
             report_error(result.unwrap_error());
             synchronize();
         } else if (result.is_null_value()) {

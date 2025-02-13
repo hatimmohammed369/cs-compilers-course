@@ -18,7 +18,7 @@ public:
     inline size_t errors() const noexcept { return _errors; }
     inline Lexer get_lexer() noexcept;
     inline void read_next_token() noexcept;
-    inline bool has_next() const noexcept;
+    inline bool is_at_end() const noexcept;
     Token consume() noexcept;
     bool check(const std::initializer_list<TokenType>& types) const noexcept;
     void synchronize() noexcept ;
