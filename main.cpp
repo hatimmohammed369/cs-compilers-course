@@ -37,10 +37,8 @@ int main(int argc, char* argv[]) {
                         if (value) cout << value << '\n' ;
                     } else if (eval.is_error()) {
                         // Runtime error
-                        cerr << eval.unwrap_error() << "\n\n" ;
+                        cerr << eval.unwrap_error() << "\n" ;
                     }
-                } else {
-                    cout << '\n' ;
                 }
             } else {
                 // Syntax error
