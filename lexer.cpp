@@ -253,8 +253,6 @@ Token Lexer::generate_identifier_token() {
         ttype = TokenType::KEYWORD_OR;
     else if (value == "print")
         ttype = TokenType::KEYWORD_PRINT;
-    else if (value == "println")
-        ttype = TokenType::KEYWORD_PRINTLN;
     else if (value == "string")
         ttype = TokenType::KEYWORD_STRING;
     else if (value == "return")

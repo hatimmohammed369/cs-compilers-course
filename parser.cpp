@@ -55,7 +55,6 @@ void Parser::synchronize() noexcept {
                 TokenType::KEYWORD_FLOAT,
                 TokenType::KEYWORD_INT,
                 TokenType::KEYWORD_PRINT,
-                TokenType::KEYWORD_PRINTLN,
                 TokenType::LEFT_CURLY_BRACE
             })
         ) { return; }
@@ -97,7 +96,7 @@ ParseResult Parser::parse_statement() {
     ParseResult result;
     if (current.is_type_keyword())
         result = parse_variable_declaration();
-    else if (check({TokenType::KEYWORD_PRINT, TokenType::KEYWORD_PRINTLN}))
+    else if (check({TokenType::KEYWORD_PRINT}))
         result = parse_print();
     else
         result = parse_expression();
@@ -118,16 +117,16 @@ ParseResult Parser::parse_statement() {
 }
 
 ParseResult Parser::parse_print() {
-    TokenType keyword = current.ttype;
     Print* print_stmt =
         new Print{current, nullptr};
     // Skip keyword `print` or `println`
     read_next_token();
     ParseResult result = parse_expression();
-    if (keyword == TokenType::KEYWORD_PRINT) {
-        if (!result.is_null_value()) {
-            print_stmt->expr =
-                reinterpret_cast<Expression*>(result.unwrap());
+    if (result.is_ok()) {
+        Expression* expr =
+            reinterpret_cast<Expression*>(result.unwrap());
+        if (expr) {
+            print_stmt->expr = expr;
             result = ParseResult::Ok(print_stmt);
         } else {
             _errors++;
@@ -135,10 +134,6 @@ ParseResult Parser::parse_print() {
             result = ParseResult::Ok(nullptr);
             synchronize();
         }
-    } else if (result.is_ok()) {
-        print_stmt->expr =
-            reinterpret_cast<Expression*>(result.unwrap());
-        result = ParseResult::Ok(print_stmt);
     }
     return result;
 }

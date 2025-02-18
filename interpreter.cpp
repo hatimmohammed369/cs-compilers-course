@@ -606,11 +606,6 @@ InterpreterResult Interpreter::visit_print(Print* tree) {
         std::string expr_str =
             expr_result.unwrap()->to_string();
         std::cout << expr_str ;
-        if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN)
-            std::cout << '\n' ;
-    } else if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINTLN) {
-        // `println` without an expression
-        std::cout << '\n' ;
     } else if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINT) {
         std::cerr << "Keyword `print` parsed without an expression\n";
         exit(1);

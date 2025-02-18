@@ -50,9 +50,8 @@ enum class TokenType : int {
     LINEBREAK = 42,
     KEYWORD_TYPE = 43,
     KEYWORD_PRINT = 44,
-    KEYWORD_PRINTLN = 45,
-    KEYWORD_RETURN = 46,
-    EQUAL = 47 // = assignment equal sign
+    KEYWORD_RETURN = 45,
+    EQUAL = 46 // = assignment equal sign
 };
 
 class Token {
@@ -169,10 +168,8 @@ static const char* token_type_name(const TokenType& ttype) {
         case 44:
             return "KEYWORD_PRINT";
         case 45:
-            return "KEYWORD_PRINTLN";
-        case 46:
             return "KEYWORD_RETURN";
-        case 47:
+        case 46:
             return "EQUAL";
     }
     return "MISSING_CATEGORY" ;
