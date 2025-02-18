@@ -55,7 +55,6 @@ void Parser::synchronize() noexcept {
                 TokenType::KEYWORD_FLOAT,
                 TokenType::KEYWORD_INT,
                 TokenType::KEYWORD_PRINT,
-                TokenType::KEYWORD_PRINTLN,
                 TokenType::LEFT_CURLY_BRACE
             })
         ) { return; }
@@ -97,7 +96,7 @@ ParseResult Parser::parse_statement() {
     ParseResult result;
     if (current.is_type_keyword())
         result = parse_variable_declaration();
-    else if (check({TokenType::KEYWORD_PRINT, TokenType::KEYWORD_PRINTLN}))
+    else if (check({TokenType::KEYWORD_PRINT}))
         result = parse_print();
     else
         result = parse_expression();
