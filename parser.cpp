@@ -55,7 +55,8 @@ void Parser::synchronize() noexcept {
                 TokenType::KEYWORD_FLOAT,
                 TokenType::KEYWORD_INT,
                 TokenType::KEYWORD_PRINT,
-                TokenType::LEFT_CURLY_BRACE
+                TokenType::LEFT_CURLY_BRACE,
+                TokenType::KEYWORD_RETURN
             })
         ) { return; }
         last = current;
@@ -72,7 +73,6 @@ ParseResult Parser::parse_source() {
     while (!is_at_end()) {
         result = parse_statement();
         if (result.is_usable()) {
-            if (_errors) continue;
             source_tree->statements.push_back(
                 reinterpret_cast<Statement*>(result.unwrap())
             );
@@ -119,7 +119,6 @@ ParseResult Parser::parse_statement() {
 ParseResult Parser::parse_print() {
     Print* print_stmt =
         new Print{current, nullptr};
-    // Skip keyword `print` or `println`
     read_next_token();
     ParseResult result = parse_expression();
     if (result.is_ok()) {
@@ -128,13 +127,17 @@ ParseResult Parser::parse_print() {
         if (expr) {
             print_stmt->expr = expr;
             result = ParseResult::Ok(print_stmt);
+            return result;
         } else {
             _errors++;
-            report_error("Expected expression after `print`");
-            result = ParseResult::Ok(nullptr);
-            synchronize();
+            result = ParseResult::Error(
+                "Expected expression after `print`"
+            );
         }
     }
+    report_error(result.unwrap_error());
+    result = ParseResult::Ok(nullptr);
+    synchronize();
     return result;
 }
 
@@ -189,7 +192,6 @@ ParseResult Parser::parse_variable_declaration() {
                 goto END;
             }
             default: {
-                _errors++;
                 result = ParseResult::Error("Unexpected item");
                 goto END;
             }
@@ -659,7 +661,6 @@ ParseResult Parser::parse_block() {
         else
             result = parse_statement();
         if (result.is_usable()) {
-            if (_errors) continue;
             block->statements.push_back(
                 reinterpret_cast<Statement*>(result.unwrap())
             );
@@ -670,11 +671,12 @@ ParseResult Parser::parse_block() {
             continue;
         }
     }
-    if (result.is_usable()) {
+    if (result.is_ok()) {
         if (current.ttype == TokenType::RIGHT_CURLY_BRACE) {
             // Skip closing curly brace
             read_next_token();
             result = ParseResult::Ok(block);
+            return result;
         } else {
             // Expected closing curly brace after statement
             _errors++;
@@ -683,6 +685,9 @@ ParseResult Parser::parse_block() {
             );
         }
     }
+    report_error(result.unwrap_error());
+    result = ParseResult::Ok(nullptr);
+    synchronize();
     return result;
 }
 
@@ -690,7 +695,7 @@ ParseResult Parser::parse_return() {
     // Skip keyword `return`
     read_next_token();
     ParseResult result = parse_expression();
-    if (result.is_usable()) {
+    if (result.is_ok()) {
         if (current.ttype == TokenType::SEMI_COLON) {
             // Skip ;
             read_next_token();
@@ -698,15 +703,17 @@ ParseResult Parser::parse_return() {
                 reinterpret_cast<Expression*>(result.unwrap())
             };
             result = ParseResult::Ok(ret);
+            return result;
         } else {
             _errors++;
-            report_error(
+            result = ParseResult::Error(
                 "Expected ; after statement"
             );
-            result = ParseResult::Ok(nullptr);
-            synchronize();
         }
     }
+    report_error(result.unwrap_error());
+    result = ParseResult::Ok(nullptr);
+    synchronize();
     return result;
 }
 
