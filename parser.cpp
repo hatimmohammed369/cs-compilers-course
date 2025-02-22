@@ -730,7 +730,7 @@ ParseResult Parser::parse_group() {
             // Expected closing round brace after statement
             _errors++;
             result = ParseResult::Error(
-                "Expected \x29 after statement"
+                "Expected \x29 after expression"
             );
         }
     } else if (result.is_null_value()) {
