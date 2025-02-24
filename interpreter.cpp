@@ -1,5 +1,4 @@
 #include <cmath>
-#include <format>
 #include "interpreter.hpp"
 #include "common.hpp"
 #include "object.hpp"
@@ -606,14 +605,6 @@ InterpreterResult Interpreter::visit_print(Print* tree) {
         std::string expr_str =
             expr_result.unwrap()->to_string();
         std::cout << expr_str ;
-    } else if (tree->print_keyword.ttype == TokenType::KEYWORD_PRINT) {
-        std::cerr << "Keyword `print` parsed without an expression\n";
-        exit(1);
-    } else {
-        std::cerr
-            << "Unknown print keyword token \n"
-            << tree->print_keyword.ttype ;
-        exit(1);
     }
     if (is_mode_interactive())
         std::cout << '\n' ;

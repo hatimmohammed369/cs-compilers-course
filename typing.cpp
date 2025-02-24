@@ -1,6 +1,5 @@
 #include "typing.hpp"
 #include "token.hpp"
-#include <format>
 
 const std::string Type::NAME = "type";
 const std::string TypeVoid::NAME = "void";

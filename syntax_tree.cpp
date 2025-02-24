@@ -1,7 +1,4 @@
 #include "syntax_tree.hpp"
-#include <charconv>
-#include <format>
-#include <sstream>
 
 std::string Assignment::to_string() const noexcept {
     return std::format(
@@ -23,8 +20,7 @@ InterpreterResult Return::accept(Visitor* visitor) {
 
 std::string Print::to_string() const noexcept {
     return std::format(
-        "{} {} ;",
-        print_keyword.value,
+        "print {};",
         expr->to_string()
     );
 }

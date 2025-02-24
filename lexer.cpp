@@ -1,5 +1,4 @@
 #include <cctype>
-#include <vector>
 #include "lexer.hpp"
 
 void Lexer::init(char* in, const size_t& source_len) {
