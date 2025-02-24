@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
         // Interactive Mode
         // Read input from user directly
         *Config::get_mode() = Mode::Interactive;
-        Config::get_filename().assign("stdin");
+        Config::get_filename()->assign("stdin");
         // Line characters store
         char* buffer;
         Object* value;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
         // File Mode
         // Read input from file
         *Config::get_mode() = Mode::File;
-        Config::get_filename().assign(argv[2]);
+        Config::get_filename()->assign(argv[2]);
         // Open requested file for reading
         ifstream input_file {argv[2]};
         // Seek to fil end

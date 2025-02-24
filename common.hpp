@@ -22,8 +22,8 @@ public:
         return m;
     }
 
-    static std::string get_filename() {
-        static std::string filename{};
+    static std::string* get_filename() {
+        static std::string* filename = new std::string{};
         return filename;
     }
 };
