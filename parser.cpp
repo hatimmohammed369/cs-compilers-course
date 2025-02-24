@@ -100,6 +100,7 @@ ParseResult Parser::parse_statement() {
         result = parse_expression();
     if (result.is_usable()) {
         if (current.ttype == TokenType::SEMI_COLON) {
+            last_used = current;
             // Consume ;
             read_next_token();
         } else if (
@@ -119,6 +120,8 @@ ParseResult Parser::parse_statement() {
 ParseResult Parser::parse_print() {
     Print* print_stmt =
         new Print{nullptr};
+    last_used = current;
+    // Skip keyword `print`
     read_next_token();
     ParseResult result = parse_expression();
     if (result.is_ok()) {
@@ -143,10 +146,16 @@ ParseResult Parser::parse_print() {
 
 ParseResult Parser::parse_variable_declaration() {
     ParseResult result;
+    last_used = current;
     Token type_token = consume();
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
-    if (current.ttype != TokenType::IDENTIFIER) {
+    if (!target_type) {
+        _errors++;
+        return ParseResult::Error(
+            std::format("Undefined type `{}`", type_token.value)
+        );
+    } else if (current.ttype != TokenType::IDENTIFIER) {
         _errors++;
         report_error(
             std::format(
@@ -162,6 +171,7 @@ ParseResult Parser::parse_variable_declaration() {
     while (true) {
         switch (current.ttype) {
             case TokenType::IDENTIFIER: {
+                last_used = current;
                 initial_values.push_back(
                     std::make_pair(
                         std::move(consume().value),
@@ -171,6 +181,7 @@ ParseResult Parser::parse_variable_declaration() {
                 break;
             }
             case TokenType::COLON_EQUAL: {
+                last_used = current;
                 // Consume :=
                 read_next_token();
                 initializer = parse_expression();
@@ -183,6 +194,7 @@ ParseResult Parser::parse_variable_declaration() {
                 break;
             }
             case TokenType::COMMA: {
+                last_used = current;
                 // Consume ,
                 read_next_token();
                 break;
@@ -212,6 +224,7 @@ END:
 }
 
 ParseResult Parser::parse_expression() {
+    last_used = current;
     Token name_token = current;
     ParseResult result = parse_logical_or();
     if (result.is_error())
@@ -219,6 +232,7 @@ ParseResult Parser::parse_expression() {
     Name* name_expr =
         dynamic_cast<Name*>(result.unwrap());
     if (name_expr && current.ttype == TokenType::EQUAL) {
+        last_used = current;
         // Consume assignment equal `=`
         read_next_token();
         Assignment* assignment = new Assignment{
@@ -234,6 +248,7 @@ ParseResult Parser::parse_expression() {
         result.is_ok() &&
         current.ttype == TokenType::KEYWORD_XOR
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_logical_or();
         if (right.is_usable()) {
@@ -257,6 +272,7 @@ ParseResult Parser::parse_logical_or() {
         result.is_ok() &&
         current.ttype == TokenType::KEYWORD_OR
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_logical_and();
         if (right.is_usable()) {
@@ -280,6 +296,7 @@ ParseResult Parser::parse_logical_and() {
         result.is_ok() &&
         current.ttype == TokenType::KEYWORD_AND
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_bitwise_xor();
         if (right.is_usable()) {
@@ -303,6 +320,7 @@ ParseResult Parser::parse_bitwise_xor() {
         result.is_ok() &&
         current.ttype == TokenType::BITWISE_XOR
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_bitwise_or();
         if (right.is_usable()) {
@@ -326,6 +344,7 @@ ParseResult Parser::parse_bitwise_or() {
         result.is_ok() &&
         current.ttype == TokenType::BITWISE_OR
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_bitwise_and();
         if (right.is_usable()) {
@@ -349,6 +368,7 @@ ParseResult Parser::parse_bitwise_and() {
         result.is_ok() &&
         current.ttype == TokenType::BITWISE_AND
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_equality();
         if (right.is_usable()) {
@@ -372,6 +392,7 @@ ParseResult Parser::parse_equality() {
         result.is_ok() &&
         check({TokenType::LOGICAL_EQUAL, TokenType::LOGICAL_NOT_EQUAL})
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_comparison();
         if (right.is_usable()) {
@@ -400,6 +421,7 @@ ParseResult Parser::parse_comparison() {
             TokenType::LESS_EQUAL
         })
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_shift();
         if (right.is_usable()) {
@@ -424,6 +446,7 @@ ParseResult Parser::parse_shift() {
         result.is_ok() &&
         check({TokenType::RIGHT_SHIFT, TokenType::LEFT_SHIFT})
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_term();
         if (right.is_usable()) {
@@ -448,6 +471,7 @@ ParseResult Parser::parse_term() {
         result.is_ok() &&
         check({TokenType::PLUS, TokenType::MINUS})
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_factor();
         if (right.is_usable()) {
@@ -476,6 +500,7 @@ ParseResult Parser::parse_factor() {
             TokenType::PERCENT
         })
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult right = parse_exponential();
         if (right.is_usable()) {
@@ -504,12 +529,14 @@ ParseResult Parser::parse_exponential() {
         result.is_ok() &&
         current.ttype == TokenType::EXPONENT
     ) {
+        last_used = current;
         Token op = consume();
         ParseResult exponent = parse_unary();
         if (exponent.is_error()) {
             result = ParseResult::Error(
                 exponent.unwrap_error()
             );
+            break;
         } else if (exponent.is_usable()) {
             ops.push_back(op);
             items.push_back(exponent.unwrap());
@@ -545,10 +572,9 @@ ParseResult Parser::parse_unary() {
         TokenType::MINUS,
         TokenType::PLUS,
         TokenType::TILDE
-    })) {
-        return parse_primary();
-    }
+    })) { return parse_primary(); }
     ParseResult result;
+    last_used = current;
     Token op = consume();
     result = parse_unary();
     if (result.is_usable()) {
@@ -567,6 +593,7 @@ ParseResult Parser::parse_primary() {
     ParseResult result;
     switch (current.ttype) {
         case TokenType::LEFT_ROUND_BRACE: {
+            last_used = current;
             // Consume (
             read_next_token();
             if (current.is_type_keyword())
@@ -580,6 +607,7 @@ ParseResult Parser::parse_primary() {
             break;
         }
         case TokenType::IDENTIFIER: {
+            last_used = current;
             Name* name_expr =
                 new Name{consume().value};
             result = ParseResult::Ok(name_expr);
@@ -599,37 +627,34 @@ ParseResult Parser::parse_literal() {
             ObjectVoid* obj = ObjectVoid::VOID_OBJECT;
             parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            read_next_token();
             break;
         }
         case TokenType::KEYWORD_TRUE: {
             ObjectBoolean* obj = ObjectBoolean::TRUE;
             parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            read_next_token();
             break;
         }
         case TokenType::KEYWORD_FALSE: {
             ObjectBoolean* obj = ObjectBoolean::FALSE;
             parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
-            read_next_token();
             break;
         }
         case TokenType::INTEGER: {
-            ObjectInteger* obj = new ObjectInteger{std::stoll(consume().value)};
+            ObjectInteger* obj = new ObjectInteger{std::stoll(current.value)};
             parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
             break;
         }
         case TokenType::FLOAT: {
-            ObjectFloat* obj = new ObjectFloat{std::stold(consume().value, nullptr)};
+            ObjectFloat* obj = new ObjectFloat{std::stold(current.value, nullptr)};
             parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
             break;
         }
         case TokenType::STRING: {
-            ObjectString* obj = new ObjectString{consume().value};
+            ObjectString* obj = new ObjectString{current.value};
             parsed_hunk =
                 new Literal{reinterpret_cast<Object*>(obj)};
             break;
@@ -638,10 +663,13 @@ ParseResult Parser::parse_literal() {
             return ParseResult::Ok(nullptr);
         }
     }
+    last_used = current;
+    read_next_token();
     return ParseResult::Ok(parsed_hunk);
 }
 
 ParseResult Parser::parse_block() {
+    last_used = current;
     // Skip opening curly brace
     read_next_token();
     Block* block = new Block;
@@ -664,6 +692,7 @@ ParseResult Parser::parse_block() {
     }
     if (result.is_ok()) {
         if (current.ttype == TokenType::RIGHT_CURLY_BRACE) {
+            last_used = current;
             // Skip closing curly brace
             read_next_token();
             result = ParseResult::Ok(block);
@@ -683,11 +712,13 @@ ParseResult Parser::parse_block() {
 }
 
 ParseResult Parser::parse_return() {
+    last_used = current;
     // Skip keyword `return`
     read_next_token();
     ParseResult result = parse_expression();
     if (result.is_ok()) {
         if (current.ttype == TokenType::SEMI_COLON) {
+            last_used = current;
             // Skip ;
             read_next_token();
             Return* ret = new Return{
@@ -712,6 +743,7 @@ ParseResult Parser::parse_group() {
     ParseResult result = parse_expression();
     if (result.is_usable()) {
         if (current.ttype == TokenType::RIGHT_ROUND_BRACE) {
+            last_used = current;
             // Skip closing round brace
             read_next_token();
             GroupedExpression* grouped_expr =
@@ -735,6 +767,7 @@ ParseResult Parser::parse_group() {
 }
 
 ParseResult Parser::parse_cast() {
+    last_used = current;
     Token type_token = consume();
     Type* target_type =
         Type::get_type_by_token(type_token.ttype);
@@ -744,6 +777,7 @@ ParseResult Parser::parse_cast() {
             std::format("Undefined type `{}`", type_token.value)
         );
     }
+    last_used = current;
     // Skip closing round brace around target type
     read_next_token();
     ParseResult result = parse_primary();

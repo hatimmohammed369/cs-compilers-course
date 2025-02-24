@@ -11,6 +11,7 @@ using ParseResult =
 class Parser {
     Lexer lexer;
     Token current;
+    Token last_used;
     size_t _errors = 0;
     void report_error(const std::string& msg) noexcept;
 public:
