@@ -22,6 +22,7 @@ inline void Lexer::skip_whitespaces() {
             col = 0;
         }
         current++;
+        col++;
     }
     if (is_at_end()) {
         std::string::size_type last_line_break_in_input =

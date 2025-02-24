@@ -94,7 +94,7 @@ ParseResult Parser::parse_statement() {
     ParseResult result;
     if (current.is_type_keyword())
         result = parse_variable_declaration();
-    else if (check({TokenType::KEYWORD_PRINT}))
+    else if (current.ttype == TokenType::KEYWORD_PRINT)
         result = parse_print();
     else
         result = parse_expression();
