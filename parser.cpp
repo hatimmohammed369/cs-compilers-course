@@ -159,9 +159,11 @@ ParseResult Parser::parse_variable_declaration() {
         Type::get_type_by_token(type_token.ttype);
     if (!target_type) {
         _errors++;
-        return ParseResult::Error(
+        report_error(
             std::format("Undefined type `{}`", type_token.value)
         );
+        synchronize();
+        return ParseResult::Ok(nullptr);
     } else if (current.ttype != TokenType::IDENTIFIER) {
         _errors++;
         report_error(
@@ -211,6 +213,7 @@ ParseResult Parser::parse_variable_declaration() {
                 goto END;
             }
             default: {
+                _errors++;
                 result = ParseResult::Error("Unexpected item");
                 goto END;
             }
@@ -222,7 +225,6 @@ END:
             new VariableDeclaration {target_type, initial_values};
         result = ParseResult::Ok(declarations_list);
     } else {
-        _errors++;
         report_error(result.unwrap_error());
         result = ParseResult::Ok(nullptr);
         synchronize();
@@ -247,7 +249,8 @@ ParseResult Parser::parse_expression() {
         ParseResult expr_result = parse_expression();
         if (expr_result.is_error())
             return expr_result;
-        assignment->expr = reinterpret_cast<Expression*>(expr_result.unwrap());
+        assignment->expr =
+            reinterpret_cast<Expression*>(expr_result.unwrap());
         return ParseResult::Ok(assignment);
     }
     while (
@@ -784,6 +787,12 @@ ParseResult Parser::parse_cast() {
         );
     }
     last_used = current;
+    if (current.ttype != TokenType::RIGHT_ROUND_BRACE) {
+        _errors++;
+        return ParseResult::Error(
+            "Expected \x29 after cast type"
+        )
+    }
     // Skip closing round brace around target type
     read_next_token();
     ParseResult result = parse_primary();
