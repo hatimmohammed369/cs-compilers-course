@@ -3,6 +3,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+#include "common.hpp"
 #include "interpreter.hpp"
 #include "object.hpp"
 #include "parser.hpp"
@@ -53,7 +54,16 @@ int main(int argc, char* argv[]) {
         // File Mode
         // Read input from file
         *Config::get_mode() = Mode::File;
-        Config::get_filename()->assign(argv[2]);
+        std::string filename{argv[2]};
+        std::string::size_type pos =
+            filename.find_last_of('/');
+        if (pos == std::string::npos)
+            pos = 0;
+        else
+            pos++;
+        Config::get_filename()->assign(
+            filename.substr(pos)
+        );
         // Open requested file for reading
         ifstream input_file {argv[2]};
         // Seek to fil end
