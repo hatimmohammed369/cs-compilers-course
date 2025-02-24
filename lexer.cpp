@@ -135,7 +135,7 @@ Token Lexer::generate_number_token() {
     }
 
 RETURN_TOKEN:
-    return Token{ttype, value, col, lines.size()-1};
+    return Token{ttype, value, col, lines.size()};
 }
 
 Token Lexer::generate_string_token() {
@@ -228,7 +228,7 @@ Token Lexer::generate_string_token() {
             repr
         );
     }
-    return Token{ttype, value, col, lines.size()-1};
+    return Token{ttype, value, col, lines.size()};
 }
 
 Token Lexer::generate_identifier_token() {
@@ -264,7 +264,7 @@ Token Lexer::generate_identifier_token() {
         ttype = TokenType::KEYWORD_XOR;
     else if (value == "type")
         ttype = TokenType::KEYWORD_TYPE;
-    return Token{ttype, value, col, lines.size()-1};
+    return Token{ttype, value, col, lines.size()};
 }
 
 Token Lexer::generate_invalid_token() {
@@ -278,7 +278,7 @@ Token Lexer::generate_invalid_token() {
         value.push_back(*current);
         current++;
     }
-    return Token{ttype, value, col, lines.size()-1};
+    return Token{ttype, value, col, lines.size()};
 }
 
 Token Lexer::generate_next_token() {
@@ -286,10 +286,21 @@ Token Lexer::generate_next_token() {
     TokenType ttype;
     std::string value;
     skip_whitespaces();
-    if (is_at_end())
-        return Token{TokenType::END_OF_FILE, std::string(), col, lines.size()-1};
-    else if (old_line < lines.size())
-        return Token{TokenType::LINEBREAK, std::string("\n"), col, lines.size()-1};
+    if (is_at_end()) {
+        return Token{
+            TokenType::END_OF_FILE,
+            std::string(),
+            col,
+            lines.size()
+        };
+    } else if (old_line < lines.size()) {
+        return Token{
+            TokenType::LINEBREAK,
+            std::string("\n"),
+            col,
+            lines.size()
+        };
+    }
     switch (*current) {
         case ';':
             current++;
@@ -310,7 +321,9 @@ Token Lexer::generate_next_token() {
                 break;
             } else {
                 current--;
-                return generate_invalid_token();
+                Token tok = generate_invalid_token();
+                col += tok.value.length();
+                return tok;
             }
         case '{':
             current++;
@@ -457,9 +470,11 @@ Token Lexer::generate_next_token() {
                 tok = generate_identifier_token();
             else
                 tok = generate_invalid_token();
+            col += tok.value.length();
             return tok;
         }
     }
 RETURN_TOKEN:
-    return Token{ttype, value, col, lines.size()-1};
+    col += value.length();
+    return Token{ttype, value, col, lines.size()};
 }
