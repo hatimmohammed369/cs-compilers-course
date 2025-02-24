@@ -21,6 +21,11 @@ public:
         static Mode* m = new Mode;
         return m;
     }
+
+    static std::string get_filename() {
+        static std::string filename{};
+        return filename;
+    }
 };
 
 static bool is_mode_interactive() __attribute__((unused));
