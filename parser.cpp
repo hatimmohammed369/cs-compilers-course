@@ -557,7 +557,7 @@ ParseResult Parser::parse_unary() {
     } else if (result.is_null_value()) {
         _errors++;
         result = ParseResult::Error(
-            std::format("Expected expression after ", op.value)
+            std::format("Expected expression after {}", op.value)
         );
     }
     return result;
@@ -565,15 +565,6 @@ ParseResult Parser::parse_unary() {
 
 ParseResult Parser::parse_primary() {
     ParseResult result;
-    if (current.ttype == TokenType::LINEBREAK) {
-        // Consume \n
-        read_next_token();
-        if (current.ttype == TokenType::LINEBREAK) {
-            _errors++;
-            result = ParseResult::Error("Expected expression");
-        }
-        return result;
-    }
     switch (current.ttype) {
         case TokenType::LEFT_ROUND_BRACE: {
             // Consume (
