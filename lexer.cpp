@@ -135,7 +135,7 @@ Token Lexer::generate_number_token() {
     }
 
 RETURN_TOKEN:
-    return Token{ttype, value, col, lines.size()};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_string_token() {
@@ -228,7 +228,7 @@ Token Lexer::generate_string_token() {
             repr
         );
     }
-    return Token{ttype, value, col, lines.size()};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_identifier_token() {
@@ -264,7 +264,7 @@ Token Lexer::generate_identifier_token() {
         ttype = TokenType::KEYWORD_XOR;
     else if (value == "type")
         ttype = TokenType::KEYWORD_TYPE;
-    return Token{ttype, value, col, lines.size()};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_invalid_token() {
@@ -278,7 +278,7 @@ Token Lexer::generate_invalid_token() {
         value.push_back(*current);
         current++;
     }
-    return Token{ttype, value, col, lines.size()};
+    return Token{ttype, value, col, lines.size()-1};
 }
 
 Token Lexer::generate_next_token() {
@@ -291,14 +291,14 @@ Token Lexer::generate_next_token() {
             TokenType::END_OF_FILE,
             std::string(),
             col,
-            lines.size()
+            lines.size()-1
         };
     } else if (old_line < lines.size()) {
         return Token{
             TokenType::LINEBREAK,
             std::string("\n"),
             col,
-            lines.size()
+            lines.size()-1
         };
     }
     switch (*current) {
@@ -476,5 +476,5 @@ Token Lexer::generate_next_token() {
     }
 RETURN_TOKEN:
     col += value.length();
-    return Token{ttype, value, col, lines.size()};
+    return Token{ttype, value, col, lines.size()-1};
 }
