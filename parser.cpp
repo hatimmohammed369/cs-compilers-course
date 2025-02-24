@@ -4,8 +4,15 @@
 #include "syntax_tree.hpp"
 #include "token.hpp"
 
-void Parser::report_error(const std::string& s) noexcept {
-    std::cerr << s << "\n\n" ;
+void Parser::report_error(const std::string& error_msg) noexcept {
+    std::cerr << std::format(
+        "\033[36m{}:{}:{}:\033[0m \033[31merror:\033[0m {}\n",
+        *Config::get_filename(),
+        last_used.col+1, last_used.line+1,
+        error_msg
+    );
+    std::cerr << "\t" << last_used.line+1 << " | " ;
+    std::cerr << lexer.lines.at(last_used.line) << '\n' ;
 }
 
 void Parser::init(char* in, size_t source_len) noexcept {
@@ -224,7 +231,6 @@ END:
 }
 
 ParseResult Parser::parse_expression() {
-    last_used = current;
     Token name_token = current;
     ParseResult result = parse_logical_or();
     if (result.is_error())

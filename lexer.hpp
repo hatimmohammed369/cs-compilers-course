@@ -6,7 +6,6 @@
 class Lexer {
     std::string source;
     std::string::const_iterator current;
-    std::vector<std::string> lines;
     size_t col = 0;
 
     Token generate_number_token();
@@ -15,6 +14,7 @@ class Lexer {
     Token generate_identifier_token();
     Token generate_invalid_token();
 public:
+    std::vector<std::string> lines;
     void init(char* in, const size_t& source_len);
     Token generate_next_token();
     inline bool is_at_end();

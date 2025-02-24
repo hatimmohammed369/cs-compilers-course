@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
                 }
             } else {
                 // Syntax error
-                cerr << result.unwrap_error() << "\n\n" ;
+                parser.report_error(result.unwrap_error());
                 cerr << parser.errors() << " syntax errors found\n" ;
             }
             // free buffer because readline always allocates a new buffer
@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
             }
         } else {
             // Syntax error
-            cerr << result.unwrap_error() << "\n\n" ;
+            parser.report_error(result.unwrap_error());
             cerr << parser.errors() << " syntax errors found\n" ;
         }
         // Free input buffer

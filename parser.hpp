@@ -13,8 +13,8 @@ class Parser {
     Token current;
     Token last_used;
     size_t _errors = 0;
-    void report_error(const std::string& msg) noexcept;
 public:
+    void report_error(const std::string& msg) noexcept;
     void init(char* in, size_t source_len) noexcept;
     inline size_t errors() const noexcept { return _errors; }
     inline Lexer get_lexer() noexcept;
