@@ -104,7 +104,29 @@ ParseResult Parser::parse_statement() {
             })
         ) {
             _errors++;
-            result = ParseResult::Error("Expected ; after statement");
+            const std::string msg{"Expected ; after statement"};
+            std::string current_line =
+                lexer.lines.at(last_used.line);
+            std::string header =
+                std::format("{:6} | ", last_used.line+1);
+            std::string::size_type end =
+                std::min(
+                    last_used.col + last_used.value.length(),
+                    current_line.length()
+                );
+            if (!std::isspace(current_line.at(end))) {
+                current_line =
+                    current_line.substr(0, end) + ' ' + current_line.substr(end);
+            }
+            std::string diagnostics =
+                std::format(
+                    "{}{}\n{}{}",
+                    header,
+                    current_line,
+                    std::string(header.length() + end, ' '),
+                    "\033[32m^\033[0m" // a green caret
+                );
+            result = ParseResult::Error(ErrorPair{msg, diagnostics});
         }
     }
     return result;
