@@ -1,18 +1,16 @@
-#include <utility>
 #include "parser.hpp"
 #include "object.hpp"
 #include "syntax_tree.hpp"
 #include "token.hpp"
 
-void Parser::report_error(const std::string& error_msg) noexcept {
+void Parser::report_error(const ErrorPair& error_pair) const noexcept {
     std::cerr << std::format(
-        "\033[36m{}:{}:{}:\033[0m \033[31merror:\033[0m {}\n",
+        "\033[36m{}:{}:{}:\033[0m \033[31merror:\033[0m {}\n{}\n",
         *Config::get_filename(),
         last_used.col+1, last_used.line+1,
-        error_msg
+        error_pair.msg,
+        error_pair.diagnostics
     );
-    std::cerr << "\t" << last_used.line+1 << " | " ;
-    std::cerr << lexer.lines.at(last_used.line) << '\n' ;
 }
 
 void Parser::init(char* in, size_t source_len) noexcept {
@@ -129,7 +127,7 @@ ParseResult Parser::parse_print() {
         } else {
             _errors++;
             result = ParseResult::Error(
-                "Expected expression after `print`"
+                ErrorPair{"Expected expression after `print`", std::string{}}
             );
         }
     }
@@ -148,17 +146,23 @@ ParseResult Parser::parse_variable_declaration() {
     if (!target_type) {
         _errors++;
         report_error(
-            std::format("Undefined type `{}`", type_token.value)
+            ErrorPair{
+                std::format("Undefined type `{}`", type_token.value),
+                std::string{}
+            }
         );
         synchronize();
         return ParseResult::Ok(nullptr);
     } else if (current.ttype != TokenType::IDENTIFIER) {
         _errors++;
         report_error(
-            std::format(
-                "Expected identifier after type {}",
-                type_token.value
-            )
+            ErrorPair{
+                std::format(
+                    "Expected identifier after type {}",
+                    type_token.value
+                ),
+                std::string{}
+            }
         );
         synchronize();
         return ParseResult::Ok(nullptr);
@@ -202,7 +206,7 @@ ParseResult Parser::parse_variable_declaration() {
             }
             default: {
                 _errors++;
-                result = ParseResult::Error("Unexpected item");
+                result = ParseResult::Error(ErrorPair{"Unexpected item""Unexpected item", std::string{}});
                 goto END;
             }
         }
@@ -255,7 +259,7 @@ ParseResult Parser::parse_expression() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -279,7 +283,7 @@ ParseResult Parser::parse_logical_or() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -303,7 +307,7 @@ ParseResult Parser::parse_logical_and() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -327,7 +331,7 @@ ParseResult Parser::parse_bitwise_xor() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -351,7 +355,7 @@ ParseResult Parser::parse_bitwise_or() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -375,7 +379,7 @@ ParseResult Parser::parse_bitwise_and() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -399,7 +403,7 @@ ParseResult Parser::parse_equality() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -428,7 +432,7 @@ ParseResult Parser::parse_comparison() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -453,7 +457,7 @@ ParseResult Parser::parse_shift() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -478,7 +482,7 @@ ParseResult Parser::parse_term() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -507,7 +511,7 @@ ParseResult Parser::parse_factor() {
         } else if (right.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                std::format("Expected expression after {}", op.value)
+                ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
             );
             break;
         }
@@ -540,7 +544,7 @@ ParseResult Parser::parse_exponential() {
         } else if (result.is_null_value()) {
             _errors++;
             result = ParseResult::Error(
-                "Expected expression after **"
+                ErrorPair{"Expected expression after **", std::string{}}
             );
             break;
         }
@@ -580,7 +584,7 @@ ParseResult Parser::parse_unary() {
     } else if (result.is_null_value()) {
         _errors++;
         result = ParseResult::Error(
-            std::format("Expected expression after {}", op.value)
+            ErrorPair{std::format("Expected expression after {}", op.value), std::string{}}
         );
     }
     return result;
@@ -698,7 +702,7 @@ ParseResult Parser::parse_block() {
             // Expected closing curly brace after statement
             _errors++;
             result = ParseResult::Error(
-                "Expected \x7d after statement"
+                ErrorPair{"Expected \x7d after statement", std::string{}}
             );
         }
     }
@@ -726,7 +730,7 @@ ParseResult Parser::parse_return() {
         } else {
             _errors++;
             result = ParseResult::Error(
-                "Expected ; after statement"
+                ErrorPair{"Expected ; after statement", std::string{}}
             );
         }
     }
@@ -750,14 +754,14 @@ ParseResult Parser::parse_group() {
             // Expected closing round brace after statement
             _errors++;
             result = ParseResult::Error(
-                "Expected \x29 after expression"
+                ErrorPair{"Expected \x29 after expression", std::string{}}
             );
         }
     } else if (result.is_null_value()) {
         // Expected expression after opening round brace
         _errors++;
         result = ParseResult::Error(
-            "Expected expression after \x28"
+            ErrorPair{"Expected expression after \x28", std::string{}}
         );
     }
     return result;
@@ -771,15 +775,15 @@ ParseResult Parser::parse_cast() {
     if (!target_type) {
         _errors++;
         return ParseResult::Error(
-            std::format("Undefined type `{}`", type_token.value)
+            ErrorPair{std::format("Undefined type `{}`", type_token.value), std::string{}}
         );
     }
     last_used = current;
     if (current.ttype != TokenType::RIGHT_ROUND_BRACE) {
         _errors++;
         return ParseResult::Error(
-            "Expected \x29 after cast type"
-        )
+            ErrorPair{"Expected \x29 after cast type", std::string{}}
+        );
     }
     // Skip closing round brace around target type
     read_next_token();
@@ -794,7 +798,7 @@ ParseResult Parser::parse_cast() {
         // Expected expression after cast target type
         _errors++;
         result = ParseResult::Error(
-            "Expected expression after cast target type"
+            ErrorPair{"Expected expression after cast target type", std::string{}}
         );
     }
     return result;

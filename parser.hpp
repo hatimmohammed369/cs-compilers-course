@@ -5,8 +5,16 @@
 #include "result.hpp"
 #include "syntax_tree.hpp"
 
-using ParseResult =
-    PointerValueResult<TreeBase*/*value type*/, std::string/*error type*/>;
+class ErrorPair {
+public:
+    std::string msg;
+    std::string diagnostics;
+};
+
+using ParseResult = PointerValueResult<
+    TreeBase*/*value type*/,
+    ErrorPair/*error type*/
+>;
 
 class Parser {
     Lexer lexer;
