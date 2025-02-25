@@ -33,14 +33,17 @@ inline void Lexer::skip_whitespaces() {
     } else if (lines.back().empty()) {
         std::string::size_type cur_pos =
             std::distance(source.cbegin(), current);
-        std::string::size_type last_line_break =
+        std::string::size_type begin =
             source.find_last_of('\n', cur_pos);
-        if (last_line_break == std::string::npos)
-            last_line_break = 0;
-        std::string::size_type next_line_break =
+        if (begin == std::string::npos)
+            begin = 0;
+        std::string::size_type end =
             source.find_first_of('\n', cur_pos);
+        std::string::size_type length = end - begin;
+        if (length > 0)
+            length--;
         lines.back().assign(
-            source.substr(last_line_break, next_line_break)
+            source.substr(begin, length)
         );
     }
 }
