@@ -10,44 +10,6 @@ void Lexer::init(char* in, const size_t& source_len) {
     lines.push_back(std::string{});
 }
 
-inline bool Lexer::is_at_end() {
-    return current == source.end();
-}
-
-inline void Lexer::skip_whitespaces() {
-    while (!is_at_end() && std::isspace(*current)) {
-        if (current != source.begin() && *(current-1) == '\n') {
-            // Add a new line
-            lines.push_back(std::string{});
-            col = 0;
-        }
-        current++;
-        col++;
-    }
-    if (is_at_end()) {
-        std::string::size_type last_line_break_in_input =
-            source.rfind('\n');
-        lines.back().assign(
-            source.substr(last_line_break_in_input)
-        );
-    } else if (lines.back().empty()) {
-        std::string::size_type cur_pos =
-            std::distance(source.cbegin(), current);
-        std::string::size_type begin =
-            source.find_last_of('\n', cur_pos);
-        if (begin == std::string::npos)
-            begin = 0;
-        std::string::size_type end =
-            source.find_first_of('\n', cur_pos);
-        std::string::size_type length = end - begin;
-        if (length > 0)
-            length--;
-        lines.back().assign(
-            source.substr(begin, length)
-        );
-    }
-}
-
 static bool is_valid_first_char(char c) {
     return (
         std::isalpha(c) || c == '\n' ||

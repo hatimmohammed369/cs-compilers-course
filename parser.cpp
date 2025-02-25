@@ -21,18 +21,6 @@ void Parser::init(char* in, size_t source_len) noexcept {
     read_next_token();
 }
 
-inline Lexer Parser::get_lexer() noexcept {
-    return lexer;
-}
-
-inline void Parser::read_next_token() noexcept {
-    current = lexer.generate_next_token();
-}
-
-inline bool Parser::is_at_end() const noexcept {
-    return current.ttype == TokenType::END_OF_FILE;
-}
-
 Token Parser::consume() noexcept {
     Token copy = current;
     read_next_token();

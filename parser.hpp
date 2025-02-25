@@ -14,12 +14,21 @@ class Parser {
     Token last_used;
     size_t _errors = 0;
 public:
-    void report_error(const std::string& msg) noexcept;
+    void report_error(const ErrorPair& error_pair) const noexcept;
     void init(char* in, size_t source_len) noexcept;
-    inline size_t errors() const noexcept { return _errors; }
-    inline Lexer get_lexer() noexcept;
-    inline void read_next_token() noexcept;
-    inline bool is_at_end() const noexcept;
+
+    inline size_t errors() const noexcept {
+        return _errors;
+    }
+
+    inline void read_next_token() noexcept {
+        current = lexer.generate_next_token();
+    }
+
+    inline bool is_at_end() const noexcept {
+        return current.ttype == TokenType::END_OF_FILE;
+    }
+
     Token consume() noexcept;
     bool check(const std::initializer_list<TokenType>& types) const noexcept;
     void synchronize() noexcept ;
