@@ -10,13 +10,14 @@ class Lexer {
 
     inline void skip_whitespaces() {
         while (!is_at_end() && std::isspace(*current)) {
-            if (current != source.begin() && *(current-1) == '\n') {
+            if (*current == '\n') {
                 // Add a new line
                 lines.push_back(std::string{});
                 col = 0;
+            } else {
+                col++;
             }
             current++;
-            col++;
         }
         if (is_at_end()) {
             std::string::size_type last_line_break_in_input =
@@ -31,11 +32,13 @@ class Lexer {
                 source.find_last_of('\n', cur_pos);
             if (begin == std::string::npos)
                 begin = 0;
+            else
+                begin++;
             std::string::size_type end =
                 source.find_first_of('\n', cur_pos);
+            if (end == std::string::npos)
+                end = source.length();
             std::string::size_type length = end - begin;
-            if (length > 0)
-                length--;
             lines.back().assign(
                 source.substr(begin, length)
             );
