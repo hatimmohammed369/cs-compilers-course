@@ -7,7 +7,7 @@ void Parser::report_error(const ErrorPair& error_pair) const noexcept {
     std::cerr << std::format(
         "\033[36m{}:{}:{}:\033[0m \033[31merror:\033[0m {}\n{}\n",
         *Config::get_filename(),
-        last_used.col+1, last_used.line+1,
+        last_used.col+last_used.value.length()+1, last_used.line+1,
         error_pair.msg,
         error_pair.diagnostics
     );
@@ -35,7 +35,9 @@ void Parser::synchronize() noexcept {
     Token last = current;
     read_next_token();
     while (!is_at_end()) {
-        if (
+        if (current.ttype == TokenType::LINEBREAK)
+            goto SKIP;
+        else if (
             last.ttype == TokenType::SEMI_COLON ||
             last.ttype == TokenType::RIGHT_CURLY_BRACE ||
             check({
@@ -46,10 +48,11 @@ void Parser::synchronize() noexcept {
                 TokenType::KEYWORD_FLOAT,
                 TokenType::KEYWORD_INT,
                 TokenType::KEYWORD_PRINT,
-                TokenType::LEFT_CURLY_BRACE,
-                TokenType::KEYWORD_RETURN
+                TokenType::KEYWORD_RETURN,
+                TokenType::LEFT_CURLY_BRACE
             })
         ) { return; }
+    SKIP:
         last = current;
         read_next_token();
     }
@@ -114,7 +117,7 @@ ParseResult Parser::parse_statement() {
                     last_used.col + last_used.value.length(),
                     current_line.length()
                 );
-            if (!std::isspace(current_line.at(end))) {
+            if (end < current_line.length() && !std::isspace(current_line.at(end))) {
                 current_line =
                     current_line.substr(0, end) + ' ' + current_line.substr(end);
             }
@@ -148,9 +151,26 @@ ParseResult Parser::parse_print() {
             return result;
         } else {
             _errors++;
-            result = ParseResult::Error(
-                ErrorPair{"Expected expression after `print`", std::string{}}
-            );
+            const std::string msg{"Expected expression after `print`"};
+            std::string current_line =
+                lexer.lines.at(last_used.line);
+            std::string header =
+                std::format("{:6} | ", last_used.line+1);
+            std::string::size_type end =
+                std::min(
+                    last_used.col + last_used.value.length(),
+                    current_line.length()
+                );
+            std::string diagnostics =
+                std::format(
+                    "{}{} {}\n{}{}",
+                    header,
+                    current_line.substr(0, end),
+                    current_line.substr(end),
+                    std::string(header.length() + end + 1, ' '),
+                    "\033[32m^\033[0m" // a green caret
+                );
+            result = ParseResult::Error(ErrorPair{msg, diagnostics});
         }
     }
     report_error(result.unwrap_error());
