@@ -187,31 +187,16 @@ ParseResult Parser::parse_variable_declaration() {
         Type::get_type_by_token(type_token.ttype);
     if (!target_type) {
         _errors++;
-        report_error(
+        result = ParseResult::Error(
             ErrorPair{
                 std::format("Undefined type `{}`", type_token.value),
                 std::string{}
             }
         );
-        synchronize();
-        return ParseResult::Ok(nullptr);
-    } else if (current.ttype != TokenType::IDENTIFIER) {
-        _errors++;
-        report_error(
-            ErrorPair{
-                std::format(
-                    "Expected identifier after type {}",
-                    type_token.value
-                ),
-                std::string{}
-            }
-        );
-        synchronize();
-        return ParseResult::Ok(nullptr);
     }
     VariableDeclaration::var_value_pairs initial_values;
     ParseResult initializer;
-    while (true) {
+    while (result.is_ok()) {
         switch (current.ttype) {
             case TokenType::IDENTIFIER: {
                 last_used = current;
@@ -229,11 +214,13 @@ ParseResult Parser::parse_variable_declaration() {
                 read_next_token();
                 initializer = parse_expression();
                 if (initializer.is_error()) {
-                    result = ParseResult::Error(initializer.unwrap_error());
-                    goto END;
+                    result = ParseResult::Error(
+                        initializer.unwrap_error()
+                    );
+                } else {
+                    initial_values.back().second =
+                        initializer.unwrap();
                 }
-                initial_values.back().second =
-                    initializer.unwrap();
                 break;
             }
             case TokenType::COMMA: {
@@ -242,9 +229,8 @@ ParseResult Parser::parse_variable_declaration() {
                 read_next_token();
                 break;
             }
-            case TokenType::END_OF_FILE:
             case TokenType::SEMI_COLON: {
-                goto END;
+                break;
             }
             default: {
                 _errors++;
@@ -253,7 +239,6 @@ ParseResult Parser::parse_variable_declaration() {
             }
         }
     }
-END:
     if (result.is_ok()) {
         VariableDeclaration* declarations_list =
             new VariableDeclaration {target_type, initial_values};
