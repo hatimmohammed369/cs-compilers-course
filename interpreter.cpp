@@ -606,7 +606,7 @@ InterpreterResult Interpreter::visit_print(Print* tree) {
             expr_result.unwrap()->to_string();
         std::cout << expr_str ;
     }
-    if (is_mode_interactive())
+    if (Common::is_mode_interactive())
         std::cout << '\n' ;
     return InterpreterResult::Ok(nullptr);
 }
