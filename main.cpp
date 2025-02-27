@@ -19,8 +19,8 @@ int main(int argc, char* argv[]) {
     if (argc == 1) {
         // Interactive Mode
         // Read input from user directly
-        *Config::get_mode() = Mode::Interactive;
-        Config::get_filename()->assign("stdin");
+        *Common::get_mode() = Mode::Interactive;
+        Common::get_filename()->assign("stdin");
         // Line characters store
         char* buffer;
         Object* value;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     } else if (argc == 3 && (strcmp(argv[1], "--file") == 0 || strcmp(argv[1], "-f") == 0)) {
         // File Mode
         // Read input from file
-        *Config::get_mode() = Mode::File;
+        *Common::get_mode() = Mode::File;
         std::string filename{argv[2]};
         std::string::size_type pos =
             filename.find_last_of('/');
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
             pos = 0;
         else
             pos++;
-        Config::get_filename()->assign(
+        Common::get_filename()->assign(
             filename.substr(pos)
         );
         // Open requested file for reading

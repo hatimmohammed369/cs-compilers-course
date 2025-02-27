@@ -6,7 +6,7 @@
 void Parser::report_error(const ErrorPair& error_pair) const noexcept {
     std::cerr << std::format(
         "\033[36m{}:{}:{}:\033[0m \033[31merror:\033[0m {}\n{}\n",
-        *Config::get_filename(),
+        *Common::get_filename(),
         last_used.col+last_used.value.length()+1, last_used.line+1,
         error_pair.msg,
         error_pair.diagnostics

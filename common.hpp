@@ -32,8 +32,12 @@ enum class Mode {
     Interactive
 };
 
-class Config {
+class Common {
 public:
+    static bool is_keyword(const std::string& s) {
+        return KEYWORDS.contains(s);
+    }
+
     static Mode* get_mode() {
         static Mode* m = new Mode;
         return m;
@@ -43,17 +47,15 @@ public:
         static std::string* filename = new std::string{};
         return filename;
     }
+
+    static bool is_mode_interactive() {
+        return *Common::get_mode() == Mode::Interactive;
+    }
+
+    static bool is_mode_file() {
+        return *Common::get_mode() == Mode::File;
+    }
 };
-
-static bool is_mode_interactive() __attribute__((unused));
-static bool is_mode_interactive() {
-    return *Config::get_mode() == Mode::Interactive;
-}
-
-static bool is_mode_file() __attribute__((unused));
-static bool is_mode_file() {
-    return *Config::get_mode() == Mode::File;
-}
 
 using i8 = int8_t;
 using i16 = int16_t;
