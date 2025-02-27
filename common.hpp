@@ -35,7 +35,7 @@ enum class Mode {
 class Common {
 public:
     static bool is_keyword(const std::string& s) {
-        return KEYWORDS.contains(s);
+        return KEYWORDS.find(s) != KEYWORDS.end();
     }
 
     static Mode* get_mode() {
