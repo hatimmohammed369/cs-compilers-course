@@ -100,7 +100,7 @@ ParseResult Parser::parse_statement() {
             // Consume ;
             read_next_token();
         } else if (
-            is_mode_file() || !check({
+            Common::is_mode_file() || !check({
                 TokenType::LINEBREAK,
                 TokenType::SEMI_COLON,
                 TokenType::END_OF_FILE
