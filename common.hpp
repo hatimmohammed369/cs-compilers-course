@@ -5,11 +5,27 @@
 #include <cstdint>
 #include <format>
 #include <iostream>
-#include <print>
+#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <utility>
+
+static const std::set<std::string> KEYWORDS {
+    "and",
+    "boolean",
+    "false",
+    "float",
+    "int",
+    "or",
+    "print",
+    "return",
+    "string",
+    "true",
+    "type",
+    "void",
+    "xor",
+};
 
 enum class Mode {
     File,
