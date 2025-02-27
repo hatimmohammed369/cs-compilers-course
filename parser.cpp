@@ -193,6 +193,29 @@ ParseResult Parser::parse_variable_declaration() {
                 std::string{}
             }
         );
+    } else if (current.ttype != TokenType::IDENTIFIER) {
+        _errors++;
+        const std::string msg{"Unexpected item, expected identifier after type"};
+        std::string current_line =
+            lexer.lines.at(last_used.line);
+        std::string header =
+            std::format("{:6} | ", last_used.line+1);
+        std::string::size_type end =
+            std::min(
+                last_used.col + last_used.value.length(),
+                current_line.length()
+            );
+        std::string diagnostics =
+            std::format(
+                "{}{}\n{}{}",
+                header,
+                current_line,
+                std::string(header.length() + end + 1, ' '),
+                std::format( // a bunch of red carets
+                    "\033[31m{}\033[0m", std::string(current.value.length(), '^')
+                )
+            );
+        result = ParseResult::Error(ErrorPair{msg, diagnostics});
     }
     VariableDeclaration::var_value_pairs initial_values;
     ParseResult initializer;
