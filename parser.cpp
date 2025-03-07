@@ -180,86 +180,124 @@ ParseResult Parser::parse_print() {
 }
 
 ParseResult Parser::parse_variable_declaration() {
-    ParseResult result;
     last_used = current;
-    Token type_token = consume();
     Type* target_type =
-        Type::get_type_by_token(type_token.ttype);
-    if (!target_type) {
-        _errors++;
-        result = ParseResult::Error(
-            ErrorPair{
-                std::format("Undefined type `{}`", type_token.value),
-                std::string{}
-            }
-        );
-    } else if (current.ttype != TokenType::IDENTIFIER) {
-        _errors++;
-        const std::string msg{"Unexpected item, expected identifier after type"};
-        std::string current_line =
-            lexer.lines.at(last_used.line);
-        std::string header =
-            std::format("{:6} | ", last_used.line+1);
-        std::string::size_type end =
-            std::min(
-                last_used.col + last_used.value.length(),
-                current_line.length()
-            );
-        std::string diagnostics =
-            std::format(
-                "{}{}\n{}{}",
-                header,
-                current_line,
-                std::string(header.length() + end + 1, ' '),
-                std::format( // a bunch of red carets
-                    "\033[31m{}\033[0m", std::string(current.value.length(), '^')
-                )
-            );
-        result = ParseResult::Error(ErrorPair{msg, diagnostics});
-    }
+        Type::get_type_by_token(consume().ttype);
     VariableDeclaration::var_value_pairs initial_values;
-    ParseResult initializer;
-    while (result.is_ok()) {
-        switch (current.ttype) {
-            case TokenType::IDENTIFIER: {
-                last_used = current;
-                initial_values.push_back(
-                    std::make_pair(
-                        std::move(consume().value),
-                        nullptr
+    ParseResult initializer, result;
+    while (true) {
+        if (
+            current.ttype != TokenType::IDENTIFIER ||
+            check({TokenType::LINEBREAK, TokenType::END_OF_FILE})
+        ) {
+            const std::string msg{"Expected identifier"};
+            std::string current_line =
+                lexer.lines.at(last_used.line);
+            std::string header =
+                std::format("{:6} | ", last_used.line+1);
+            std::string::size_type end =
+                std::min(
+                    last_used.col + last_used.value.length(),
+                    current_line.length()
+                );
+            std::string diagnostics =
+                std::format(
+                    "{}{}\n{}{}",
+                    header,
+                    current_line,
+                    std::string(header.length() + end + 1, ' '),
+                    std::format( // a bunch of red carets
+                        "\033[31m{}\033[0m", std::string(current.value.length(), '^')
                     )
                 );
-                break;
-            }
-            case TokenType::COLON_EQUAL: {
-                last_used = current;
-                // Consume :=
-                read_next_token();
-                initializer = parse_expression();
-                if (initializer.is_error()) {
-                    result = ParseResult::Error(
-                        initializer.unwrap_error()
-                    );
-                } else {
-                    initial_values.back().second =
-                        initializer.unwrap();
-                }
-                break;
-            }
-            case TokenType::COMMA: {
-                last_used = current;
-                // Consume ,
-                read_next_token();
-                break;
-            }
-            case TokenType::SEMI_COLON: {
-                break;
-            }
-            default: {
-                _errors++;
-                result = ParseResult::Error(ErrorPair{"Unexpected item""Unexpected item", std::string{}});
-                goto END;
-            }
+            result = ParseResult::Error(ErrorPair{msg, diagnostics});
+            break;
+        }
+
+        last_used = current;
+        // Consume identifier
+        initial_values.push_back(
+            std::make_pair(consume().value, nullptr)
+        );
+
+        last_used = current;
+        if (current.ttype == TokenType::COMMA) {
+            read_next_token();
+            continue;
+        } else if (current.ttype == TokenType::SEMI_COLON) {
+            break;
+        } else if (
+            current.ttype != TokenType::COLON_EQUAL ||
+            check({TokenType::LINEBREAK, TokenType::END_OF_FILE})
+        ) {
+            const std::string msg{"Expected `:=`"};
+            std::string current_line =
+                lexer.lines.at(last_used.line);
+            std::string header =
+                std::format("{:6} | ", last_used.line+1);
+            std::string::size_type end =
+                std::min(
+                    last_used.col + last_used.value.length(),
+                    current_line.length()
+                );
+            std::string diagnostics =
+                std::format(
+                    "{}{}\n{}{}",
+                    header,
+                    current_line,
+                    std::string(header.length() + end + 1, ' '),
+                    std::format( // a bunch of red carets
+                        "\033[31m{}\033[0m", std::string(current.value.length(), '^')
+                    )
+                );
+            result = ParseResult::Error(ErrorPair{msg, diagnostics});
+            break;
+        }
+
+        last_used = current;
+        // Consume :=
+        read_next_token();
+
+        initializer = parse_expression();
+        if (initializer.is_error()) {
+            result = ParseResult::Error(
+                initializer.unwrap_error()
+            );
+            break;
+        } else {
+            initial_values.back().second =
+                initializer.unwrap();
+        }
+
+        last_used = current;
+        if (current.ttype == TokenType::COMMA) {
+            read_next_token();
+            continue;
+        } else if (current.ttype == TokenType::SEMI_COLON) {
+            break;
+        } else if (!check({TokenType::END_OF_FILE, TokenType::LINEBREAK})){
+            const std::string msg{"Unexpected item"};
+            std::string current_line =
+                lexer.lines.at(last_used.line);
+            std::string header =
+                std::format("{:6} | ", last_used.line+1);
+            std::string::size_type end =
+                std::min(
+                    last_used.col + last_used.value.length(),
+                    current_line.length()
+                );
+            std::string diagnostics =
+                std::format(
+                    "{}{}\n{}{}",
+                    header,
+                    current_line,
+                    std::string(header.length() + end + 1, ' '),
+                    std::format( // a bunch of red carets
+                        "\033[31m{}\033[0m", std::string(current.value.length(), '^')
+                    )
+                );
+            result = ParseResult::Error(ErrorPair{msg, diagnostics});
+            break;
         }
     }
     if (result.is_ok()) {
